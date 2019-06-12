@@ -22,7 +22,7 @@ class MiniMaxTest {
     @BeforeEach
     void setUp() {
         this.bruteForce = new MiniMax(new DummyBoardEvaluator());
-        this.board = Boards.createImmutableBoard();
+        this.board = Boards.immutableBoard();
     }
 
     @Nested

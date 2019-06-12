@@ -18,7 +18,7 @@ class ImmutableBoard implements BoardInterface2 {
     private final static ThreadLocal<Stack<Direction>> stack = new ThreadLocal<>();
     private final static ThreadLocal<List<Move>> allMoves = new ThreadLocal<>();
 
-    public ImmutableBoard() {
+    ImmutableBoard() {
         this.points = new LogicalPoints();
         this.playerToMove = Player.FIRST;
         this.moveHistory = new MoveHistory();
