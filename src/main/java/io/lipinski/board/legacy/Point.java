@@ -1,17 +1,19 @@
-package io.lipinski.board;
+package io.lipinski.board.legacy;
+
+import io.lipinski.board.engine.Direction;
 
 import java.io.Serializable;
 import java.util.EnumMap;
 import java.util.Map;
 
-import static io.lipinski.board.Direction.E;
-import static io.lipinski.board.Direction.N;
-import static io.lipinski.board.Direction.NE;
-import static io.lipinski.board.Direction.NW;
-import static io.lipinski.board.Direction.S;
-import static io.lipinski.board.Direction.SE;
-import static io.lipinski.board.Direction.SW;
-import static io.lipinski.board.Direction.W;
+import static io.lipinski.board.engine.Direction.E;
+import static io.lipinski.board.engine.Direction.N;
+import static io.lipinski.board.engine.Direction.NE;
+import static io.lipinski.board.engine.Direction.NW;
+import static io.lipinski.board.engine.Direction.S;
+import static io.lipinski.board.engine.Direction.SE;
+import static io.lipinski.board.engine.Direction.SW;
+import static io.lipinski.board.engine.Direction.W;
 
 /**
  * Thread unsafe class.

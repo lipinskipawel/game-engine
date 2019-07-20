@@ -1,7 +1,5 @@
 package io.lipinski.board.engine;
 
-import io.lipinski.board.Direction;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;

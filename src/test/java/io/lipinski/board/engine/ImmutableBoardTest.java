@@ -1,10 +1,5 @@
 package io.lipinski.board.engine;
 
-import io.lipinski.board.Direction;
-import io.lipinski.board.engine.BoardInterface2;
-import io.lipinski.board.engine.ImmutableBoard;
-import io.lipinski.board.engine.Move;
-import io.lipinski.board.engine.Player;
 import io.lipinski.board.engine.exceptions.IllegalUndoMoveException;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;

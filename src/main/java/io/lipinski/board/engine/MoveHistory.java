@@ -1,6 +1,5 @@
 package io.lipinski.board.engine;
 
-import io.lipinski.board.Direction;
 import io.lipinski.board.engine.exceptions.IllegalUndoMoveException;
 
 import java.util.ArrayList;

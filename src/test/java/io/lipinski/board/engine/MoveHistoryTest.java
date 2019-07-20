@@ -1,8 +1,5 @@
 package io.lipinski.board.engine;
 
-
-import io.lipinski.board.Direction;
-import io.lipinski.board.engine.MoveHistory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

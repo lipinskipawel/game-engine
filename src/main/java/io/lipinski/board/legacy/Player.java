@@ -1,4 +1,4 @@
-package io.lipinski.board;
+package io.lipinski.board.legacy;
 
 public enum Player {
 
@@ -7,8 +7,5 @@ public enum Player {
 
 
     Player() {}
-
-
-
 
 }

@@ -1,6 +1,5 @@
 package io.lipinski.board.engine;
 
-import io.lipinski.board.Direction;
 import io.lipinski.board.engine.exceptions.IllegalMoveException;
 import io.lipinski.board.engine.exceptions.IllegalUndoMoveException;
 

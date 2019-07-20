@@ -1,7 +1,5 @@
 package io.lipinski.board.engine;
 
-import io.lipinski.board.Direction;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;

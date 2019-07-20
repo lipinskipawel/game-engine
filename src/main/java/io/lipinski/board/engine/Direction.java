@@ -1,5 +1,4 @@
-package io.lipinski.board;
-
+package io.lipinski.board.engine;
 
 public enum Direction {
 

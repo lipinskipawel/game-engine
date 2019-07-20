@@ -1,12 +1,11 @@
-package io.lipinski.board;
+package io.lipinski.board.legacy;
 
+import io.lipinski.board.engine.Direction;
 
 import java.util.EnumMap;
 import java.util.Map;
 
 public class BoardUtils {
-
-
 
 
     public static Map<Direction, Integer> createDirection() {

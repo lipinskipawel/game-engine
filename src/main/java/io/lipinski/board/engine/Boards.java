@@ -1,7 +1,7 @@
 package io.lipinski.board.engine;
 
-import io.lipinski.board.BoardInterface;
-import io.lipinski.board.MutableBoard;
+import io.lipinski.board.legacy.BoardInterface;
+import io.lipinski.board.legacy.MutableBoard;
 
 public class Boards {
 
