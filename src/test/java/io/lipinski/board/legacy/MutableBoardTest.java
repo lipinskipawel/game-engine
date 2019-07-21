@@ -1,10 +1,6 @@
-package io.lipinski.board;
+package io.lipinski.board.legacy;
 
-
-import io.lipinski.board.BoardInterface;
-import io.lipinski.board.Direction;
-import io.lipinski.board.MutableBoard;
-import io.lipinski.board.Point;
+import io.lipinski.board.engine.Direction;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

@@ -5,6 +5,7 @@ import io.lipinski.board.engine.Direction;
 import java.util.EnumMap;
 import java.util.Map;
 
+@Deprecated
 public class BoardUtils {
 
 

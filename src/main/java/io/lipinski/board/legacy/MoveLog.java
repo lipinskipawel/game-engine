@@ -10,6 +10,7 @@ import java.util.List;
 /**
  * Thread unsafe class.
  */
+@Deprecated
 class MoveLog implements Serializable {
 
     private final List<List<Integer>> listOfMoves;

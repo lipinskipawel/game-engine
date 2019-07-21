@@ -18,6 +18,7 @@ import static io.lipinski.board.engine.Direction.W;
 /**
  * Thread unsafe class.
  */
+@Deprecated
 public class Point implements Serializable {
 
     private Map<Direction, Integer> availableDirections;

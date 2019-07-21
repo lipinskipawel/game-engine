@@ -6,6 +6,7 @@ import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
 
+@Deprecated
 public class MutableBoard implements BoardInterface, Serializable {
 
 

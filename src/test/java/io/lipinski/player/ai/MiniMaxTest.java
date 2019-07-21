@@ -1,8 +1,8 @@
 package io.lipinski.player.ai;
 
-import io.lipinski.board.Direction;
 import io.lipinski.board.engine.BoardInterface2;
 import io.lipinski.board.engine.Boards;
+import io.lipinski.board.engine.Direction;
 import io.lipinski.board.engine.Player;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;

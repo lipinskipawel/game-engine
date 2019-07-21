@@ -4,6 +4,7 @@ import io.lipinski.board.engine.Direction;
 
 import java.util.List;
 
+@Deprecated
 public interface BoardInterface {
 
 
