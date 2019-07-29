@@ -49,7 +49,6 @@ class ImmutableBoardTest {
 
     @AfterEach
     void cleanUp() {
-
         executor.shutdown();
         try {
             if (!executor.awaitTermination(50, TimeUnit.MILLISECONDS)) {
@@ -67,7 +66,6 @@ class ImmutableBoardTest {
         @Test
         @DisplayName("List of legal moves with clean board")
         void allLegalMoves() {
-
             //Given:
             final var preparedMoves = List.of(
                     new Move(Collections.singletonList(Direction.N)),
@@ -91,7 +89,6 @@ class ImmutableBoardTest {
         @Test
         @DisplayName("List of legal moves after N, E")
         void allLegalMovesAfterSomeMoves() {
-
             //Given:
             final var preparedMoves = List.of(
                     new Move(Collections.singletonList(Direction.NW)),
@@ -121,7 +118,6 @@ class ImmutableBoardTest {
         @Test
         @DisplayName("List of legal moves after NE, NE, N, NE. Ball close to corner")
         void allLegalMoveCloseToCorner() {
-
             //Given:
             final var preparedMoves = List.of(
                     new Move(Collections.singletonList(Direction.W)),
@@ -167,7 +163,6 @@ class ImmutableBoardTest {
         @Test
         @DisplayName("List of legal moves after N, E. MultiThreaded")
         void allLegalMovesAfterSomeMovesMultiThread() {
-
             //Given:
             final var preparedMoves = List.of(
                     new Move(Collections.singletonList(Direction.NW)),
@@ -223,7 +218,6 @@ class ImmutableBoardTest {
         @Test
         @DisplayName("List of legal moves after NE, NE, N, NE. Ball close to corner. MultiThreaded")
         void allLegalMoveCloseToCornerMultiThread() {
-
             //Given:
             final var preparedMoves = List.of(
                     new Move(Collections.singletonList(Direction.W)),
@@ -302,33 +296,28 @@ class ImmutableBoardTest {
         @Test
         @DisplayName("Make a proper full move towards North")
         void makeAMoveN() {
-
             //When:
             BoardInterface2 afterMove = board.executeMove(Direction.N);
 
             //Then:
             int actualBallPosition = afterMove.getBallPosition();
             assertEquals(POSITION_AFTER_N_MOVE, actualBallPosition);
-
         }
 
         @Test
         @DisplayName("Make a proper full move towards South")
         void makeAMoveS() {
-
             //When:
             BoardInterface2 afterMove = board.executeMove(Direction.S);
 
             //Then:
             int actualBallPosition = afterMove.getBallPosition();
             assertEquals(POSITION_AFTER_S_MOVE, actualBallPosition);
-
         }
 
         @Test
         @DisplayName("Make a proper full move towards East, North and check allowed moves")
         void makeAMoveEN() {
-
             //When:
             BoardInterface2 afterMove = board.executeMove(Direction.E)
                     .executeMove(Direction.N);
@@ -349,7 +338,6 @@ class ImmutableBoardTest {
         @Test
         @DisplayName("Make a one full move and don't allow to move backwards")
         void notAllowToMakeAMove() {
-
             //When:
             BoardInterface2 afterFirstMove = board.executeMove(Direction.N);
             BoardInterface2 afterSecondMove = null;
@@ -364,7 +352,6 @@ class ImmutableBoardTest {
         @Test
         @DisplayName("Can't follow executed moves")
         void makeTwoMovesAndTryFollowExecutedMoves() {
-
             //When:
             final var afterMoves = board.executeMove(Direction.N)
                     .executeMove(Direction.E)
@@ -386,7 +373,6 @@ class ImmutableBoardTest {
         @Test
         @DisplayName("Can't follow executed moves, move sample")
         void makeTwoMovesAndTryFollowExecutedMovesMoreSample() {
-
             //When:
             final var afterMoves = board.executeMove(Direction.N)
                     .executeMove(Direction.E)
@@ -413,7 +399,6 @@ class ImmutableBoardTest {
     @DisplayName("Undo move")
     class UndoAMove {
 
-
         @Test
         @DisplayName("Try to undo move when no move has been done yet")
         void undoMoveWhenGameJustBegun() {
@@ -426,7 +411,6 @@ class ImmutableBoardTest {
         @Test
         @DisplayName("Make a one simple S move and then undo")
         void makeAMoveSAndUndoMove() {
-
             //When:
             BoardInterface2 afterMove = board.executeMove(Direction.S);
             BoardInterface2 afterUndo = afterMove.undoMove();
@@ -439,7 +423,6 @@ class ImmutableBoardTest {
         @Test
         @DisplayName("Make a one simple S move and then undo")
         void makeAMoveSAndUndoMoveAndCheckSanity() {
-
             //When:
             BoardInterface2 afterMove = board.executeMove(Direction.S);
             BoardInterface2 afterUndo = afterMove.undoMove();
@@ -452,7 +435,6 @@ class ImmutableBoardTest {
         @Test
         @DisplayName("Make a few moves and then complex one move and then undo sub move")
         void makeAMoveNAndUndoMove() {
-
             //When:
             final var afterOneMove = board.executeMove(Direction.N);
             final var afterSecondMove = afterOneMove.executeMove(Direction.E);
@@ -468,7 +450,6 @@ class ImmutableBoardTest {
         @Test
         @DisplayName("Make a few moves and then complex one move and then undo sub move Another Check")
         void makeAMoveNAndUndoMoveAnotherCheck() {
-
             //When:
             final var afterOneMove = board.executeMove(Direction.N);
             final var afterSecondMove = afterOneMove.executeMove(Direction.E);
@@ -484,7 +465,6 @@ class ImmutableBoardTest {
         @Test
         @DisplayName("Make a few moves and then complex one move and then undo sub move Another Check")
         void makeAMoveNAndUndoMoveAnotherCheckYetAnother() {
-
             //When:
             final var afterOneMove = board.executeMove(Direction.N);
             final var afterSecondMove = afterOneMove.executeMove(Direction.E);
@@ -506,24 +486,23 @@ class ImmutableBoardTest {
         @Test
         @DisplayName("Make a move as FIRST player and check if this is SECOND player turn")
         void secondPlayerNeedToMove() {
-
+            //When:
             final var afterMove = board.executeMove(Direction.E);
 
+            //Then:
             assertEquals(Player.SECOND, afterMove.getPlayer());
         }
 
         @Test
         @DisplayName("Make a move, undo and check player turn")
         void makeTwoMovesAndCheckPlayerTurn() {
-
+            //When:
             final var afterTwoMoves = board.executeMove(Direction.W)
                     .executeMove(Direction.NW);
-
             final var afterUndoMove = afterTwoMoves.undoMove();
 
+            //Then:
             assertEquals(Player.SECOND, afterUndoMove.getPlayer());
         }
     }
-
-
 }

@@ -131,6 +131,11 @@ class ImmutableBoard implements BoardInterface2 {
         return this.playerToMove;
     }
 
+    @Override
+    public int[] transform() {
+        return this.points.transform();
+    }
+
     private Player computePlayerToMove(final LogicalPoints logicalPoints) {
         var player = this.playerToMove;
 

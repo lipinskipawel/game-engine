@@ -97,10 +97,21 @@ class PointUtils {
                         Direction.E,
                         Direction.SE);
                 tempListPoint.add(point);
-            } else
+            } else if (isOutSideOfPitch(i)) {
+                Point2 point = new Point2(i);
+                point.notAvailableDirections(Direction.N,
+                        Direction.NE,
+                        Direction.E,
+                        Direction.SE,
+                        Direction.S,
+                        Direction.SW,
+                        Direction.W,
+                        Direction.NW);
+                tempListPoint.add(point);
+            } else {
                 tempListPoint.add(new Point2(i));
+            }
         }
-
         return Collections.unmodifiableList(tempListPoint);
     }
 
@@ -162,6 +173,21 @@ class PointUtils {
                 || position == 80
                 || position == 89
                 || position == 98;
+    }
+
+    private static boolean isOutSideOfPitch(final int position) {
+        return position == 0
+                || position == 1
+                || position == 2
+                || position == 6
+                || position == 7
+                || position == 8
+                || position == 108
+                || position == 109
+                || position == 110
+                || position == 114
+                || position == 115
+                || position == 116;
     }
 
 

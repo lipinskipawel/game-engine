@@ -1,5 +1,6 @@
 package io.lipinski.board.engine;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -66,12 +67,24 @@ class Point2 {
                 .collect(toUnmodifiableList());
     }
 
+    Collection<Boolean> getAllDirections() {
+        return List.of(
+                this.availableDirections.get(Direction.N),
+                this.availableDirections.get(Direction.NE),
+                this.availableDirections.get(Direction.E),
+                this.availableDirections.get(Direction.SE),
+                this.availableDirections.get(Direction.S),
+                this.availableDirections.get(Direction.SW),
+                this.availableDirections.get(Direction.W),
+                this.availableDirections.get(Direction.NW)
+        );
+    }
+
     boolean isOnStartingPoint() {
         return this.position == 58;
     }
 
     /**
-     *
      * @param direction
      * @return
      */
@@ -87,7 +100,7 @@ class Point2 {
     // TODO this should be private
     void notAvailableDirections(Direction... directions) {
         for (Direction direction : directions) {
-            this.availableDirections.remove(direction);
+            this.availableDirections.put(direction, false);
         }
     }
 

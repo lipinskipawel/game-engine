@@ -4,9 +4,11 @@ import io.lipinski.board.engine.exceptions.IllegalMoveException;
 import io.lipinski.board.engine.exceptions.IllegalUndoMoveException;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Comparator;
 import java.util.List;
 
-class LogicalPoints {
+class LogicalPoints implements Transformation {
 
     private final List<Point2> points;
     private final Point2 ballPosition;
@@ -18,7 +20,7 @@ class LogicalPoints {
     }
 
     private LogicalPoints(final List<Point2> points,
-                  final Point2 ballPosition) {
+                          final Point2 ballPosition) {
         this.points = points;
         this.ballPosition = points.get(ballPosition.getPosition());
     }
@@ -63,6 +65,7 @@ class LogicalPoints {
     /**
      * In case were is need to compute next player to move,
      * during sub undoMove stage, need to pass previous LogicalPoints
+     *
      * @return
      */
     boolean isOtherPlayerToMove() {
@@ -79,5 +82,22 @@ class LogicalPoints {
 
     int getBallPosition() {
         return this.ballPosition.getPosition();
+    }
+
+    /**
+     * Contract of this method is preserved in the TransformationTest class.
+     *
+     * @return Array of 1 and 0 in sequence for every Point in.
+     * Points are sorted based on Position in ascending order.
+     */
+    @Override
+    public int[] transform() {
+        return points
+                .stream()
+                .sorted(Comparator.comparingInt(Point2::getPosition))
+                .map(Point2::getAllDirections)
+                .flatMap(Collection::stream)
+                .mapToInt(x -> x ? 1 : 0)
+                .toArray();
     }
 }
