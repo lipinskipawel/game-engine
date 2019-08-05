@@ -1,17 +1,37 @@
 package io.lipinski.player.ai.internal;
 
-class SimpleMatrix implements Matrix {
+final class SimpleMatrix implements Matrix {
 
     private double[][] data;
 
 
-    SimpleMatrix(final double[][] matrix) {
-        this.data = matrix;
+    SimpleMatrix(final double[][] data) {
+        super();
+        this.data = data;
     }
 
-    SimpleMatrix(final int numberOfRow,
-                 final int numberOfColumns) {
+    SimpleMatrix(final int numberOfRow, final int numberOfColumns) {
         this.data = new double[numberOfRow][numberOfColumns];
+    }
+
+    /**
+     * This constructor create a matrix with one column.
+     *
+     */
+    SimpleMatrix(final int[] column) {
+        this.data = new double[column.length][1];
+        for (int i = 0; i < column.length; i++)
+            this.data[i][0] = column[i];
+    }
+
+    /**
+     * This constructor create a matrix with one column.
+     *
+     */
+    SimpleMatrix(final double[] column) {
+        this.data = new double[column.length][1];
+        for (int i = 0; i < column.length; i++)
+            this.data[i][0] = column[i];
     }
 
 
@@ -52,15 +72,10 @@ class SimpleMatrix implements Matrix {
 
         for (int i = 0; i < another.rawData().length; i++) {
             for (int j = 0; j < another.rawData()[0].length; j++) {
-                result.data[i][j] = this.data[i][j] + another.rawData()[i][j];
+                result.rawData()[i][j] = this.data[i][j] + another.rawData()[i][j];
             }
         }
         return result;
-    }
-
-    @Override
-    public double[][] rawData() {
-        return this.data;
     }
 
     @Override
@@ -89,6 +104,11 @@ class SimpleMatrix implements Matrix {
             }
         }
         return result;
+    }
+
+    @Override
+    public double[][] rawData() {
+        return this.data;
     }
 
     @Override
