@@ -48,7 +48,7 @@ class MatrixTest {
                     {1, 2},
                     {1, 1}
             });
-            final var second = new SimpleMatrix(new int[]{2, 6});
+            final var second = Matrix.of(new int[]{2, 6});
             final var expected = new double[][]{
                     {14},
                     {8}
@@ -117,7 +117,7 @@ class MatrixTest {
             final var first = new SimpleMatrix(new double[][]{
                     {3, 5}
             });
-            final var second = new SimpleMatrix(new double[]{2, 1});
+            final var second = Matrix.of(new double[]{2, 1});
 
             //When:
             final var result = first.multiply(second);
@@ -228,7 +228,7 @@ class MatrixTest {
             final var matrix = new SimpleMatrix(new double[][]{
                     {2, 3, 4}
             });
-            final var expected = new SimpleMatrix(new int[]{2, 3, 4});
+            final var expected = Matrix.of(new int[]{2, 3, 4});
 
             //When:
             Assertions.assertThat(matrix.transpose().rawData())

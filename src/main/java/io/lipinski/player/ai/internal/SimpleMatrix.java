@@ -14,27 +14,6 @@ final class SimpleMatrix implements Matrix {
         this.data = new double[numberOfRow][numberOfColumns];
     }
 
-    /**
-     * This constructor create a matrix with one column.
-     *
-     */
-    SimpleMatrix(final int[] column) {
-        this.data = new double[column.length][1];
-        for (int i = 0; i < column.length; i++)
-            this.data[i][0] = column[i];
-    }
-
-    /**
-     * This constructor create a matrix with one column.
-     *
-     */
-    SimpleMatrix(final double[] column) {
-        this.data = new double[column.length][1];
-        for (int i = 0; i < column.length; i++)
-            this.data[i][0] = column[i];
-    }
-
-
     @Override
     public Matrix multiply(final Matrix another) {
         int aRows = this.data.length;
