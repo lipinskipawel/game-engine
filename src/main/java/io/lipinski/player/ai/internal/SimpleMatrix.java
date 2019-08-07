@@ -6,7 +6,6 @@ final class SimpleMatrix implements Matrix {
 
 
     SimpleMatrix(final double[][] data) {
-        super();
         this.data = data;
     }
 

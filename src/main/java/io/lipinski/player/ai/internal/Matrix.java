@@ -24,4 +24,8 @@ interface Matrix {
         return new SimpleMatrix(data);
     }
 
+    static Matrix of(final double[][] data) {
+        return new SimpleMatrix(data);
+    }
+
 }

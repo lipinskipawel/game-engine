@@ -138,7 +138,7 @@ class MatrixTest {
                     {1},
                     {2}
             });
-            final var second = new SimpleMatrix(new double[][]{
+            final var second = Matrix.of(new double[][]{
                     {2, 3},
                     {1, 1}
             });
@@ -164,7 +164,7 @@ class MatrixTest {
                     {1, 2},
                     {0, 1}
             });
-            final var second = new SimpleMatrix(new double[][]{
+            final var second = Matrix.of(new double[][]{
                     {2, 5},
                     {6, 7}
             });
