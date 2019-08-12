@@ -20,10 +20,13 @@ final class SimpleMatrix implements Matrix {
         int bRows = another.rawData().length;
         int bColumns = another.rawData()[0].length;
 
-        if (aColumns != bRows) {
+        if (aColumns == bColumns && aRows == bRows) {
+            return elementWiseMultiplication(another);
+        }
+
+        if (aColumns != bRows)
             throw new ArithmeticException("SimpleMatrix's has improper shapes to multiply " +
                     aColumns + ", another " + bRows);
-        }
 
         double[][] resultMatrix = new double[aRows][bColumns];
 
@@ -40,9 +43,26 @@ final class SimpleMatrix implements Matrix {
         return new SimpleMatrix(resultMatrix);
     }
 
+    private Matrix elementWiseMultiplication(final Matrix another) {
+        if (this.data.length != another.rawData().length ||
+                this.data[0].length != another.rawData()[0].length)
+            throw new ArithmeticException("SimpleMatrix's has different numbers of row this " +
+                    this.data.length + ", another " + another.rawData().length);
+
+        final var result = new SimpleMatrix(this.data);
+
+        for (int i = 0; i < another.rawData().length; i++) {
+            for (int j = 0; j < another.rawData()[0].length; j++) {
+                result.rawData()[i][j] = this.data[i][j] * another.rawData()[i][j];
+            }
+        }
+        return result;
+    }
+
     @Override
     public Matrix add(final Matrix another) {
-        if (this.data.length != another.rawData().length)
+        if (this.data.length != another.rawData().length ||
+                this.data[0].length != another.rawData()[0].length)
             throw new ArithmeticException("SimpleMatrix's has different numbers of row this " +
                     this.data.length + ", another " + another.rawData().length);
 
@@ -51,6 +71,23 @@ final class SimpleMatrix implements Matrix {
         for (int i = 0; i < another.rawData().length; i++) {
             for (int j = 0; j < another.rawData()[0].length; j++) {
                 result.rawData()[i][j] = this.data[i][j] + another.rawData()[i][j];
+            }
+        }
+        return result;
+    }
+
+    @Override
+    public Matrix subtract(final Matrix another) {
+        if (this.data.length != another.rawData().length ||
+                this.data[0].length != another.rawData()[0].length)
+            throw new ArithmeticException("SimpleMatrix's has different numbers of row this " +
+                    this.data.length + ", another " + another.rawData().length);
+
+        final var result = new SimpleMatrix(this.data);
+
+        for (int i = 0; i < another.rawData().length; i++) {
+            for (int j = 0; j < another.rawData()[0].length; j++) {
+                result.rawData()[i][j] = this.data[i][j] - another.rawData()[i][j];
             }
         }
         return result;

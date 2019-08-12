@@ -24,31 +24,7 @@ class MatrixTest {
                     {1, 2},
                     {1, 1}
             });
-            final var second = new SimpleMatrix(new double[][]{
-                    {2},
-                    {6}
-            });
-            final var expected = new double[][]{
-                    {14},
-                    {8}
-            };
-
-            //When:
-            final var result = first.multiply(second);
-
-            //Then:
-            Assertions.assertThat(result.rawData()).containsExactly(expected);
-        }
-
-        @Test
-        @DisplayName("Multiply 2x2 with 2x1 matrix, column constructor")
-        void multiply2x2With2x1ColumnConstructor() {
-            //Given:
-            final var first = new SimpleMatrix(new double[][]{
-                    {1, 2},
-                    {1, 1}
-            });
-            final var second = Matrix.of(new int[]{2, 6});
+            final var second = Matrix.of(new double[]{2.0, 6.0});
             final var expected = new double[][]{
                     {14},
                     {8}
@@ -70,7 +46,7 @@ class MatrixTest {
                     {0, 1, 0},
                     {2, 3, 4}
             });
-            final var second = new SimpleMatrix(new double[][]{
+            final var second = Matrix.of(new int[][]{
                     {2, 5},
                     {6, 7},
                     {1, 8}
@@ -95,7 +71,7 @@ class MatrixTest {
             final var first = new SimpleMatrix(new double[][]{
                     {3, 5}
             });
-            final var second = new SimpleMatrix(new double[][]{
+            final var second = Matrix.of(new int[][]{
                     {2},
                     {1}
             });
@@ -150,6 +126,47 @@ class MatrixTest {
                     "Can't multiply matrix's with different ratio rows to columns"
             );
         }
+
+        @Test
+        @DisplayName("Use element wise multiplication instead of dot product. 2x1 and 2x1")
+        void elementWise() {
+            //Given:
+            final var first = new SimpleMatrix(new double[][]{
+                    {4},
+                    {8}
+            });
+            final var second = Matrix.of(new double[][]{
+                    {2},
+                    {8}
+            });
+            final var expected = Matrix.of(new double[][]{
+                    {8},
+                    {64}
+            });
+
+            //When:
+            final var actual = first.multiply(second);
+
+            //Then:
+            Assertions.assertThat(actual.rawData()).containsExactly(expected.rawData());
+        }
+
+        @Test
+        @DisplayName("Completely different dimension")
+        void exceptionWhenBadDimension() {
+            //Given:
+            final var first = Matrix.of(new int[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10});
+            final var second = new SimpleMatrix(new double[][]{
+                    {2, 5},
+                    {5, 6}
+            });
+
+            //When:
+            assertThrows(
+                    ArithmeticException.class,
+                    () -> first.multiply(second),
+                    "Can't add matrix's with different shapes");
+        }
     }
 
     @Nested
@@ -197,6 +214,75 @@ class MatrixTest {
                     () -> first.add(second),
                     "Can't add matrix's with different shapes");
         }
+
+        @Test
+        @DisplayName("Add 2x2 with 2x1, expect error")
+        void add2x2With2x1() {
+            //Given:
+            final var first = Matrix.of(new double[][]{
+                    {2, 2},
+                    {3, 3}
+            });
+            final var second = Matrix.of(new double[][]{
+                    {1},
+                    {2.5}
+            });
+
+            //When:
+            assertThrows(
+                    ArithmeticException.class,
+                    () -> first.add(second),
+                    "Can't add matrix's with different shapes");
+        }
+    }
+
+    @Nested
+    @DisplayName("Subtract operations")
+    class Subtract {
+
+        @Test
+        @DisplayName("Subtract 2x2 with 2x2")
+        void subtract2x2With2x2() {
+            //Given:
+            final var first = Matrix.of(new double[][]{
+                    {2, 2},
+                    {3, 3}
+            });
+            final var second = Matrix.of(new double[][]{
+                    {1, 0.5},
+                    {2.5, 2}
+            });
+            final var expected = Matrix.of(new double[][]{
+                    {1, 1.5},
+                    {0.5, 1}
+            });
+
+            //When:
+            final var actual = first.subtract(second);
+
+            //Then:
+            Assertions.assertThat(actual.rawData()).containsExactly(expected.rawData());
+        }
+
+        @Test
+        @DisplayName("Subtract 2x2 with 2x1, expect error")
+        void subtract2x2With2x1() {
+            //Given:
+            final var first = Matrix.of(new double[][]{
+                    {2, 2},
+                    {3, 3}
+            });
+            final var second = Matrix.of(new double[][]{
+                    {1},
+                    {2.5}
+            });
+
+            //When:
+            assertThrows(
+                    ArithmeticException.class,
+                    () -> first.subtract(second),
+                    "Can't add matrix's with different shapes");
+        }
     }
 
     @Nested
@@ -229,6 +315,22 @@ class MatrixTest {
                     {2, 3, 4}
             });
             final var expected = Matrix.of(new int[]{2, 3, 4});
+
+            //When:
+            Assertions.assertThat(matrix.transpose().rawData())
+                    .containsExactly(expected.rawData());
+        }
+
+        @Test
+        @DisplayName("Transpose 3x1")
+        void transposeThird() {
+            //Given:
+            final var matrix = Matrix.of(new double[][]{
+                    {2},
+                    {3},
+                    {4}
+            });
+            final var expected = Matrix.of(new int[][]{{2, 3, 4}});
 
             //When:
             Assertions.assertThat(matrix.transpose().rawData())
