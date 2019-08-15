@@ -1,9 +1,9 @@
 package io.lipinski.player.ai.internal;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
-import java.util.stream.DoubleStream;
 
+import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
 
 /**
@@ -11,24 +11,53 @@ import static java.util.stream.Collectors.toList;
  *
  * @param <T>
  */
-final class Result<T> {
+final class Result<T extends Number & Comparable> {
 
-    private final List<T> data;
+    private List<T> list;
 
 
-    Result(List<T> data) {
-        this.data = new ArrayList<>(data);
+    private Result(final List<T> data) {
+        sanityCheck(data);
+        this.list = data;
     }
 
-
-    static Result of(final double[] data) {
-        return new Result<>(DoubleStream.of(data)
-                .boxed()
+    static <T extends Number & Comparable> Result of(final T[] data) {
+        sanityCheck(data);
+        return new Result<>(Arrays.stream(data)
                 .collect(toList()));
     }
 
-    public final T getBest() {
-        return data.get(0);
+    /**
+     * It will return number of node in the output layer.
+     *
+     * @return
+     */
+    public final int getBestMatch() {
+        return this.list
+                .indexOf(getBestValue());
     }
 
+    /**
+     * It will return actual value which had best score
+     * given by neural network.
+     *
+     * @return
+     */
+    public final T getBestValue() {
+        return this.list
+                .stream()
+                .max(Comparable::compareTo)
+                .orElseThrow(() -> new RuntimeException("This will never happen. " +
+                        "It means that you pass list with 0 size"));
+    }
+
+    private static <T> void sanityCheck(final T[] data) {
+        requireNonNull(data);
+        if (data.length == 0) throw new RuntimeException("Size of output is 0");
+    }
+
+    private static <T> void sanityCheck(final List<T> data) {
+        requireNonNull(data);
+        if (data.size() == 0) throw new RuntimeException("Size of output is 0");
+    }
 }
