@@ -20,15 +20,25 @@ class ResultTest {
     }
 
     @Test
-    @DisplayName("Find best match across five numbers")
-    void fiveNumberTest() {
+    @DisplayName("Find best match across five distinct numbers")
+    void fiveNumberTestDistinct() {
         final var res = Result.of(
                 List.of(1, 2, 1, 5, 2).toArray(Integer[]::new));
-
 
         final var actual = res.getBestMatch();
 
         Assertions.assertThat(actual).isEqualTo(3);
+    }
+
+    @Test
+    @DisplayName("Find best match across five numbers")
+    void fiveNumberTest() {
+        final var res = Result.of(
+                List.of(5, 2, 1, 5, 2).toArray(Integer[]::new));
+
+        final var actual = res.getBestMatch();
+
+        Assertions.assertThat(actual).isEqualTo(0);
     }
 
     @Test
