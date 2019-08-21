@@ -1,0 +1,51 @@
+    @Override
+    public void train(final int[] data, final int labels) {
+        final var hidden = this.weights_ih
+                .multiply(Matrix.of(data))
+                .add(biasHidden)
+                .forEach(x -> 1 / (1 + Math.exp(-x)));
+
+        final var outputs = this.weights_ho
+                .multiply(hidden)
+                .add(biasOutput)
+                .forEach(x -> 1 / (1 + Math.exp(-x)));
+        // end of feedforward
+
+
+        // calculate output error, this should be probably done by labels.subtract(output)
+//        final var outputErrors = Matrix.of(labels - output);
+        final var outputErrors = Matrix.of(labels).subtract(outputs);
+        // derivative of sigmoid. take each element of result
+        // WHICH IS ALREADY MAPPED BY SIGMOID FUNCTION
+        // that is why we can use this formula
+        final var deltaSecond = outputs.forEach(x -> x * (1 - x)) // 3 line comment
+                .multiply(outputErrors) // multiply be error THIS has to be ELEMENT WISE
+                .forEach(x -> x * learningRate)
+                .multiply(hidden.transpose());
+
+        // update second weight !!!!!!!!!!
+        this.weights_ho = this.weights_ho.add(deltaSecond);
+        // update bias output
+        final var intermediate = outputs.forEach(x -> x * (1 - x)) // redundant code
+                .multiply(outputErrors)
+                .forEach(x -> x * learningRate);
+        this.biasOutput = this.biasOutput.add(intermediate);
+
+
+        // calculate hidden errors
+        final var who_t = this.weights_ho.transpose();
+        final var hiddenErrors = who_t.multiply(outputErrors);
+
+        final var deltaFirst = hidden.forEach(x -> x * (1 - x))
+                .multiply(hiddenErrors) // error, THIS HAS TO BE ELEMENT WISE
+                .forEach(x -> x * learningRate)
+                .multiply(Matrix.of(data).transpose());
+
+        // update first weight
+        this.weights_ih = this.weights_ih.add(deltaFirst);
+        this.biasHidden = this.biasHidden.add(
+                hidden.forEach(x -> x * (1 - x))
+                        .multiply(hiddenErrors)
+                        .forEach(x -> x * learningRate)
+        );
+    }
