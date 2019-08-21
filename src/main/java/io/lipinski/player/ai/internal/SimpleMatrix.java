@@ -88,15 +88,14 @@ final class SimpleMatrix implements Matrix {
 
     @Override
     public Matrix forEach(final Func map) {
-        final var doubles = new double[this.data.length][this.data[0].length];
-        final var data = rawData();
+        final var result = new SimpleMatrix(this.data);
 
-        for (int i = 0; i < data.length; i++) {
-            for (int j = 0; j < data[0].length; j++) {
-                doubles[i][j] = map.apply(data[i][j]);
+        for (int i = 0; i < this.data.length; i++) {
+            for (int j = 0; j < this.data[0].length; j++) {
+                result.data[i][j] = map.apply(this.data[i][j]);
             }
         }
-        return new SimpleMatrix(doubles);
+        return result;
     }
 
     @Override
