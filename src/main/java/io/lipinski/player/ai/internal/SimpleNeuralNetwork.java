@@ -1,76 +1,44 @@
 package io.lipinski.player.ai.internal;
 
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
-import static java.util.stream.Collectors.toList;
+import static io.lipinski.player.ai.internal.Activation.SIGMOID;
 
 public final class SimpleNeuralNetwork implements NeuralNetwork {
 
-    // ideally this class should have list of Matrix
-    private Matrix weights_ih;
-    private Matrix weights_ho;
+    final List<Matrix> nodes;
+    final List<Matrix> biases;
 
-    private Matrix biasHidden;
-    private Matrix biasOutput;
-
-    // this should be some Strategy pattern instead of Result
-    // Result can be and in fact should be created on the fly
-    private double learningRate;
-
-    private List<Matrix> nodes;
+    private final Activation activationFunction;
+    private final double learningRate;
 
 
-    private SimpleNeuralNetwork(final int[] architecture) {
-//        List<Matrix> matrices = new ArrayList<>();
-//
-//        for (int node = 0; node < architecture.length - 1; node++) {
-//            matrices.add(new SimpleMatrix(node, node++));
-//        }
+    private SimpleNeuralNetwork(final int[] architecture,
+                                final Activation activation) {
+        this.nodes = new ArrayList<>(architecture.length - 1);
+        this.biases = new ArrayList<>(architecture.length - 1);
 
-        this.weights_ih = new SimpleMatrix(2, 2);
-        this.weights_ho = new SimpleMatrix(1, 2);
-
-        this.biasHidden = new SimpleMatrix(new double[][]{{0.8}, {0.5}});
-        this.biasOutput = Matrix.of(new double[]{0.8});
-        this.learningRate = 0.1;
-        this.nodes = new ArrayList<>(architecture.length);
-        randomize();
-    }
-
-    private SimpleNeuralNetwork(final int[] a,
-                                final Result result) {
-        this.weights_ih = new SimpleMatrix(2, 2);
-        this.weights_ho = new SimpleMatrix(1, 2);
-
-        this.biasHidden = new SimpleMatrix(new double[][]{{0.8}, {0.5}});
-        this.biasOutput = Matrix.of(new double[]{0.8});
+        for (int i = 0; i < architecture.length - 1; i++) {
+            this.nodes.add(Matrix.of(architecture[i + 1], architecture[i]));
+            this.biases.add(Matrix.of(architecture[i + 1], 1));
+        }
+        this.activationFunction = activation;
         this.learningRate = 0.1;
         randomize();
     }
 
-    SimpleNeuralNetwork(final Matrix first,
-                        final Matrix second) {
-        this.weights_ih = first;
-        this.weights_ho = second;
-
-        this.biasHidden = new SimpleMatrix(new double[][]{{0.8}, {0.5}});
-        this.biasOutput = new SimpleMatrix(new double[][]{{0.8}});
+    SimpleNeuralNetwork(final List<Matrix> weights,
+                        final List<Matrix> biases) {
+        this.nodes = new ArrayList<>(weights);
+        this.biases = new ArrayList<>(biases);
+        this.activationFunction = SIGMOID;
         this.learningRate = 0.1;
-        randomize();
     }
 
     static NeuralNetwork factory(NeuralNetworkFactory factory) {
-        return new SimpleNeuralNetwork(factory.architecture);
-    }
-
-    @Override
-    public double feedForward(final Matrix data) {
-        final Matrix output = feedForwardInternal(data);
-        return output.rawData()[0][0];
+        return new SimpleNeuralNetwork(factory.architecture, factory.activation);
     }
 
     @Override
@@ -101,76 +69,88 @@ public final class SimpleNeuralNetwork implements NeuralNetwork {
 
     @Override
     public void train(final int[] data, final int labels) {
-        final var hidden = this.weights_ih
-                .multiply(Matrix.of(data))
-                .add(biasHidden)
-                .forEach(x -> 1 / (1 + Math.exp(-x)));
+        final var outputOnLayers = new ArrayList<Matrix>();
 
-        final var outputs = this.weights_ho
-                .multiply(hidden)
-                .add(biasOutput)
-                .forEach(x -> 1 / (1 + Math.exp(-x)));
-        // end of feedforward
+        for (int i = 0; i < this.nodes.size(); i++) {
+            final var weight = this.nodes.get(i);
+            final var bias = this.biases.get(i);
+            var tempData = Matrix.of(data);
+            if (i != 0)
+                tempData = outputOnLayers.get(i - 1);
+            outputOnLayers.add(weight
+                    .multiply(tempData)
+                    .add(bias)
+                    .forEach(SIGMOID::compute)
+            );
+        }
+        // var computedErrors = outputErrors, hiddenErrors, secondHidden....
+        var computedErrors = new ArrayList<Matrix>();
+        var valuesToDeltas = computeDeltas(data, outputOnLayers);
 
+        var j = 0;
+        for (int i = this.nodes.size() - 1; i >= 0; i--) {
+            final var outputErrorComputed = computeError(i, labels, outputOnLayers.get(outputOnLayers.size() - 1), computedErrors, j - 1);
+            computedErrors.add(outputErrorComputed);
 
-        final var outputErrors = Matrix.of(labels).subtract(outputs);
-        final var deltaSecond = outputs.forEach(x -> x * (1 - x))
-                .multiply(outputErrors)
-                .forEach(x -> x * learningRate)
-                .multiply(hidden.transpose());
+            final var gradient = outputOnLayers.get(i).forEach(SIGMOID::derivative)
+                    .multiply(computedErrors.get(j))
+                    .forEach(x -> x * learningRate);
+            final var deltaaa = gradient.multiply(valuesToDeltas.get(i));
 
-        // update second weight !!!!!!!!!!
-        this.weights_ho = this.weights_ho.add(deltaSecond);
-        // update bias output
-        final var intermediate = outputs.forEach(x -> x * (1 - x))
-                .multiply(outputErrors)
-                .forEach(x -> x * learningRate);
-        this.biasOutput = this.biasOutput.add(intermediate);
-
-
-        // calculate hidden errors
-        final var who_t = this.weights_ho.transpose();
-        final var hiddenErrors = who_t.multiply(outputErrors);
-
-        final var deltaFirst = hidden.forEach(x -> x * (1 - x))
-                .multiply(hiddenErrors) // error, THIS HAS TO BE ELEMENT WISE
-                .forEach(x -> x * learningRate)
-                .multiply(Matrix.of(data).transpose());
-
-        // update first weight
-        this.weights_ih = this.weights_ih.add(deltaFirst);
-        this.biasHidden = this.biasHidden.add(
-                hidden.forEach(x -> x * (1 - x))
-                        .multiply(hiddenErrors)
-                        .forEach(x -> x * learningRate)
-        );
+            this.nodes.set(i, this.nodes.get(i).add(deltaaa));
+            this.biases.set(i, this.biases.get(i).add(gradient));
+            j++;
+        }
     }
 
-    @Override
-    public NeuralNetwork loadModel(final Path pathToFilename) {
-        throw new RuntimeException("Not implemented yet");
+    private Matrix computeError(final int index,
+                                final int labels,
+                                final Matrix outputs,
+                                final List<Matrix> computedErrors,
+                                final int j) {
+        if (index == this.nodes.size() - 1) {
+            return Matrix.of(labels).subtract(outputs); // 1x1
+        }
+        final var who_t = this.nodes.get(index + 1).transpose(); // 2x4
+        return who_t.multiply(computedErrors.get(j)); // wczesniej bylo 0 i dzialala
+    }
+
+    // data.T(input data), hidden.T(first output from FF), secondHidden.T(second output from FF)
+    private List<Matrix> computeDeltas(final int[] data,
+                                       final List<Matrix> outputOnLayers) {
+        final var deltas = new ArrayList<Matrix>();
+        deltas.add(Matrix.of(data).transpose());
+        for (Matrix some : outputOnLayers) {
+            deltas.add(some.transpose());
+        }
+        return deltas;
     }
 
     private Matrix feedForwardInternal(final Matrix data) {
-        if (this.weights_ih.numberOfRows() != data.numberOfRows())
+        if (this.nodes.get(0).rawData()[0].length != data.numberOfRows())
             throw new InvalidInputFormatException("Shape of input " + data.numberOfRows()
-                    + " must be the same as input for neural network " + this.weights_ih.numberOfRows());
+                    + " must be the same as input for neural network " + this.nodes.get(0).numberOfRows());
+        final var outputOnLayers = new ArrayList<Matrix>();
 
-        final var hidden = this.weights_ih
-                .multiply(data)
-                .add(biasHidden)
-                .forEach(x -> 1 / (1 + Math.exp(-x)));
-
-        return this.weights_ho
-                .multiply(hidden)
-                .add(biasOutput)
-                .forEach(x -> 1 / (1 + Math.exp(-x)));
+        for (int i = 0; i < this.nodes.size(); i++) {
+            final var weight = this.nodes.get(i);
+            final var bias = this.biases.get(i);
+            var tempData = data;
+            if (i != 0)
+                tempData = outputOnLayers.get(i - 1);
+            outputOnLayers.add(weight
+                    .multiply(tempData)
+                    .add(bias)
+                    .forEach(SIGMOID::compute)
+            );
+        }
+        return outputOnLayers.get(outputOnLayers.size() - 1);
     }
 
     private void randomize() {
-        this.weights_ih = this.weights_ih.forEach(x -> Math.random());
-        this.weights_ho = this.weights_ho.forEach(x -> Math.random());
-        this.biasHidden = this.biasHidden.forEach(x -> Math.random());
-        this.biasOutput = this.biasOutput.forEach(x -> Math.random());
+        for (int i = 0; i < this.nodes.size(); i++) {
+            this.nodes.set(i, this.nodes.get(i).forEach(x -> Math.random() - .5));
+            this.biases.set(i, this.biases.get(i).forEach(x -> Math.random() - .5));
+        }
     }
 }

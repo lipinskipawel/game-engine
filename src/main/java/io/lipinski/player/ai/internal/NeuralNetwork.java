@@ -9,9 +9,6 @@ import java.nio.file.Path;
 interface NeuralNetwork {
 
 
-    // TODO delete in future
-    double feedForward(final Matrix data);
-
     Result predict(final Matrix data);
 
     Result predict(final int[] data);
@@ -22,6 +19,8 @@ interface NeuralNetwork {
 
     void train(final int[] data, final int labels);
 
-    NeuralNetwork loadModel(final Path pathToFilename);
+    static NeuralNetwork loadModel(final Path pathToFilename) {
+        return null;
+    }
 
 }

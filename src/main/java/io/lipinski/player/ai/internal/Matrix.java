@@ -101,4 +101,9 @@ interface Matrix {
     static Matrix of(final double data) {
         return Matrix.of(new double[] {data});
     }
+
+    static Matrix of(final int numberOfRows,
+                     final int numberOfColumns) {
+        return new SimpleMatrix(numberOfRows, numberOfColumns);
+    }
 }

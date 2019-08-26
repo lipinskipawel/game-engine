@@ -12,6 +12,7 @@ import static java.util.Objects.requireNonNull;
 final class NeuralNetworkFactory {
 
     private final List<Layer> layers;
+    final Activation activation;
     private Result result;
     private double learningRate;
     private boolean isBatchingEnable;
@@ -22,6 +23,7 @@ final class NeuralNetworkFactory {
 
     private NeuralNetworkFactory(final Builder builder) {
         this.layers = builder.layers;
+        this.activation = builder.activation;
         this.result = builder.result;
         this.isBatchingEnable = true;
         this.batch = 32;
@@ -47,33 +49,13 @@ final class NeuralNetworkFactory {
                 .stream()
                 .mapToInt(Layer::getNumberOfNodes)
                 .toArray();
-
-
-        final List<Activation> collect = this.layers
-                .stream()
-                .map(Layer::getActivationFunction)
-                .collect(
-                        ArrayList::new,
-                        ArrayList::add,
-                        ArrayList::addAll
-                );
-
-
-        final Activation[] collect2 = this.layers
-                .stream()
-                .map(Layer::getActivationFunction)
-                .collect(
-                        ArrayList::new,
-                        ArrayList::add,
-                        ArrayList::addAll)
-                .toArray(Activation[]::new);
-
         return SimpleNeuralNetwork.factory(this);
     }
 
 
     public static final class Builder {
         private List<Layer> layers;
+        private Activation activation;
         private Result result;
         private Class<?> output;
 
@@ -83,6 +65,11 @@ final class NeuralNetworkFactory {
         public Builder addLayer(final Layer layer) {
             if (this.layers == null) this.layers = new ArrayList<>();
             this.layers.add(layer);
+            return this;
+        }
+
+        public Builder activationOnLayers(final Activation activation) {
+            this.activation = activation;
             return this;
         }
 

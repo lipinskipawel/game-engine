@@ -1,5 +1,7 @@
 package io.lipinski.player.ai.internal;
 
+import java.util.Arrays;
+
 final class SimpleMatrix implements Matrix {
 
     private double[][] data;
@@ -25,8 +27,8 @@ final class SimpleMatrix implements Matrix {
         }
 
         if (aColumns != bRows)
-            throw new ArithmeticException("SimpleMatrix's has improper shapes to multiply " +
-                    aColumns + ", another " + bRows);
+            throw new ArithmeticException("Different shapes to multiply " +
+                    aRows + "x" + aColumns + ", another " + bRows + "x" + bColumns);
 
         double[][] resultMatrix = new double[aRows][bColumns];
 
@@ -135,8 +137,21 @@ final class SimpleMatrix implements Matrix {
     private void checkIfMatrixesHasTheSameSize(final Matrix another) {
         if (this.data.length != another.rawData().length ||
                 this.data[0].length != another.rawData()[0].length)
-            throw new ArithmeticException("SimpleMatrix's has different numbers of row this " +
-                    this.data.length + ", another " + another.rawData().length);
+            throw new ArithmeticException("Different shapes to add elementwise" + this.data.length + "x" + this.data[0].length +
+                    ", another " + another.rawData().length + "x" + + another.rawData()[0].length);
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        final SimpleMatrix that = (SimpleMatrix) o;
+        return Arrays.equals(data, that.data);
+    }
+
+    @Override
+    public int hashCode() {
+        return Arrays.hashCode(data);
     }
 
     void prettyPrinting(final String title) {

@@ -1,24 +1,19 @@
 package io.lipinski.player.ai.internal;
 
 import org.assertj.core.api.Assertions;
-import org.assertj.core.data.Offset;
-import org.assertj.core.data.Percentage;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.RepeatedTest;
-import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Java6Assertions.offset;
 import static org.assertj.core.data.Percentage.withPercentage;
 import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertLinesMatch;
 
 @DisplayName("Neural network")
 class NeuralNetworkTest {
@@ -27,6 +22,7 @@ class NeuralNetworkTest {
      * This test has high margin of error due to illness of its nature.
      * Despite high threshold in assertions this test can still be flake.
      */
+    @Disabled
     @RepeatedTest(5)
     @DisplayName("Silly neural network just for test domain and API usage")
     void sillyTest() {
