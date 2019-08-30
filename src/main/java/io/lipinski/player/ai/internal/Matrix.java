@@ -102,8 +102,13 @@ interface Matrix {
         return Matrix.of(new double[] {data});
     }
 
-    static Matrix of(final int numberOfRows,
-                     final int numberOfColumns) {
-        return new SimpleMatrix(numberOfRows, numberOfColumns);
+    /**
+     *
+     * @param rows number of rows
+     * @param columns number of columns
+     * @return instance of Matrix interface
+     */
+    static Matrix of(final int rows, final int columns) {
+        return new SimpleMatrix(rows, columns);
     }
 }
