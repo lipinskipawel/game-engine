@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 import java.util.ArrayList;
 import java.util.Random;
 
-import static io.lipinski.player.ai.internal.Activation.SIGMOID;
+import static io.lipinski.player.ai.internal.Activation.TANH;
 import static org.assertj.core.api.Java6Assertions.offset;
 import static org.assertj.core.data.Percentage.withPercentage;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -32,7 +32,7 @@ class NeuralNetworkTest {
                 .addLayer(new Layer(4))
                 .addLayer(new Layer(1))
                 .output(double[].class)
-                .activationOnLayers(SIGMOID)
+                .activationOnLayers(TANH)
                 .compile()
                 .noBatching()
                 .build();

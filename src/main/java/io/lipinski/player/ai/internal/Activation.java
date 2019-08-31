@@ -13,15 +13,15 @@ public enum Activation {
             return value * (1 - value);
         }
     },
-    RELU {
+    TANH {
         @Override
         double compute(final double value) {
-            throw new RuntimeException("Not implemented");
+            return Math.tanh(value);
         }
 
         @Override
         double derivative(final double value) {
-            throw new RuntimeException("Not implemented");
+            return 1 - (value * value);
         }
     };
 
