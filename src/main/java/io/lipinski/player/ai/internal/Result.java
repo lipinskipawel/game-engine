@@ -28,7 +28,7 @@ final class Result<T extends Number & Comparable> {
     }
 
     /**
-     * It will return number of node in the output layer.
+     * It will return index of node in the output layer.
      *
      * @return
      */

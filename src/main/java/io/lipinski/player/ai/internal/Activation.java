@@ -23,6 +23,21 @@ public enum Activation {
         double derivative(final double value) {
             return 1 - (value * value);
         }
+    },
+    RELU {
+        @Override
+        double compute(final double value) {
+            return Math.max(0, value);
+        }
+
+        /**
+         * This implementation is based on tf.nn.relu()
+         */
+        @Override
+        double derivative(final double value) {
+            if (value > 0) return 1;
+            return 0;
+        }
     };
 
     abstract double compute(final double value);

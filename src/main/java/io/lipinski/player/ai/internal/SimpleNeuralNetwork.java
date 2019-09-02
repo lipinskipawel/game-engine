@@ -80,7 +80,7 @@ public final class SimpleNeuralNetwork implements NeuralNetwork {
             outputOnLayers.add(weight
                     .multiply(tempData)
                     .add(bias)
-                    .forEach(SIGMOID::compute)
+                    .forEach(activationFunction::compute)
             );
         }
         // var computedErrors = outputErrors, hiddenErrors, secondHidden....
@@ -92,7 +92,7 @@ public final class SimpleNeuralNetwork implements NeuralNetwork {
             final var outputErrorComputed = computeError(i, labels, outputOnLayers.get(outputOnLayers.size() - 1), computedErrors, j - 1);
             computedErrors.add(outputErrorComputed);
 
-            final var gradient = outputOnLayers.get(i).forEach(SIGMOID::derivative)
+            final var gradient = outputOnLayers.get(i).forEach(activationFunction::derivative)
                     .multiply(computedErrors.get(j))
                     .forEach(x -> x * learningRate);
             final var deltaaa = gradient.multiply(valuesToDeltas.get(i));
@@ -141,7 +141,7 @@ public final class SimpleNeuralNetwork implements NeuralNetwork {
             outputOnLayers.add(weight
                     .multiply(tempData)
                     .add(bias)
-                    .forEach(SIGMOID::compute)
+                    .forEach(activationFunction::compute)
             );
         }
         return outputOnLayers.get(outputOnLayers.size() - 1);
