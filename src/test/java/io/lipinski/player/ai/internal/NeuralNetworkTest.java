@@ -27,7 +27,7 @@ class NeuralNetworkTest {
         trainingDataset.add(new int[][]{new int[]{0, 0}, new int[]{0}});
         trainingDataset.add(new int[][]{new int[]{0, 1}, new int[]{1}});
 
-        final var model = new NeuralNetworkFactory.Builder()
+        final var model = new DeepNeuralNetwork.Builder()
                 .addLayer(new Layer(2))
                 .addLayer(new Layer(4))
                 .addLayer(new Layer(1))

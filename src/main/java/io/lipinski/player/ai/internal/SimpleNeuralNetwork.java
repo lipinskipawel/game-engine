@@ -37,7 +37,7 @@ public final class SimpleNeuralNetwork implements NeuralNetwork {
         this.learningRate = 0.1;
     }
 
-    static NeuralNetwork factory(NeuralNetworkFactory factory) {
+    static NeuralNetwork factory(DeepNeuralNetwork factory) {
         return new SimpleNeuralNetwork(factory.architecture, factory.activation);
     }
 

@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
 
 import static java.util.Objects.requireNonNull;
 
-final class NeuralNetworkFactory {
+final class DeepNeuralNetwork {
 
     private final List<Layer> layers;
     final Activation activation;
@@ -21,7 +21,7 @@ final class NeuralNetworkFactory {
     int[] architecture;
 
 
-    private NeuralNetworkFactory(final Builder builder) {
+    private DeepNeuralNetwork(final Builder builder) {
         this.layers = builder.layers;
         this.activation = builder.activation;
         this.result = builder.result;
@@ -29,17 +29,17 @@ final class NeuralNetworkFactory {
         this.batch = 32;
     }
 
-    NeuralNetworkFactory learningRate(final double lr) {
+    DeepNeuralNetwork learningRate(final double lr) {
         this.learningRate = lr;
         return this;
     }
 
-    NeuralNetworkFactory noBatching() {
+    DeepNeuralNetwork noBatching() {
         this.isBatchingEnable = false;
         return this;
     }
 
-    NeuralNetworkFactory batch(final int batch) {
+    DeepNeuralNetwork batch(final int batch) {
         this.batch = batch;
         return this;
     }
@@ -112,10 +112,10 @@ final class NeuralNetworkFactory {
             throw new RuntimeException("Only array of int or double or float is allowed");
         }
 
-        public NeuralNetworkFactory compile() {
+        public DeepNeuralNetwork compile() {
             requireNonNull(this.layers, "You have to add layer");
             requireNonNull(this.layers, "You have to configure output");
-            return new NeuralNetworkFactory(this);
+            return new DeepNeuralNetwork(this);
         }
     }
 }
