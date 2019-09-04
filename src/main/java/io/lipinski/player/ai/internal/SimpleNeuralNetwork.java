@@ -16,7 +16,8 @@ public final class SimpleNeuralNetwork implements NeuralNetwork {
 
 
     private SimpleNeuralNetwork(final int[] architecture,
-                                final Activation activation) {
+                                final Activation activation,
+                                final double learningRate) {
         this.nodes = new ArrayList<>(architecture.length - 1);
         this.biases = new ArrayList<>(architecture.length - 1);
 
@@ -25,7 +26,7 @@ public final class SimpleNeuralNetwork implements NeuralNetwork {
             this.biases.add(Matrix.of(architecture[i + 1], 1));
         }
         this.activationFunction = activation;
-        this.learningRate = 0.1;
+        this.learningRate = learningRate;
         randomize();
     }
 
@@ -38,7 +39,7 @@ public final class SimpleNeuralNetwork implements NeuralNetwork {
     }
 
     static NeuralNetwork factory(DeepNeuralNetwork factory) {
-        return new SimpleNeuralNetwork(factory.architecture, factory.activation);
+        return new SimpleNeuralNetwork(factory.architecture, factory.activation, factory.learningRate);
     }
 
     @Override
