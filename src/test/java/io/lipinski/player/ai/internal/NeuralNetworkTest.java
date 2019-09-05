@@ -8,7 +8,8 @@ import org.junit.jupiter.api.Test;
 import java.util.ArrayList;
 import java.util.Random;
 
-import static io.lipinski.player.ai.internal.Activation.TANH;
+import static io.lipinski.player.ai.internal.Activation.LINEAR;
+import static io.lipinski.player.ai.internal.Activation.RELU;
 import static org.assertj.core.api.Java6Assertions.catchThrowable;
 import static org.assertj.core.api.Java6Assertions.offset;
 import static org.assertj.core.data.Percentage.withPercentage;
@@ -25,7 +26,7 @@ class NeuralNetworkTest {
          * This test has high margin of error due to illness of its nature.
          */
         @Test
-        @DisplayName("train, and then predict")
+        @DisplayName("XOR -- train and predict")
         void sillyTest() {
             final var trainingDataset = new ArrayList<int[][]>();
             trainingDataset.add(new int[][]{new int[]{1, 1}, new int[]{0}});
@@ -38,7 +39,7 @@ class NeuralNetworkTest {
                     .addLayer(new Layer(4))
                     .addLayer(new Layer(1))
                     .output(double[].class)
-                    .activationOnLayers(TANH)
+                    .activationOnLayers(RELU)
                     .compile()
                     .noBatching()
                     .build();
@@ -58,6 +59,40 @@ class NeuralNetworkTest {
                     () -> Assertions.assertThat(output2).isCloseTo(0.0, offset(0.30)),
                     () -> Assertions.assertThat(output3).isCloseTo(0.0, offset(0.30)),
                     () -> Assertions.assertThat(output4).isCloseTo(1.0, withPercentage(30))
+            );
+        }
+
+        @Test
+        @DisplayName("y=2x-1 -- train and predict")
+        void sillyTest2() {
+            final var trainingDataset = new ArrayList<int[][]>();
+            trainingDataset.add(new int[][]{new int[]{-1}, new int[]{-3}});
+            trainingDataset.add(new int[][]{new int[]{0}, new int[]{-1}});
+            trainingDataset.add(new int[][]{new int[]{1}, new int[]{1}});
+            trainingDataset.add(new int[][]{new int[]{2}, new int[]{3}});
+            trainingDataset.add(new int[][]{new int[]{3}, new int[]{5}});
+            trainingDataset.add(new int[][]{new int[]{4}, new int[]{7}});
+
+            final var model = new DeepNeuralNetwork.Builder()
+                    .addLayer(new Layer(1))
+                    .addLayer(new Layer(1))
+                    .output(double[].class)
+                    .activationOnLayers(LINEAR)
+                    .compile()
+                    .noBatching()
+                    .build();
+
+            for (int i = 0; i < 5_000; i++) {
+                var pick = new Random().nextInt(trainingDataset.size());
+                model.train(trainingDataset.get(pick)[0], trainingDataset.get(pick)[1][0]);
+            }
+
+            final var output1 = (double) model.predict(new int[]{10}).getBestValue();
+            final var output2 = (double) model.predict(new int[]{-3}).getBestValue();
+
+            assertAll("Assert all y=2x-1",
+                    () -> Assertions.assertThat(output1).isCloseTo(19.0, withPercentage(5)),
+                    () -> Assertions.assertThat(output2).isCloseTo(-7.0, offset(0.05))
             );
         }
     }

@@ -38,6 +38,17 @@ public enum Activation {
             if (value > 0) return 1;
             return 0;
         }
+    },
+    LINEAR {
+        @Override
+        double compute(final double value) {
+            return value;
+        }
+
+        @Override
+        double derivative(final double value) {
+            return 1;
+        }
     };
 
     abstract double compute(final double value);

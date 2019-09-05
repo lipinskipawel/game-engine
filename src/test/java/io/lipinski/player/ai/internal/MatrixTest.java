@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-@DisplayName("Matrix API")
+@DisplayName("API -- Matrix")
 class MatrixTest {
 
     @Nested
