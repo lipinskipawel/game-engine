@@ -1,13 +1,12 @@
 package io.lipinski.player.ai.internal;
 
-import io.lipinski.board.engine.Direction;
-
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static java.util.Objects.requireNonNull;
+import static java.util.stream.Collectors.toList;
 
 final class DeepNeuralNetwork {
 
@@ -60,7 +59,7 @@ final class DeepNeuralNetwork {
         private List<Layer> layers;
         private Activation activation;
         private Result result;
-        private Class<?> output;
+        private List<?> output;
 
         public Builder() {
         }
@@ -76,43 +75,21 @@ final class DeepNeuralNetwork {
             return this;
         }
 
-        <T extends Enum & ResultInterface> Builder output(final List<T> directionJavaDoc) {
-            final var collect = directionJavaDoc.stream()
-                    .sorted(Comparator.comparingInt(ResultInterface::order))
-                    .collect(Collectors.toList());
-//            this.result = new Result<>(collect);
-            this.output = Direction.class;
-            return this;
-        }
-
         /**
-         * @param clazz it has to be int[] or double[] or float[] or byte[]
-         * @return
+         * By default output of neural network is double type. Either double
+         * or double[].
+         *
+         * @param type
+         * @param <T>
+         * @return Builder
          */
-        Builder output(final Class<?> clazz) {
-            if (!clazz.isArray())
-                throw new RuntimeException("Only arrays is allowed in this method");
-            final Class<?> type = clazz.getComponentType();
-            if (!type.isPrimitive())
-                throw new RuntimeException("Only primitives types is allowed in this method");
-            if (type.getName().equals("int")) {
-                this.output = int.class;
-                return this;
-            }
-            if (type.getName().equals("double")) {
-                this.output = double.class;
-                return this;
-            }
-            if (type.getName().equals("float")) {
-                this.output = float.class;
-                return this;
-            }
-            if (type.getName().equals("byte")) {
-                this.output = byte.class;
-                return this;
-            }
+        <T extends Enum & ResultInterface> Builder output(final Class<T> type) {
+            final T[] enumConstants = type.getEnumConstants();
 
-            throw new RuntimeException("Only array of int or double or float is allowed");
+            this.output = Arrays.stream(enumConstants)
+                    .sorted(Comparator.comparingInt(T::order))
+                    .collect(toList());
+            return this;
         }
 
         public DeepNeuralNetwork compile() {

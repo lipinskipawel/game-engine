@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static io.lipinski.player.ai.internal.Activation.SIGMOID;
-
 public final class SimpleNeuralNetwork implements NeuralNetwork {
 
     final List<Matrix> nodes;
@@ -31,11 +29,13 @@ public final class SimpleNeuralNetwork implements NeuralNetwork {
     }
 
     SimpleNeuralNetwork(final List<Matrix> weights,
-                        final List<Matrix> biases) {
+                        final List<Matrix> biases,
+                        final Activation activation,
+                        final double learningRate) {
         this.nodes = new ArrayList<>(weights);
         this.biases = new ArrayList<>(biases);
-        this.activationFunction = SIGMOID;
-        this.learningRate = 0.1;
+        this.activationFunction = activation;
+        this.learningRate = learningRate;
     }
 
     static NeuralNetwork factory(DeepNeuralNetwork factory) {
