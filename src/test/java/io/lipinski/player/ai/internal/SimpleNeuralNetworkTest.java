@@ -7,8 +7,6 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-import static io.lipinski.player.ai.internal.Activation.SIGMOID;
-
 @DisplayName("Simple neural network operations")
 class SimpleNeuralNetworkTest {
 
@@ -30,7 +28,7 @@ class SimpleNeuralNetworkTest {
             final var biases = List.of(
                     Matrix.of(new double[]{-0.735054828696033, -0.4718856580782149, -0.7110585509335476, -0.14594530108727977}),
                     Matrix.of(new double[]{0.08394521761217977}));
-            final var model = new SimpleNeuralNetwork(weights, biases, SIGMOID, 0.1);
+            final var model = new SimpleNeuralNetwork(weights, biases, new Sigmoid(), 0.1);
 
             model.train(new int[]{1, 0}, 1);
 

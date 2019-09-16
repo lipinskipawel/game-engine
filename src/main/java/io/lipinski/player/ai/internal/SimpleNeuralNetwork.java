@@ -9,12 +9,12 @@ public final class SimpleNeuralNetwork implements NeuralNetwork {
     final List<Matrix> nodes;
     final List<Matrix> biases;
 
-    private final Activation activationFunction;
+    private final ActivationFunction activationFunction;
     private final double learningRate;
 
 
     private SimpleNeuralNetwork(final int[] architecture,
-                                final Activation activation,
+                                final ActivationFunction activation,
                                 final double learningRate) {
         this.nodes = new ArrayList<>(architecture.length - 1);
         this.biases = new ArrayList<>(architecture.length - 1);
@@ -30,7 +30,7 @@ public final class SimpleNeuralNetwork implements NeuralNetwork {
 
     SimpleNeuralNetwork(final List<Matrix> weights,
                         final List<Matrix> biases,
-                        final Activation activation,
+                        final ActivationFunction activation,
                         final double learningRate) {
         this.nodes = new ArrayList<>(weights);
         this.biases = new ArrayList<>(biases);
@@ -78,11 +78,12 @@ public final class SimpleNeuralNetwork implements NeuralNetwork {
             var tempData = Matrix.of(data);
             if (i != 0)
                 tempData = outputOnLayers.get(i - 1);
-            outputOnLayers.add(weight
-                    .multiply(tempData)
-                    .add(bias)
-                    .forEach(activationFunction::compute)
-            );
+            final var compute = activationFunction
+                    .compute(weight
+                            .multiply(tempData)
+                            .add(bias)
+                    );
+            outputOnLayers.add(compute);
         }
         // var computedErrors = outputErrors, hiddenErrors, secondHidden....
         var computedErrors = new ArrayList<Matrix>();
@@ -93,7 +94,8 @@ public final class SimpleNeuralNetwork implements NeuralNetwork {
             final var outputErrorComputed = computeError(i, labels, outputOnLayers.get(outputOnLayers.size() - 1), computedErrors, j - 1);
             computedErrors.add(outputErrorComputed);
 
-            final var gradient = outputOnLayers.get(i).forEach(activationFunction::derivative)
+            final var matrix = outputOnLayers.get(i);
+            final var gradient = activationFunction.derivative(matrix)
                     .multiply(computedErrors.get(j))
                     .forEach(x -> x * learningRate);
             final var deltaaa = gradient.multiply(valuesToDeltas.get(i));
@@ -139,11 +141,10 @@ public final class SimpleNeuralNetwork implements NeuralNetwork {
             var tempData = data;
             if (i != 0)
                 tempData = outputOnLayers.get(i - 1);
-            outputOnLayers.add(weight
+            final var compute = activationFunction.compute(weight
                     .multiply(tempData)
-                    .add(bias)
-                    .forEach(activationFunction::compute)
-            );
+                    .add(bias));
+            outputOnLayers.add(compute);
         }
         return outputOnLayers.get(outputOnLayers.size() - 1);
     }

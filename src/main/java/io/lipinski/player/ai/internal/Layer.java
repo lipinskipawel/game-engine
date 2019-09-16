@@ -1,28 +1,26 @@
 package io.lipinski.player.ai.internal;
 
-import static io.lipinski.player.ai.internal.Activation.SIGMOID;
-
 public final class Layer {
 
     private final int numberOfNodes;
-    private final Activation activationFunction;
+    private final ActivationFunction activationFunction;
 
     private Layer(final int numberOfNodes,
-                  final Activation activationFunction) {
+                  final ActivationFunction activationFunction) {
         this.numberOfNodes = numberOfNodes;
         this.activationFunction = activationFunction;
     }
 
     public Layer(final int numberOfNodes) {
         this.numberOfNodes = numberOfNodes;
-        this.activationFunction = SIGMOID;
+        this.activationFunction = new Sigmoid();
     }
 
     int getNumberOfNodes() {
         return this.numberOfNodes;
     }
 
-    Activation getActivationFunction() {
+    ActivationFunction getActivationFunction() {
         return this.activationFunction;
     }
 }

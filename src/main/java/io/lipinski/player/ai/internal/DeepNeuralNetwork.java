@@ -11,7 +11,7 @@ import static java.util.stream.Collectors.toList;
 final class DeepNeuralNetwork {
 
     private final List<Layer> layers;
-    final Activation activation;
+    final ActivationFunction activation;
     private Result result;
     double learningRate;
     private boolean isBatchingEnable;
@@ -57,7 +57,7 @@ final class DeepNeuralNetwork {
 
     public static final class Builder {
         private List<Layer> layers;
-        private Activation activation;
+        private ActivationFunction activation;
         private Result result;
         private List<?> output;
 
@@ -70,7 +70,7 @@ final class DeepNeuralNetwork {
             return this;
         }
 
-        public Builder activationOnLayers(final Activation activation) {
+        public Builder activationOnLayers(final ActivationFunction activation) {
             this.activation = activation;
             return this;
         }
