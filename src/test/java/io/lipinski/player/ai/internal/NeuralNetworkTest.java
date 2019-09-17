@@ -8,8 +8,6 @@ import org.junit.jupiter.api.Test;
 import java.util.ArrayList;
 import java.util.Random;
 
-import static io.lipinski.player.ai.internal.Activation.LINEAR;
-import static io.lipinski.player.ai.internal.Activation.TANH;
 import static org.assertj.core.api.Java6Assertions.catchThrowable;
 import static org.assertj.core.api.Java6Assertions.offset;
 import static org.assertj.core.data.Percentage.withPercentage;
@@ -38,7 +36,7 @@ class NeuralNetworkTest {
                     .addLayer(new Layer(2))
                     .addLayer(new Layer(4))
                     .addLayer(new Layer(1))
-                    .activationOnLayers(TANH)
+                    .activationOnLayers(new Tanh())
                     .compile()
                     .noBatching()
                     .build();
@@ -75,7 +73,7 @@ class NeuralNetworkTest {
             final var model = new DeepNeuralNetwork.Builder()
                     .addLayer(new Layer(1))
                     .addLayer(new Layer(1))
-                    .activationOnLayers(LINEAR)
+                    .activationOnLayers(new Linear())
                     .compile()
                     .noBatching()
                     .build();
