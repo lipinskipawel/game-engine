@@ -16,12 +16,15 @@ public final class SimpleNeuralNetwork implements NeuralNetwork {
     private SimpleNeuralNetwork(final int[] architecture,
                                 final ActivationFunction activation,
                                 final double learningRate) {
-        this.nodes = new ArrayList<>(architecture.length - 1);
-        this.biases = new ArrayList<>(architecture.length - 1);
+        this.nodes = new ArrayList<>(architecture.length);
+        this.biases = new ArrayList<>(architecture.length);
 
-        for (int i = 0; i < architecture.length - 1; i++) {
-            this.nodes.add(Matrix.of(architecture[i + 1], architecture[i]));
-            this.biases.add(Matrix.of(architecture[i + 1], 1));
+        for (int i = 0; i < architecture.length; i++) {
+            if (i == 0)
+                this.nodes.add(Matrix.of(architecture[i], architecture[i]));
+            else
+                this.nodes.add(Matrix.of(architecture[i], architecture[i-1]));
+            this.biases.add(Matrix.of(architecture[i], 1));
         }
         this.activationFunction = activation;
         this.learningRate = learningRate;

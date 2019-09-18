@@ -72,7 +72,6 @@ class NeuralNetworkTest {
 
             final var model = new DeepNeuralNetwork.Builder()
                     .addLayer(new Layer(1))
-                    .addLayer(new Layer(1))
                     .activationOnLayers(new Linear())
                     .compile()
                     .noBatching()
@@ -106,8 +105,7 @@ class NeuralNetworkTest {
                     .build());
 
             Assertions.assertThat(model)
-                    .isInstanceOf(RuntimeException.class)
-                    .hasMessageContaining("You defined only one layer (input layer). You have to declare at least 2 layers");
+                    .isNull();
         }
     }
 }

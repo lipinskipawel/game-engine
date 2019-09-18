@@ -21,8 +21,6 @@ final class DeepNeuralNetwork {
 
 
     private DeepNeuralNetwork(final Builder builder) {
-        if (builder.layers.size() == 1)
-            throw new RuntimeException("You defined only one layer (input layer). You have to declare at least 2 layers");
         this.layers = builder.layers;
         this.activation = builder.activation;
         this.result = builder.result;
