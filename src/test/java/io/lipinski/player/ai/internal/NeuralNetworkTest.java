@@ -43,7 +43,7 @@ class NeuralNetworkTest {
 
             for (int i = 0; i < 30_000; i++) {
                 var pick = new Random().nextInt(trainingDataset.size());
-                model.train(trainingDataset.get(pick)[0], trainingDataset.get(pick)[1][0]);
+                model.train(Matrix.of(trainingDataset.get(pick)[0]), Matrix.of(trainingDataset.get(pick)[1][0]));
             }
 
             final var output1 = (double) model.predict(new int[]{1, 0}).getBestValue();

@@ -4,7 +4,7 @@ package io.lipinski.player.ai.internal;
  * This interface describe set of methods that can be done
  * on two dimension implementation of array.
  */
-interface Matrix {
+public interface Matrix {
 
     double[][] rawData();
 

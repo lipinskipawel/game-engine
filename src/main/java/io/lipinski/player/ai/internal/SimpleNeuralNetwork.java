@@ -23,7 +23,7 @@ public final class SimpleNeuralNetwork implements NeuralNetwork {
             if (i == 0)
                 this.nodes.add(Matrix.of(architecture[i], architecture[i]));
             else
-                this.nodes.add(Matrix.of(architecture[i], architecture[i-1]));
+                this.nodes.add(Matrix.of(architecture[i], architecture[i - 1]));
             this.biases.add(Matrix.of(architecture[i], 1));
         }
         this.activationFunction = activation;
@@ -67,65 +67,67 @@ public final class SimpleNeuralNetwork implements NeuralNetwork {
 
     @Override
     public void train(final Matrix data, final Matrix labels) {
-        // TODO it is implemented as no batching is set up
-        throw new RuntimeException("Not implemented yet");
+        for (var temp : data.transpose().rawData()) {
+            var oneColumnOfData = Matrix.of(temp);
+            final var outputOnLayers = new ArrayList<Matrix>();
+
+            for (int i = 0; i < this.nodes.size(); i++) {
+                final var weight = this.nodes.get(i);
+                final var bias = this.biases.get(i);
+                var tempData = oneColumnOfData;
+                if (i != 0)
+                    tempData = outputOnLayers.get(i - 1);
+                final var compute = activationFunction
+                        .compute(weight
+                                .multiply(tempData)
+                                .add(bias)
+                        );
+                outputOnLayers.add(compute);
+            }
+            // var computedErrors = outputErrors, hiddenErrors, secondHidden....
+            var computedErrors = new ArrayList<Matrix>();
+            var valuesToDeltas = computeDeltas(oneColumnOfData, outputOnLayers);
+
+            var j = 0;
+            for (int i = this.nodes.size() - 1; i >= 0; i--) {
+                final var outputErrorComputed = computeError(i, labels, outputOnLayers.get(outputOnLayers.size() - 1), computedErrors, j - 1);
+                computedErrors.add(outputErrorComputed);
+
+                final var matrix = outputOnLayers.get(i);
+                final var gradient = activationFunction.derivative(matrix)
+                        .multiply(computedErrors.get(j))
+                        .forEach(x -> x * learningRate);
+                final var deltaaa = gradient.multiply(valuesToDeltas.get(i));
+
+                this.nodes.set(i, this.nodes.get(i).add(deltaaa));
+                this.biases.set(i, this.biases.get(i).add(gradient));
+                j++;
+            }
+        }
     }
 
     @Override
     public void train(final int[] data, final int labels) {
-        final var outputOnLayers = new ArrayList<Matrix>();
-
-        for (int i = 0; i < this.nodes.size(); i++) {
-            final var weight = this.nodes.get(i);
-            final var bias = this.biases.get(i);
-            var tempData = Matrix.of(data);
-            if (i != 0)
-                tempData = outputOnLayers.get(i - 1);
-            final var compute = activationFunction
-                    .compute(weight
-                            .multiply(tempData)
-                            .add(bias)
-                    );
-            outputOnLayers.add(compute);
-        }
-        // var computedErrors = outputErrors, hiddenErrors, secondHidden....
-        var computedErrors = new ArrayList<Matrix>();
-        var valuesToDeltas = computeDeltas(data, outputOnLayers);
-
-        var j = 0;
-        for (int i = this.nodes.size() - 1; i >= 0; i--) {
-            final var outputErrorComputed = computeError(i, labels, outputOnLayers.get(outputOnLayers.size() - 1), computedErrors, j - 1);
-            computedErrors.add(outputErrorComputed);
-
-            final var matrix = outputOnLayers.get(i);
-            final var gradient = activationFunction.derivative(matrix)
-                    .multiply(computedErrors.get(j))
-                    .forEach(x -> x * learningRate);
-            final var deltaaa = gradient.multiply(valuesToDeltas.get(i));
-
-            this.nodes.set(i, this.nodes.get(i).add(deltaaa));
-            this.biases.set(i, this.biases.get(i).add(gradient));
-            j++;
-        }
+        train(Matrix.of(data), Matrix.of(labels));
     }
 
     private Matrix computeError(final int index,
-                                final int labels,
+                                final Matrix labels,
                                 final Matrix outputs,
                                 final List<Matrix> computedErrors,
                                 final int j) {
         if (index == this.nodes.size() - 1) {
-            return Matrix.of(labels).subtract(outputs); // 1x1
+            return labels.subtract(outputs); // 1x1
         }
         final var who_t = this.nodes.get(index + 1).transpose(); // 2x4
         return who_t.multiply(computedErrors.get(j)); // wczesniej bylo 0 i dzialala
     }
 
     // data.T(input data), hidden.T(first output from FF), secondHidden.T(second output from FF)
-    private List<Matrix> computeDeltas(final int[] data,
+    private List<Matrix> computeDeltas(final Matrix data,
                                        final List<Matrix> outputOnLayers) {
         final var deltas = new ArrayList<Matrix>();
-        deltas.add(Matrix.of(data).transpose());
+        deltas.add(data.transpose());
         for (Matrix some : outputOnLayers) {
             deltas.add(some.transpose());
         }
