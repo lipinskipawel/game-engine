@@ -6,5 +6,6 @@ module game.engine {
     opens io.lipinski.board.legacy;
     opens io.lipinski.player.ai;
     opens io.lipinski.player.ai.internal;
+    opens io.lipinski.player.ai.internal.activation;
 
 }

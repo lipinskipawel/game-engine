@@ -1,5 +1,8 @@
 package io.lipinski.player.ai.internal;
 
+import io.lipinski.player.ai.internal.activation.ActivationFunction;
+import io.lipinski.player.ai.internal.activation.Sigmoid;
+
 public final class Layer {
 
     private final int numberOfNodes;

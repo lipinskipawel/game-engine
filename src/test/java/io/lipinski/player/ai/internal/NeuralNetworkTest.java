@@ -1,5 +1,7 @@
 package io.lipinski.player.ai.internal;
 
+import io.lipinski.player.ai.internal.activation.Linear;
+import io.lipinski.player.ai.internal.activation.Tanh;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;

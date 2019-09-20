@@ -1,5 +1,7 @@
 package io.lipinski.player.ai.internal;
 
+import io.lipinski.player.ai.internal.activation.ActivationFunction;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -41,7 +43,7 @@ public final class SimpleNeuralNetwork implements NeuralNetwork {
         this.learningRate = learningRate;
     }
 
-    static NeuralNetwork factory(DeepNeuralNetwork factory) {
+    static NeuralNetwork factory(final DeepNeuralNetwork factory) {
         return new SimpleNeuralNetwork(factory.architecture, factory.activation, factory.learningRate);
     }
 

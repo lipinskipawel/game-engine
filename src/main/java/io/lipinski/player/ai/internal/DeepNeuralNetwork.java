@@ -1,5 +1,7 @@
 package io.lipinski.player.ai.internal;
 
+import io.lipinski.player.ai.internal.activation.ActivationFunction;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;

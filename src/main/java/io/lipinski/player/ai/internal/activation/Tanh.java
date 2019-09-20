@@ -1,13 +1,16 @@
-package io.lipinski.player.ai.internal;
+package io.lipinski.player.ai.internal.activation;
+
+import io.lipinski.player.ai.internal.Matrix;
 
 import java.util.Arrays;
 
-final public class Linear extends ActivationFunction {
+final public class Tanh extends ActivationFunction {
 
     @Override
     public Matrix compute(final Matrix matrix) {
         return Matrix.of(Arrays.stream(matrix.rawData())
-                .mapToDouble(row -> row[0])
+                .map(row -> row[0])
+                .mapToDouble(Math::tanh)
                 .toArray()
         );
     }
@@ -15,7 +18,8 @@ final public class Linear extends ActivationFunction {
     @Override
     public Matrix derivative(final Matrix matrix) {
         return Matrix.of(Arrays.stream(matrix.rawData())
-                .mapToDouble(row -> 1)
+                .map(row -> row[0])
+                .mapToDouble(value -> 1 - (value * value))
                 .toArray()
         );
     }

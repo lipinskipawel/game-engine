@@ -1,4 +1,6 @@
-package io.lipinski.player.ai.internal;
+package io.lipinski.player.ai.internal.activation;
+
+import io.lipinski.player.ai.internal.Matrix;
 
 import java.util.Arrays;
 
