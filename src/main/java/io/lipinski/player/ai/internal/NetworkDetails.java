@@ -4,6 +4,7 @@ import io.lipinski.player.ai.internal.activation.ActivationFunction;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 class NetworkDetails {
 
@@ -11,7 +12,15 @@ class NetworkDetails {
     final List<Matrix> biases;
     final List<ActivationFunction> activations;
 
-    NetworkDetails(int[] architecture, List<ActivationFunction> activations) {
+    NetworkDetails(List<Layer> layers) {
+        var architecture = layers
+                .stream()
+                .mapToInt(Layer::getNumberOfNodes)
+                .toArray();
+        var activationFunctions = layers
+                .stream()
+                .map(Layer::getActivationFunction)
+                .collect(Collectors.toList());
         this.nodes = new ArrayList<>(architecture.length);
         this.biases = new ArrayList<>(architecture.length);
         this.activations = new ArrayList<>(architecture.length);
@@ -22,7 +31,7 @@ class NetworkDetails {
             else
                 this.nodes.add(Matrix.of(architecture[i], architecture[i - 1]));
             this.biases.add(Matrix.of(architecture[i], 1));
-            this.activations.add(activations.get(i));
+            this.activations.add(activationFunctions.get(i));
         }
     }
 

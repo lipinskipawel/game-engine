@@ -1,6 +1,5 @@
 package io.lipinski.player.ai.internal;
 
-import io.lipinski.player.ai.internal.activation.ActivationFunction;
 import io.lipinski.player.ai.internal.lossfunction.LossFunction;
 
 import java.util.ArrayList;
@@ -14,19 +13,18 @@ import static java.util.stream.Collectors.toList;
 final class DeepNeuralNetwork {
 
     private final List<Layer> layers;
-    final List<ActivationFunction> activations;
     private Result result;
     double learningRate;
     LossFunction lossFunction;
     private boolean isBatchingEnable;
     private int batch;
+    private int[] architecture;
 
-    int[] architecture;
+    NetworkDetails networkDetails;
 
 
     private DeepNeuralNetwork(final Builder builder) {
         this.layers = builder.layers;
-        this.activations = builder.activations;
         this.result = builder.result;
         this.isBatchingEnable = true;
         this.batch = 32;
@@ -54,32 +52,26 @@ final class DeepNeuralNetwork {
     }
 
     NeuralNetwork build() {
-        this.architecture = this.layers
-                .stream()
-                .mapToInt(Layer::getNumberOfNodes)
-                .toArray();
+
         if (this.lossFunction == null)
             throw new RuntimeException("Loss function is not defined");
+        networkDetails = new NetworkDetails(layers);
         return SimpleNeuralNetwork.factory(this);
     }
 
 
     public static final class Builder {
         private List<Layer> layers;
-        private List<ActivationFunction> activations;
         private Result result;
         private List<?> output;
 
         public Builder() {
         }
 
-        public Builder addLayer(final Layer layer, final ActivationFunction activation) {
+        public Builder addLayer(final Layer layer) {
             if (this.layers == null)
                 this.layers = new ArrayList<>();
-            if (this.activations == null)
-                this.activations = new ArrayList<>();
             this.layers.add(layer);
-            this.activations.add(activation);
             return this;
         }
 

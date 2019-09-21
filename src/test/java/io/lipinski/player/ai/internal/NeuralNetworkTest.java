@@ -38,9 +38,9 @@ class NeuralNetworkTest {
             trainingDataset.add(new int[][]{new int[]{0, 1}, new int[]{1}});
 
             final var model = new DeepNeuralNetwork.Builder()
-                    .addLayer(new Layer(2), new Tanh())
-                    .addLayer(new Layer(4), new Tanh())
-                    .addLayer(new Layer(1), new Tanh())
+                    .addLayer(new Layer(2, new Tanh()))
+                    .addLayer(new Layer(4, new Tanh()))
+                    .addLayer(new Layer(1, new Tanh()))
                     .compile()
                     .lossFunction(new MAV())
                     .noBatching()
@@ -76,7 +76,7 @@ class NeuralNetworkTest {
             trainingDataset.add(new int[][]{new int[]{4}, new int[]{7}});
 
             final var model = new DeepNeuralNetwork.Builder()
-                    .addLayer(new Layer(1), new Linear())
+                    .addLayer(new Layer(1, new Linear()))
                     .compile()
                     .noBatching()
                     .lossFunction(new MAV())
@@ -105,7 +105,7 @@ class NeuralNetworkTest {
         @DisplayName("1 defined layer coause exception")
         void exceptionWhenOneLayer() {
             final var model = catchThrowable(() -> new DeepNeuralNetwork.Builder()
-                    .addLayer(new Layer(2), new Tanh())
+                    .addLayer(new Layer(2, new Tanh()))
                     .compile()
                     .lossFunction(new MAV())
                     .build());

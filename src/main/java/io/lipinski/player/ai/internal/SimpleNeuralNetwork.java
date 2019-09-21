@@ -15,11 +15,10 @@ public final class SimpleNeuralNetwork implements NeuralNetwork {
     private final double learningRate;
     private final LossFunction lossFunction;
 
-    private SimpleNeuralNetwork(final int[] architecture,
-                                final List<ActivationFunction> activations,
+    private SimpleNeuralNetwork(final NetworkDetails networkDetails,
                                 final double learningRate,
                                 final LossFunction lossFunction) {
-        this.networkDetails = new NetworkDetails(architecture, activations);
+        this.networkDetails = networkDetails;
 
         this.learningRate = learningRate;
         this.lossFunction = lossFunction;
@@ -36,7 +35,7 @@ public final class SimpleNeuralNetwork implements NeuralNetwork {
     }
 
     static NeuralNetwork factory(final DeepNeuralNetwork factory) {
-        return new SimpleNeuralNetwork(factory.architecture, factory.activations, factory.learningRate, factory.lossFunction);
+        return new SimpleNeuralNetwork(factory.networkDetails, factory.learningRate, factory.lossFunction);
     }
 
     @Override
