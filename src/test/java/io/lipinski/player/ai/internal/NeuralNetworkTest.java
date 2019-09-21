@@ -29,7 +29,6 @@ class NeuralNetworkTest {
          */
         @Test
         @DisplayName("XOR -- train and predict")
-        @RepeatedTest(50)
         void sillyTest() {
             final var trainingDataset = new ArrayList<int[][]>();
             trainingDataset.add(new int[][]{new int[]{1, 1}, new int[]{0}});
