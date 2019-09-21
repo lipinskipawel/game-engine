@@ -1,7 +1,7 @@
 package io.lipinski.player.ai.internal;
 
 
-interface Func {
+public interface Func {
 
     double apply(double val);
 }

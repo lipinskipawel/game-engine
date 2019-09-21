@@ -1,6 +1,7 @@
 package io.lipinski.player.ai.internal;
 
 import io.lipinski.player.ai.internal.activation.ActivationFunction;
+import io.lipinski.player.ai.internal.lossfunction.LossFunction;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -16,6 +17,7 @@ final class DeepNeuralNetwork {
     final List<ActivationFunction> activations;
     private Result result;
     double learningRate;
+    LossFunction lossFunction;
     private boolean isBatchingEnable;
     private int batch;
 
@@ -46,11 +48,18 @@ final class DeepNeuralNetwork {
         return this;
     }
 
+    DeepNeuralNetwork lossFunction(final LossFunction lossFunction) {
+        this.lossFunction = lossFunction;
+        return this;
+    }
+
     NeuralNetwork build() {
         this.architecture = this.layers
                 .stream()
                 .mapToInt(Layer::getNumberOfNodes)
                 .toArray();
+        if (this.lossFunction == null)
+            throw new RuntimeException("Loss function is not defined");
         return SimpleNeuralNetwork.factory(this);
     }
 
