@@ -1,6 +1,8 @@
 package io.lipinski.player.ai.internal;
 
 import io.lipinski.player.ai.internal.activation.ActivationFunction;
+import io.lipinski.player.ai.internal.lossfunction.LossFunction;
+import io.lipinski.player.ai.internal.lossfunction.MAV;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -13,11 +15,13 @@ public final class SimpleNeuralNetwork implements NeuralNetwork {
 
     private final List<ActivationFunction> activationFunctions;
     private final double learningRate;
+    private final LossFunction lossFunction;
 
 
     private SimpleNeuralNetwork(final int[] architecture,
                                 final List<ActivationFunction> activation,
-                                final double learningRate) {
+                                final double learningRate,
+                                final LossFunction lossFunction) {
         this.nodes = new ArrayList<>(architecture.length);
         this.biases = new ArrayList<>(architecture.length);
         this.activationFunctions = new ArrayList<>(architecture.length);
@@ -31,6 +35,7 @@ public final class SimpleNeuralNetwork implements NeuralNetwork {
             this.activationFunctions.add(activation.get(i));
         }
         this.learningRate = learningRate;
+        this.lossFunction = lossFunction;
         randomize();
     }
 
@@ -42,10 +47,11 @@ public final class SimpleNeuralNetwork implements NeuralNetwork {
         this.biases = new ArrayList<>(biases);
         this.activationFunctions = activations;
         this.learningRate = learningRate;
+        this.lossFunction = new MAV();
     }
 
     static NeuralNetwork factory(final DeepNeuralNetwork factory) {
-        return new SimpleNeuralNetwork(factory.architecture, factory.activations, factory.learningRate);
+        return new SimpleNeuralNetwork(factory.architecture, factory.activations, factory.learningRate, factory.lossFunction);
     }
 
     @Override
@@ -112,10 +118,10 @@ public final class SimpleNeuralNetwork implements NeuralNetwork {
                                 final List<Matrix> computedErrors,
                                 final int j) {
         if (index == this.nodes.size() - 1) {
-            return labels.subtract(outputs); // 1x1
+            return lossFunction.compute(labels, outputs);
         }
         final var who_t = this.nodes.get(index + 1).transpose(); // 2x4
-        return who_t.multiply(computedErrors.get(j)); // wczesniej bylo 0 i dzialala
+        return who_t.multiply(computedErrors.get(j));
     }
 
     // data.T(input data), hidden.T(first output from FF), secondHidden.T(second output from FF)
