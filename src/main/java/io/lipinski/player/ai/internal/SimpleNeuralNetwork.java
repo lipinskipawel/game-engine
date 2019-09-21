@@ -11,15 +11,16 @@ public final class SimpleNeuralNetwork implements NeuralNetwork {
     final List<Matrix> nodes;
     final List<Matrix> biases;
 
-    private final ActivationFunction activationFunction;
+    private final List<ActivationFunction> activationFunctions;
     private final double learningRate;
 
 
     private SimpleNeuralNetwork(final int[] architecture,
-                                final ActivationFunction activation,
+                                final List<ActivationFunction> activation,
                                 final double learningRate) {
         this.nodes = new ArrayList<>(architecture.length);
         this.biases = new ArrayList<>(architecture.length);
+        this.activationFunctions = new ArrayList<>(architecture.length);
 
         for (int i = 0; i < architecture.length; i++) {
             if (i == 0)
@@ -27,24 +28,24 @@ public final class SimpleNeuralNetwork implements NeuralNetwork {
             else
                 this.nodes.add(Matrix.of(architecture[i], architecture[i - 1]));
             this.biases.add(Matrix.of(architecture[i], 1));
+            this.activationFunctions.add(activation.get(i));
         }
-        this.activationFunction = activation;
         this.learningRate = learningRate;
         randomize();
     }
 
     SimpleNeuralNetwork(final List<Matrix> weights,
                         final List<Matrix> biases,
-                        final ActivationFunction activation,
+                        final List<ActivationFunction> activations,
                         final double learningRate) {
         this.nodes = new ArrayList<>(weights);
         this.biases = new ArrayList<>(biases);
-        this.activationFunction = activation;
+        this.activationFunctions = activations;
         this.learningRate = learningRate;
     }
 
     static NeuralNetwork factory(final DeepNeuralNetwork factory) {
-        return new SimpleNeuralNetwork(factory.architecture, factory.activation, factory.learningRate);
+        return new SimpleNeuralNetwork(factory.architecture, factory.activations, factory.learningRate);
     }
 
     @Override
@@ -74,16 +75,8 @@ public final class SimpleNeuralNetwork implements NeuralNetwork {
             final var outputOnLayers = new ArrayList<Matrix>();
 
             for (int i = 0; i < this.nodes.size(); i++) {
-                final var weight = this.nodes.get(i);
-                final var bias = this.biases.get(i);
-                var tempData = oneColumnOfData;
-                if (i != 0)
-                    tempData = outputOnLayers.get(i - 1);
-                final var compute = activationFunction
-                        .compute(weight
-                                .multiply(tempData)
-                                .add(bias)
-                        );
+                final var compute = generateCompute(i, oneColumnOfData, outputOnLayers);
+
                 outputOnLayers.add(compute);
             }
             // var computedErrors = outputErrors, hiddenErrors, secondHidden....
@@ -96,7 +89,7 @@ public final class SimpleNeuralNetwork implements NeuralNetwork {
                 computedErrors.add(outputErrorComputed);
 
                 final var matrix = outputOnLayers.get(i);
-                final var gradient = activationFunction.derivative(matrix)
+                final var gradient = activationFunctions.get(i).derivative(matrix)
                         .multiply(computedErrors.get(j))
                         .forEach(x -> x * learningRate);
                 final var deltaaa = gradient.multiply(valuesToDeltas.get(i));
@@ -143,17 +136,23 @@ public final class SimpleNeuralNetwork implements NeuralNetwork {
         final var outputOnLayers = new ArrayList<Matrix>();
 
         for (int i = 0; i < this.nodes.size(); i++) {
-            final var weight = this.nodes.get(i);
-            final var bias = this.biases.get(i);
-            var tempData = data;
-            if (i != 0)
-                tempData = outputOnLayers.get(i - 1);
-            final var compute = activationFunction.compute(weight
-                    .multiply(tempData)
-                    .add(bias));
+            var compute = generateCompute(i, data, outputOnLayers);
             outputOnLayers.add(compute);
         }
         return outputOnLayers.get(outputOnLayers.size() - 1);
+    }
+
+    private Matrix generateCompute(int i, Matrix oneColumnOfData, List<Matrix> outputOnLayers) {
+        final var weight = this.nodes.get(i);
+        final var bias = this.biases.get(i);
+        var tempData = oneColumnOfData;
+        if (i != 0)
+            tempData = outputOnLayers.get(i - 1);
+        return activationFunctions.get(i)
+                .compute(weight
+                        .multiply(tempData)
+                        .add(bias)
+                );
     }
 
     private void randomize() {

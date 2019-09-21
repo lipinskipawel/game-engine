@@ -1,11 +1,15 @@
 package io.lipinski.player.ai.internal;
 
+import io.lipinski.player.ai.internal.activation.ActivationFunction;
 import io.lipinski.player.ai.internal.activation.Sigmoid;
+import io.lipinski.player.ai.internal.activation.Tanh;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @DisplayName("Simple neural network operations")
@@ -29,7 +33,8 @@ class SimpleNeuralNetworkTest {
             final var biases = List.of(
                     Matrix.of(new double[]{-0.735054828696033, -0.4718856580782149, -0.7110585509335476, -0.14594530108727977}),
                     Matrix.of(new double[]{0.08394521761217977}));
-            final var model = new SimpleNeuralNetwork(weights, biases, new Sigmoid(), 0.1);
+            final var activations = new ArrayList<ActivationFunction>(Collections.nCopies(weights.size(), new Sigmoid()));
+            final var model = new SimpleNeuralNetwork(weights, biases, activations, 0.1);
 
             model.train(new int[]{1, 0}, 1);
 

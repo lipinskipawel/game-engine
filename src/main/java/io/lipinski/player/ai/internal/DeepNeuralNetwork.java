@@ -13,7 +13,7 @@ import static java.util.stream.Collectors.toList;
 final class DeepNeuralNetwork {
 
     private final List<Layer> layers;
-    final ActivationFunction activation;
+    final List<ActivationFunction> activations;
     private Result result;
     double learningRate;
     private boolean isBatchingEnable;
@@ -24,7 +24,7 @@ final class DeepNeuralNetwork {
 
     private DeepNeuralNetwork(final Builder builder) {
         this.layers = builder.layers;
-        this.activation = builder.activation;
+        this.activations = builder.activations;
         this.result = builder.result;
         this.isBatchingEnable = true;
         this.batch = 32;
@@ -57,21 +57,20 @@ final class DeepNeuralNetwork {
 
     public static final class Builder {
         private List<Layer> layers;
-        private ActivationFunction activation;
+        private List<ActivationFunction> activations;
         private Result result;
         private List<?> output;
 
         public Builder() {
         }
 
-        public Builder addLayer(final Layer layer) {
-            if (this.layers == null) this.layers = new ArrayList<>();
+        public Builder addLayer(final Layer layer, final ActivationFunction activation) {
+            if (this.layers == null)
+                this.layers = new ArrayList<>();
+            if (this.activations == null)
+                this.activations = new ArrayList<>();
             this.layers.add(layer);
-            return this;
-        }
-
-        public Builder activationOnLayers(final ActivationFunction activation) {
-            this.activation = activation;
+            this.activations.add(activation);
             return this;
         }
 

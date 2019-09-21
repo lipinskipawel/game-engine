@@ -1,10 +1,12 @@
 package io.lipinski.player.ai.internal;
 
 import io.lipinski.player.ai.internal.activation.Linear;
+import io.lipinski.player.ai.internal.activation.Sigmoid;
 import io.lipinski.player.ai.internal.activation.Tanh;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -27,6 +29,7 @@ class NeuralNetworkTest {
          */
         @Test
         @DisplayName("XOR -- train and predict")
+        @RepeatedTest(50)
         void sillyTest() {
             final var trainingDataset = new ArrayList<int[][]>();
             trainingDataset.add(new int[][]{new int[]{1, 1}, new int[]{0}});
@@ -35,10 +38,9 @@ class NeuralNetworkTest {
             trainingDataset.add(new int[][]{new int[]{0, 1}, new int[]{1}});
 
             final var model = new DeepNeuralNetwork.Builder()
-                    .addLayer(new Layer(2))
-                    .addLayer(new Layer(4))
-                    .addLayer(new Layer(1))
-                    .activationOnLayers(new Tanh())
+                    .addLayer(new Layer(2), new Tanh())
+                    .addLayer(new Layer(4), new Tanh())
+                    .addLayer(new Layer(1), new Tanh())
                     .compile()
                     .noBatching()
                     .build();
@@ -73,8 +75,7 @@ class NeuralNetworkTest {
             trainingDataset.add(new int[][]{new int[]{4}, new int[]{7}});
 
             final var model = new DeepNeuralNetwork.Builder()
-                    .addLayer(new Layer(1))
-                    .activationOnLayers(new Linear())
+                    .addLayer(new Layer(1), new Linear())
                     .compile()
                     .noBatching()
                     .build();
@@ -102,7 +103,7 @@ class NeuralNetworkTest {
         @DisplayName("1 defined layer coause exception")
         void exceptionWhenOneLayer() {
             final var model = catchThrowable(() -> new DeepNeuralNetwork.Builder()
-                    .addLayer(new Layer(2))
+                    .addLayer(new Layer(2), new Tanh())
                     .compile()
                     .build());
 
