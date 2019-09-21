@@ -65,7 +65,7 @@ public final class SimpleNeuralNetwork implements NeuralNetwork {
             final var outputOnLayers = new ArrayList<Matrix>();
 
             for (int i = 0; i < networkDetails.nodes.size(); i++) {
-                final var compute = networkDetails.generateCompute(i, oneColumnOfData, outputOnLayers);
+                final var compute = generateCompute(i, oneColumnOfData, outputOnLayers);
 
                 outputOnLayers.add(compute);
             }
@@ -126,10 +126,23 @@ public final class SimpleNeuralNetwork implements NeuralNetwork {
         final var outputOnLayers = new ArrayList<Matrix>();
 
         for (int i = 0; i < networkDetails.nodes.size(); i++) {
-            var compute = networkDetails.generateCompute(i, data, outputOnLayers);
+            var compute = generateCompute(i, data, outputOnLayers);
             outputOnLayers.add(compute);
         }
         return outputOnLayers.get(outputOnLayers.size() - 1);
+    }
+
+    Matrix generateCompute(int i, Matrix oneColumnOfData, List<Matrix> outputOnLayers) {
+        final var weight = networkDetails.nodes.get(i);
+        final var bias = networkDetails.biases.get(i);
+        var tempData = oneColumnOfData;
+        if (i != 0)
+            tempData = outputOnLayers.get(i - 1);
+        return networkDetails.activations.get(i)
+                .compute(weight
+                        .multiply(tempData)
+                        .add(bias)
+                );
     }
 
     private void randomize() {

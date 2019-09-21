@@ -41,17 +41,4 @@ class NetworkDetails {
         this.activations = activations;
     }
 
-    Matrix generateCompute(int i, Matrix oneColumnOfData, List<Matrix> outputOnLayers) {
-        final var weight = nodes.get(i);
-        final var bias = biases.get(i);
-        var tempData = oneColumnOfData;
-        if (i != 0)
-            tempData = outputOnLayers.get(i - 1);
-        return activations.get(i)
-                .compute(weight
-                        .multiply(tempData)
-                        .add(bias)
-                );
-    }
-
 }
