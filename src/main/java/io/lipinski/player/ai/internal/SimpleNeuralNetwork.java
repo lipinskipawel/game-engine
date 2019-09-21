@@ -10,30 +10,17 @@ import java.util.List;
 
 public final class SimpleNeuralNetwork implements NeuralNetwork {
 
-    final List<Matrix> nodes;
-    final List<Matrix> biases;
+    final NetworkDetails networkDetails;
 
-    private final List<ActivationFunction> activationFunctions;
     private final double learningRate;
     private final LossFunction lossFunction;
 
-
     private SimpleNeuralNetwork(final int[] architecture,
-                                final List<ActivationFunction> activation,
+                                final List<ActivationFunction> activations,
                                 final double learningRate,
                                 final LossFunction lossFunction) {
-        this.nodes = new ArrayList<>(architecture.length);
-        this.biases = new ArrayList<>(architecture.length);
-        this.activationFunctions = new ArrayList<>(architecture.length);
+        this.networkDetails = new NetworkDetails(architecture, activations);
 
-        for (int i = 0; i < architecture.length; i++) {
-            if (i == 0)
-                this.nodes.add(Matrix.of(architecture[i], architecture[i]));
-            else
-                this.nodes.add(Matrix.of(architecture[i], architecture[i - 1]));
-            this.biases.add(Matrix.of(architecture[i], 1));
-            this.activationFunctions.add(activation.get(i));
-        }
         this.learningRate = learningRate;
         this.lossFunction = lossFunction;
         randomize();
@@ -43,9 +30,7 @@ public final class SimpleNeuralNetwork implements NeuralNetwork {
                         final List<Matrix> biases,
                         final List<ActivationFunction> activations,
                         final double learningRate) {
-        this.nodes = new ArrayList<>(weights);
-        this.biases = new ArrayList<>(biases);
-        this.activationFunctions = activations;
+        this.networkDetails = new NetworkDetails(weights, biases, activations);
         this.learningRate = learningRate;
         this.lossFunction = new MAV();
     }
@@ -80,8 +65,8 @@ public final class SimpleNeuralNetwork implements NeuralNetwork {
             var oneColumnOfData = Matrix.of(temp);
             final var outputOnLayers = new ArrayList<Matrix>();
 
-            for (int i = 0; i < this.nodes.size(); i++) {
-                final var compute = generateCompute(i, oneColumnOfData, outputOnLayers);
+            for (int i = 0; i < networkDetails.nodes.size(); i++) {
+                final var compute = networkDetails.generateCompute(i, oneColumnOfData, outputOnLayers);
 
                 outputOnLayers.add(compute);
             }
@@ -90,18 +75,18 @@ public final class SimpleNeuralNetwork implements NeuralNetwork {
             var valuesToDeltas = computeDeltas(oneColumnOfData, outputOnLayers);
 
             var j = 0;
-            for (int i = this.nodes.size() - 1; i >= 0; i--) {
+            for (int i = networkDetails.nodes.size() - 1; i >= 0; i--) {
                 final var outputErrorComputed = computeError(i, labels, outputOnLayers.get(outputOnLayers.size() - 1), computedErrors, j - 1);
                 computedErrors.add(outputErrorComputed);
 
                 final var matrix = outputOnLayers.get(i);
-                final var gradient = activationFunctions.get(i).derivative(matrix)
+                final var gradient = networkDetails.activations.get(i).derivative(matrix)
                         .multiply(computedErrors.get(j))
                         .forEach(x -> x * learningRate);
                 final var deltaaa = gradient.multiply(valuesToDeltas.get(i));
 
-                this.nodes.set(i, this.nodes.get(i).add(deltaaa));
-                this.biases.set(i, this.biases.get(i).add(gradient));
+                networkDetails.nodes.set(i, networkDetails.nodes.get(i).add(deltaaa));
+                networkDetails.biases.set(i, networkDetails.biases.get(i).add(gradient));
                 j++;
             }
         }
@@ -117,10 +102,10 @@ public final class SimpleNeuralNetwork implements NeuralNetwork {
                                 final Matrix outputs,
                                 final List<Matrix> computedErrors,
                                 final int j) {
-        if (index == this.nodes.size() - 1) {
+        if (index == networkDetails.nodes.size() - 1) {
             return lossFunction.compute(labels, outputs);
         }
-        final var who_t = this.nodes.get(index + 1).transpose(); // 2x4
+        final var who_t = networkDetails.nodes.get(index + 1).transpose(); // 2x4
         return who_t.multiply(computedErrors.get(j));
     }
 
@@ -136,35 +121,23 @@ public final class SimpleNeuralNetwork implements NeuralNetwork {
     }
 
     private Matrix feedForwardInternal(final Matrix data) {
-        if (this.nodes.get(0).rawData()[0].length != data.numberOfRows())
+        if (networkDetails.nodes.get(0).rawData()[0].length != data.numberOfRows())
             throw new InvalidInputFormatException("Shape of input " + data.numberOfRows()
-                    + " must be the same as input for neural network " + this.nodes.get(0).numberOfRows());
+                    + " must be the same as input for neural network " + networkDetails.nodes.get(0).numberOfRows());
         final var outputOnLayers = new ArrayList<Matrix>();
 
-        for (int i = 0; i < this.nodes.size(); i++) {
-            var compute = generateCompute(i, data, outputOnLayers);
+        for (int i = 0; i < networkDetails.nodes.size(); i++) {
+            var compute = networkDetails.generateCompute(i, data, outputOnLayers);
             outputOnLayers.add(compute);
         }
         return outputOnLayers.get(outputOnLayers.size() - 1);
     }
 
-    private Matrix generateCompute(int i, Matrix oneColumnOfData, List<Matrix> outputOnLayers) {
-        final var weight = this.nodes.get(i);
-        final var bias = this.biases.get(i);
-        var tempData = oneColumnOfData;
-        if (i != 0)
-            tempData = outputOnLayers.get(i - 1);
-        return activationFunctions.get(i)
-                .compute(weight
-                        .multiply(tempData)
-                        .add(bias)
-                );
-    }
-
     private void randomize() {
-        for (int i = 0; i < this.nodes.size(); i++) {
-            this.nodes.set(i, this.nodes.get(i).forEach(x -> Math.random() - .5));
-            this.biases.set(i, this.biases.get(i).forEach(x -> Math.random() - .5));
+        for (int i = 0; i < networkDetails.nodes.size(); i++) {
+            final Func func = x -> Math.random() - .5;
+            networkDetails.nodes.set(i, networkDetails.nodes.get(i).forEach(func));
+            networkDetails.biases.set(i, networkDetails.biases.get(i).forEach(func));
         }
     }
 }
