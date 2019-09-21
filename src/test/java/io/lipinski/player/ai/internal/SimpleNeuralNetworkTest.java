@@ -50,10 +50,10 @@ class SimpleNeuralNetworkTest {
 
 
             final var simple = (SimpleNeuralNetwork) model;
-            final var after_weights_ih = simple.nodes.get(0);
-            final var after_weights_ho = simple.nodes.get(1);
-            final var after_biasHidden = simple.biases.get(0);
-            final var after_biasOutput = simple.biases.get(1);
+            final var after_weights_ih = simple.networkDetails.nodes.get(0);
+            final var after_weights_ho = simple.networkDetails.nodes.get(1);
+            final var after_biasHidden = simple.networkDetails.biases.get(0);
+            final var after_biasOutput = simple.networkDetails.biases.get(1);
             Assertions.assertThat(after_weights_ih.rawData()).containsExactly(expected_weights_ih.rawData());
             Assertions.assertThat(after_weights_ho.rawData()).containsExactly(expected_weights_ho.rawData());
             Assertions.assertThat(after_biasHidden.rawData()).containsExactly(expected_bias_h.rawData());
