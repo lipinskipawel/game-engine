@@ -1,13 +1,11 @@
 package io.lipinski.player.ai.internal;
 
 import io.lipinski.player.ai.internal.activation.Linear;
-import io.lipinski.player.ai.internal.activation.Sigmoid;
 import io.lipinski.player.ai.internal.activation.Tanh;
-import io.lipinski.player.ai.internal.lossfunction.MAV;
+import io.lipinski.player.ai.internal.lossfunction.MSE;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -42,7 +40,7 @@ class NeuralNetworkTest {
                     .addLayer(new Layer(4, new Tanh()))
                     .addLayer(new Layer(1, new Tanh()))
                     .compile()
-                    .lossFunction(new MAV())
+                    .lossFunction(new MSE())
                     .noBatching()
                     .build();
 
@@ -79,7 +77,7 @@ class NeuralNetworkTest {
                     .addLayer(new Layer(1, new Linear()))
                     .compile()
                     .noBatching()
-                    .lossFunction(new MAV())
+                    .lossFunction(new MSE())
                     .build();
 
             for (int i = 0; i < 5_000; i++) {
@@ -107,7 +105,7 @@ class NeuralNetworkTest {
             final var model = catchThrowable(() -> new DeepNeuralNetwork.Builder()
                     .addLayer(new Layer(2, new Tanh()))
                     .compile()
-                    .lossFunction(new MAV())
+                    .lossFunction(new MSE())
                     .build());
 
             Assertions.assertThat(model)

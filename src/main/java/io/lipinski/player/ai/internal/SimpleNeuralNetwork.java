@@ -2,7 +2,7 @@ package io.lipinski.player.ai.internal;
 
 import io.lipinski.player.ai.internal.activation.ActivationFunction;
 import io.lipinski.player.ai.internal.lossfunction.LossFunction;
-import io.lipinski.player.ai.internal.lossfunction.MAV;
+import io.lipinski.player.ai.internal.lossfunction.MSE;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -19,7 +19,6 @@ public final class SimpleNeuralNetwork implements NeuralNetwork {
                                 final double learningRate,
                                 final LossFunction lossFunction) {
         this.networkDetails = networkDetails;
-
         this.learningRate = learningRate;
         this.lossFunction = lossFunction;
         randomize();
@@ -31,7 +30,7 @@ public final class SimpleNeuralNetwork implements NeuralNetwork {
                         final double learningRate) {
         this.networkDetails = new NetworkDetails(weights, biases, activations);
         this.learningRate = learningRate;
-        this.lossFunction = new MAV();
+        this.lossFunction = new MSE();
     }
 
     static NeuralNetwork factory(final DeepNeuralNetwork factory) {
@@ -65,7 +64,7 @@ public final class SimpleNeuralNetwork implements NeuralNetwork {
             final var outputOnLayers = new ArrayList<Matrix>();
 
             for (int i = 0; i < networkDetails.nodes.size(); i++) {
-                final var compute = generateCompute(i, oneColumnOfData, outputOnLayers);
+                final var compute = computeOutputOnLayer(i, oneColumnOfData, outputOnLayers);
 
                 outputOnLayers.add(compute);
             }
@@ -126,13 +125,15 @@ public final class SimpleNeuralNetwork implements NeuralNetwork {
         final var outputOnLayers = new ArrayList<Matrix>();
 
         for (int i = 0; i < networkDetails.nodes.size(); i++) {
-            var compute = generateCompute(i, data, outputOnLayers);
+            var compute = computeOutputOnLayer(i, data, outputOnLayers);
             outputOnLayers.add(compute);
         }
         return outputOnLayers.get(outputOnLayers.size() - 1);
     }
 
-    Matrix generateCompute(int i, Matrix oneColumnOfData, List<Matrix> outputOnLayers) {
+    private Matrix computeOutputOnLayer(final int i,
+                                        final Matrix oneColumnOfData,
+                                        final List<Matrix> outputOnLayers) {
         final var weight = networkDetails.nodes.get(i);
         final var bias = networkDetails.biases.get(i);
         var tempData = oneColumnOfData;

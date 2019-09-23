@@ -52,10 +52,9 @@ final class DeepNeuralNetwork {
     }
 
     NeuralNetwork build() {
-
         if (this.lossFunction == null)
             throw new RuntimeException("Loss function is not defined");
-        networkDetails = new NetworkDetails(layers);
+        this.networkDetails = new NetworkDetails(layers);
         return SimpleNeuralNetwork.factory(this);
     }
 

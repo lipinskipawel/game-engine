@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-class NetworkDetails {
+final class NetworkDetails {
 
     final List<Matrix> nodes;
     final List<Matrix> biases;
