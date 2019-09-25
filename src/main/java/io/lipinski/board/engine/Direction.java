@@ -1,6 +1,6 @@
 package io.lipinski.board.engine;
 
-import io.lipinski.player.ai.internal.ResultInterface;
+import io.lipinski.board.neuralnetwork.internal.ResultInterface;
 
 public enum Direction implements ResultInterface {
 

@@ -1,11 +1,10 @@
 module game.engine {
 
-    exports io.lipinski.board.legacy;
+    exports io.lipinski.board.engine;
 
     opens io.lipinski.board.engine;
-    opens io.lipinski.board.legacy;
-    opens io.lipinski.player.ai;
-    opens io.lipinski.player.ai.internal;
-    opens io.lipinski.player.ai.internal.activation;
+    opens io.lipinski.board.neuralnetwork;
+    opens io.lipinski.board.neuralnetwork.internal;
+    opens io.lipinski.board.neuralnetwork.internal.activation;
 
 }
