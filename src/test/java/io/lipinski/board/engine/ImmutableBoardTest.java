@@ -60,7 +60,7 @@ class ImmutableBoardTest {
     }
 
     @Nested
-    @DisplayName("Test about legal moves")
+    @DisplayName("allLegalMoves")
     class LegalMoves {
 
         @Test
@@ -290,7 +290,7 @@ class ImmutableBoardTest {
     }
 
     @Nested
-    @DisplayName("Make a move")
+    @DisplayName("executeMove")
     class MakeAMove {
 
         @Test
@@ -396,7 +396,7 @@ class ImmutableBoardTest {
     }
 
     @Nested
-    @DisplayName("Undo move")
+    @DisplayName("undoMove")
     class UndoAMove {
 
         @Test

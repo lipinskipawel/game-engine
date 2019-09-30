@@ -43,11 +43,14 @@ class MoveHistory {
         return this.moves.get(this.moves.size() - 1);
     }
 
+    List<Direction> allMoves() {
+        return new ArrayList<>(this.moves);
+    }
+
 
     private void checkSize() {
         if (this.moves.size() == 0)
             throw new IllegalUndoMoveException("You can undo move when no move has been done");
-
     }
 
 }

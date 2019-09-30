@@ -13,6 +13,8 @@ class ImmutableBoard implements BoardInterface2 {
     private final LogicalPoints points;
     private final MoveHistory moveHistory;
     private final Player playerToMove;
+    private final PlayerMoveLog moveLog;
+    private final List<Direction> intermediateMoves;
 
     private final static ThreadLocal<Stack<Direction>> stack = new ThreadLocal<>();
     private final static ThreadLocal<List<Move>> allMoves = new ThreadLocal<>();
@@ -21,14 +23,25 @@ class ImmutableBoard implements BoardInterface2 {
         this.points = new LogicalPoints();
         this.playerToMove = Player.FIRST;
         this.moveHistory = new MoveHistory();
+        this.moveLog = new PlayerMoveLog();
+        this.intermediateMoves = new ArrayList<>();
     }
 
     private ImmutableBoard(final LogicalPoints points,
                            final Player currentPlayer,
-                           final MoveHistory moveHistory) {
+                           final MoveHistory moveHistory,
+                           final PlayerMoveLog playerMoveLog,
+                           final List<Direction> intermediateMoves) {
         this.points = points;
         this.playerToMove = currentPlayer;
         this.moveHistory = moveHistory;
+        this.moveLog = playerMoveLog;
+        this.intermediateMoves = intermediateMoves;
+    }
+
+    @Override
+    public List<Move> moveHistory() {
+        return this.moveLog.allMoves();
     }
 
     @Override
@@ -42,10 +55,14 @@ class ImmutableBoard implements BoardInterface2 {
         final var logicalPoints = this.points.makeAMove(destination);
         final var newMoveHistory = this.moveHistory.add(destination);
         final var player = computePlayerToMove(logicalPoints);
+        final var moveLogg = this.playerToMove == player ? this.moveLog : addMove(destination);
+        final var interMoves = this.playerToMove == player ? add(destination) : new ArrayList<Direction>();
 
         return new ImmutableBoard(logicalPoints,
                 player,
-                newMoveHistory);
+                newMoveHistory,
+                moveLogg,
+                interMoves);
     }
 
     @Override
@@ -65,13 +82,17 @@ class ImmutableBoard implements BoardInterface2 {
     @Override
     public ImmutableBoard undoMove() {
 
-        final var logicalPoints = points.undoMove(moveHistory.getLastMove());
+        final var logicalPoints = this.points.undoMove(this.moveHistory.getLastMove());
         final var newMoveHistory = this.moveHistory.subtract();
-        final var player = computePlayerToMove(points);
+        final var player = computePlayerToMove(this.points);
+        final var moveLogg = this.playerToMove == player ? this.moveLog : this.moveLog.undoMove();
+        final var interMove = this.playerToMove == player ? remove() : new ArrayList<Direction>();
 
         return new ImmutableBoard(logicalPoints,
                 player,
-                newMoveHistory);
+                newMoveHistory,
+                moveLogg,
+                interMove);
     }
 
     @Override
@@ -143,5 +164,23 @@ class ImmutableBoard implements BoardInterface2 {
             player = this.playerToMove.opposite();
 
         return player;
+    }
+
+    private PlayerMoveLog addMove(final Direction destination) {
+        final var list = new ArrayList<>(this.intermediateMoves);
+        list.add(destination);
+        return this.moveLog.addMove(new Move(list));
+    }
+
+    private ArrayList<Direction> remove() {
+        final var moves = new ArrayList<>(this.intermediateMoves);
+        moves.remove(moves.size() - 1);
+        return moves;
+    }
+
+    private List<Direction> add(final Direction destination) {
+        final var moves = new ArrayList<>(this.intermediateMoves);
+        moves.add(destination);
+        return moves;
     }
 }
