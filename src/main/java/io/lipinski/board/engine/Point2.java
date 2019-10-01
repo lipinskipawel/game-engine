@@ -6,12 +6,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
 import static java.util.stream.Collectors.toUnmodifiableList;
 
 //TODO refactor this class with PointUtils
 // put them into the same package and play with package scope
-class Point2 {
+public class Point2 {
 
     private int position;
     private Map<Direction, Boolean> availableDirections;
@@ -36,6 +37,23 @@ class Point2 {
                 .collect(toMap(Map.Entry::getKey, Map.Entry::getValue));
     }
 
+    /**
+     *
+     * @param destinationPoint this is number of different point
+     * @return Direction to reach this #destinationPoint
+     */
+    public Direction kickBallTo(final int destinationPoint) {
+        final var findThatNumber = destinationPoint - position;
+        final var collect = availableDirections.entrySet()
+                .stream()
+                .filter(entry -> entry.getValue().booleanValue() == Boolean.TRUE)
+                .map(Map.Entry::getKey)
+                .filter(direction -> direction.changeToInt() == findThatNumber)
+                .collect(toList());
+        if (collect.size() != 1)
+            throw new RuntimeException("Can't make a move in this direction");
+        return collect.get(0);
+    }
 
     int getPosition() {
         return this.position;
