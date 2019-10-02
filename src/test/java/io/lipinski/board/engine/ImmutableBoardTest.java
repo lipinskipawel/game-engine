@@ -463,6 +463,24 @@ class ImmutableBoardTest {
         }
 
         @Test
+        @DisplayName("make 4 moves and undo 4 moves")
+        void undoAllMoves() {
+            final var afterThreeMoves = board
+                    .executeMove(new Move(List.of(Direction.N)))
+                    .executeMove(new Move(List.of(Direction.NE)))
+                    .executeMove(Direction.S)
+                    .executeMove(Direction.W);
+
+            final var undoAllMoves = afterThreeMoves
+                    .undoMove()
+                    .undoMove()
+                    .undoMove()
+                    .undoMove();
+
+            Assertions.assertThat(undoAllMoves).isEqualToComparingFieldByFieldRecursively(board);
+        }
+
+        @Test
         @DisplayName("Make a few moves and then complex one move and then undo sub move Another Check")
         void makeAMoveNAndUndoMoveAnotherCheckYetAnother() {
             //When:

@@ -28,10 +28,23 @@ public interface BoardInterface2 extends Transformation {
     BoardInterface2 undoMove() throws IllegalUndoMoveException;
 
     List<Move> allLegalMoves();
+
+    /**
+     *
+     * @return all Moves made by each {@link io.lipinski.board.engine.Player}
+     */
     List<Move> moveHistory();
+
+    /**
+     * 'Small' move is when not done yet. Move is done when there is
+     * next player to move.
+     *
+     * @return all 'small' which has been made
+     */
+    List<Direction> allMoves();
     boolean isMoveAllowed(final Direction destination);
     int getBallPosition();
-    Point2 getBallAPI(); // change this into List<Direction> getAllDirections()
+    Point2 getBallAPI();
     boolean isGoal();
 
     Player getPlayer();

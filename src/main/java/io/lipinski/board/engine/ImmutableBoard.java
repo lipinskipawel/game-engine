@@ -40,6 +40,11 @@ class ImmutableBoard implements BoardInterface2 {
     }
 
     @Override
+    public List<Direction> allMoves() {
+        return this.moveHistory.allMoves();
+    }
+
+    @Override
     public List<Move> moveHistory() {
         return this.moveLog.allMoves();
     }
