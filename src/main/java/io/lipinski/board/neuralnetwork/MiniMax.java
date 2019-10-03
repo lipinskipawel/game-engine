@@ -1,6 +1,6 @@
 package io.lipinski.board.neuralnetwork;
 
-import io.lipinski.board.engine.BoardInterface2;
+import io.lipinski.board.engine.BoardInterface;
 import io.lipinski.board.engine.Move;
 import io.lipinski.board.engine.Player;
 
@@ -15,7 +15,7 @@ class MiniMax implements MoveStrategy {
     }
 
     @Override
-    public Move execute(final BoardInterface2 board,
+    public Move execute(final BoardInterface board,
                         final int depth) {
 
         Move bestMove = null;
@@ -26,7 +26,7 @@ class MiniMax implements MoveStrategy {
 
         for (final Move move : board.allLegalMoves()) {
 
-            BoardInterface2 afterMove = board.executeMove(move);
+            BoardInterface afterMove = board.executeMove(move);
 
             currentValue = board.getPlayer() == Player.FIRST ? // here is CURRENT board
                     min(afterMove, depth - 1) : // here is AFTER board
@@ -49,7 +49,7 @@ class MiniMax implements MoveStrategy {
     }
 
 
-    private int min(final BoardInterface2 board,
+    private int min(final BoardInterface board,
                     final int depth) {
 
         if (depth <= 0)
@@ -58,7 +58,7 @@ class MiniMax implements MoveStrategy {
         int lowestSeenValue = Integer.MAX_VALUE;
 
         for (Move move : board.allLegalMoves()) {
-            BoardInterface2 afterMove = board.executeMove(move);
+            BoardInterface afterMove = board.executeMove(move);
             int currentValue = max(afterMove, depth - 1);
             if (currentValue <= lowestSeenValue)
                 lowestSeenValue = currentValue;
@@ -67,7 +67,7 @@ class MiniMax implements MoveStrategy {
     }
 
 
-    private int max(final BoardInterface2 board,
+    private int max(final BoardInterface board,
                     final int depth) {
 
         if (depth <= 0)
@@ -76,7 +76,7 @@ class MiniMax implements MoveStrategy {
         int highestSeenValue = Integer.MIN_VALUE;
 
         for (Move move : board.allLegalMoves()) {
-            BoardInterface2 afterMove = board.executeMove(move);
+            BoardInterface afterMove = board.executeMove(move);
             int currentValue = min(afterMove, depth - 1);
             if (currentValue >= highestSeenValue)
                 highestSeenValue = currentValue;

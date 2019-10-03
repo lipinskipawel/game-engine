@@ -4,7 +4,7 @@ package io.lipinski.board.engine;
 public class Boards {
 
 
-    public static BoardInterface2 immutableBoard() {
+    public static BoardInterface immutableBoard() {
         return new ImmutableBoard();
     }
 

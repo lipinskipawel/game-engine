@@ -1,13 +1,13 @@
 package io.lipinski.board.neuralnetwork;
 
-import io.lipinski.board.engine.BoardInterface2;
+import io.lipinski.board.engine.BoardInterface;
 import io.lipinski.board.engine.Player;
 
 class DummyBoardEvaluator implements BoardEvaluator {
 
 
     @Override
-    public int evaluate(final BoardInterface2 board) {
+    public int evaluate(final BoardInterface board) {
         if (board.getPlayer() == Player.FIRST) {
             if (board.getBallPosition() == 3 ||
                     board.getBallPosition() == 4 ||

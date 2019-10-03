@@ -5,7 +5,7 @@ import io.lipinski.board.engine.exceptions.IllegalUndoMoveException;
 
 import java.util.List;
 
-public interface BoardInterface2 extends Transformation {
+public interface BoardInterface extends Transformation {
 
     /**
      * This method will move the ball in the given direction.
@@ -14,7 +14,7 @@ public interface BoardInterface2 extends Transformation {
      * @return a new BoardInterface2 object with a ball position
      * @throws IllegalMoveException when the move can not be made
      */
-    BoardInterface2 executeMove(final Direction direction) throws IllegalMoveException;
+    BoardInterface executeMove(final Direction direction) throws IllegalMoveException;
 
     /**
      * This method will move the ball by the given move.
@@ -24,8 +24,8 @@ public interface BoardInterface2 extends Transformation {
      * @return a new BoardInterface2 object with a new move
      * @throws IllegalMoveException when the move can not be made
      */
-    BoardInterface2 executeMove(final Move move) throws IllegalMoveException;
-    BoardInterface2 undoMove() throws IllegalUndoMoveException;
+    BoardInterface executeMove(final Move move) throws IllegalMoveException;
+    BoardInterface undoMove() throws IllegalUndoMoveException;
 
     List<Move> allLegalMoves();
 
@@ -44,7 +44,7 @@ public interface BoardInterface2 extends Transformation {
     List<Direction> allMoves();
     boolean isMoveAllowed(final Direction destination);
     int getBallPosition();
-    Point2 getBallAPI();
+    Point getBallAPI();
     boolean isGoal();
 
     Player getPlayer();

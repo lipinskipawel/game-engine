@@ -10,8 +10,8 @@ import java.util.List;
 
 class LogicalPoints implements Transformation {
 
-    private final List<Point2> points;
-    private final Point2 ballPosition;
+    private final List<Point> points;
+    private final Point ballPosition;
 
 
     LogicalPoints() {
@@ -19,8 +19,8 @@ class LogicalPoints implements Transformation {
         this.ballPosition = points.get(58);
     }
 
-    private LogicalPoints(final List<Point2> points,
-                          final Point2 ballPosition) {
+    private LogicalPoints(final List<Point> points,
+                          final Point ballPosition) {
         this.points = points;
         this.ballPosition = points.get(ballPosition.getPosition());
     }
@@ -32,7 +32,7 @@ class LogicalPoints implements Transformation {
         final var afterMovePoints = new ArrayList<>(points);
 
         afterMovePoints.set(this.ballPosition.getPosition(),
-                new Point2(this.ballPosition.getPosition()));
+                new Point(this.ballPosition.getPosition()));
 
         final var previousPositionPoint = afterMovePoints.get(afterMovePosition);
         previousPositionPoint.setAvailableDirections(direction);
@@ -46,7 +46,7 @@ class LogicalPoints implements Transformation {
         if (isAvailable(destination)) {
 
             final var newPosition = computeBallPosition(destination);
-            final var currentBall = new Point2(points.get(getBallPosition())).notAvailableDirection(destination);
+            final var currentBall = new Point(points.get(getBallPosition())).notAvailableDirection(destination);
 
             final var afterMove = new ArrayList<>(points);
             afterMove.set(getBallPosition(), currentBall);
@@ -72,8 +72,8 @@ class LogicalPoints implements Transformation {
         return ballPosition.getUnavailableDirection().size() == 1 || ballPosition.getAllowedDirection().size() == 8;
     }
 
-    Point2 getBall() {
-        return new Point2(ballPosition);
+    Point getBall() {
+        return new Point(ballPosition);
     }
 
     boolean isAvailable(Direction direction) {
@@ -94,8 +94,8 @@ class LogicalPoints implements Transformation {
     public int[] transform() {
         return points
                 .stream()
-                .sorted(Comparator.comparingInt(Point2::getPosition))
-                .map(Point2::getAllDirections)
+                .sorted(Comparator.comparingInt(Point::getPosition))
+                .map(Point::getAllDirections)
                 .flatMap(Collection::stream)
                 .mapToInt(x -> x ? 1 : 0)
                 .toArray();

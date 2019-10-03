@@ -12,25 +12,25 @@ import static java.util.stream.Collectors.toUnmodifiableList;
 
 //TODO refactor this class with PointUtils
 // put them into the same package and play with package scope
-public class Point2 {
+public class Point {
 
     private int position;
     private Map<Direction, Boolean> availableDirections;
 
 
-    Point2(int position) {
+    Point(int position) {
         this.position = position;
         this.availableDirections = initAvailableDirections();
     }
 
-    Point2(Point2 point2) {
-        this.position = point2.position;
-        this.availableDirections = point2.availableDirections.entrySet()
+    Point(Point point) {
+        this.position = point.position;
+        this.availableDirections = point.availableDirections.entrySet()
                 .stream()
                 .collect(toMap(Map.Entry::getKey, Map.Entry::getValue));
     }
 
-    private Point2(int position, Map<Direction, Boolean> availableDirections) {
+    private Point(int position, Map<Direction, Boolean> availableDirections) {
         this.position = position;
         this.availableDirections = availableDirections.entrySet()
                 .stream()
@@ -106,13 +106,13 @@ public class Point2 {
      * @param direction
      * @return
      */
-    Point2 notAvailableDirection(Direction direction) {
+    Point notAvailableDirection(Direction direction) {
         int position = this.position;
         Map<Direction, Boolean> collect = this.availableDirections.entrySet()
                 .stream()
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
         collect.put(direction, Boolean.FALSE);
-        return new Point2(position, collect);
+        return new Point(position, collect);
     }
 
     // TODO this should be private

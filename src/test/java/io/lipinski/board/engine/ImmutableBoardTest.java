@@ -27,7 +27,7 @@ import static org.junit.jupiter.api.Assertions.fail;
 @DisplayName("Running new API MutableBoard tests")
 class ImmutableBoardTest {
 
-    private BoardInterface2 board;
+    private BoardInterface board;
     private ExecutorService executor;
     private static int STARTING_BALL_POSITION;
     private static int POSITION_AFTER_N_MOVE;
@@ -297,7 +297,7 @@ class ImmutableBoardTest {
         @DisplayName("Make a proper full move towards North")
         void makeAMoveN() {
             //When:
-            BoardInterface2 afterMove = board.executeMove(Direction.N);
+            BoardInterface afterMove = board.executeMove(Direction.N);
 
             //Then:
             int actualBallPosition = afterMove.getBallPosition();
@@ -308,7 +308,7 @@ class ImmutableBoardTest {
         @DisplayName("Make a proper full move towards South")
         void makeAMoveS() {
             //When:
-            BoardInterface2 afterMove = board.executeMove(Direction.S);
+            BoardInterface afterMove = board.executeMove(Direction.S);
 
             //Then:
             int actualBallPosition = afterMove.getBallPosition();
@@ -319,7 +319,7 @@ class ImmutableBoardTest {
         @DisplayName("Make a proper full move towards East, North and check allowed moves")
         void makeAMoveEN() {
             //When:
-            BoardInterface2 afterMove = board.executeMove(Direction.E)
+            BoardInterface afterMove = board.executeMove(Direction.E)
                     .executeMove(Direction.N);
 
             //Then:
@@ -339,8 +339,8 @@ class ImmutableBoardTest {
         @DisplayName("Make a one full move and don't allow to move backwards")
         void notAllowToMakeAMove() {
             //When:
-            BoardInterface2 afterFirstMove = board.executeMove(Direction.N);
-            BoardInterface2 afterSecondMove = null;
+            BoardInterface afterFirstMove = board.executeMove(Direction.N);
+            BoardInterface afterSecondMove = null;
             if (afterFirstMove.isMoveAllowed(Direction.S)) {
                 afterSecondMove = board.executeMove(Direction.S);
             }
@@ -412,8 +412,8 @@ class ImmutableBoardTest {
         @DisplayName("Make a one simple S move and then undo")
         void makeAMoveSAndUndoMove() {
             //When:
-            BoardInterface2 afterMove = board.executeMove(Direction.S);
-            BoardInterface2 afterUndo = afterMove.undoMove();
+            BoardInterface afterMove = board.executeMove(Direction.S);
+            BoardInterface afterUndo = afterMove.undoMove();
 
             //Then:
             int actualBallPosition = afterUndo.getBallPosition();
@@ -424,8 +424,8 @@ class ImmutableBoardTest {
         @DisplayName("Make a one simple S move and then undo")
         void makeAMoveSAndUndoMoveAndCheckSanity() {
             //When:
-            BoardInterface2 afterMove = board.executeMove(Direction.S);
-            BoardInterface2 afterUndo = afterMove.undoMove();
+            BoardInterface afterMove = board.executeMove(Direction.S);
+            BoardInterface afterUndo = afterMove.undoMove();
 
             //Then:
             final var legalMoves = afterUndo.allLegalMoves();

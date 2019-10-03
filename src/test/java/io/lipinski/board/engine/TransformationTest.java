@@ -42,8 +42,8 @@ class TransformationTest {
     @DisplayName("Check is Point class are strict with contract getAllDirections")
     void checkContractOnPointClass() {
         //Given:
-        final var first = new Point2(1);
-        final var second = new Point2(2);
+        final var first = new Point(1);
+        final var second = new Point(2);
         final var firstCheck = List.of(false, true, true, true, false, true, true, true);
         final var secondCheck = List.of(true, true, true, true, true, true, true, false);
 

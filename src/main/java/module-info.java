@@ -1,6 +1,7 @@
 module game.engine {
 
     exports io.lipinski.board.engine;
+    exports io.lipinski.board.engine.exceptions;
 
     opens io.lipinski.board.engine;
     opens io.lipinski.board.neuralnetwork;

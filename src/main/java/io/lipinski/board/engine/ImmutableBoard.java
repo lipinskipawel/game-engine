@@ -8,7 +8,7 @@ import java.util.Stack;
 
 // TODO Ideally this class should be package-private
 // TODO refactor handling player, this 'if' should be replace somehow in the future
-class ImmutableBoard implements BoardInterface2 {
+class ImmutableBoard implements BoardInterface {
 
     private final LogicalPoints points;
     private final MoveHistory moveHistory;
@@ -71,8 +71,8 @@ class ImmutableBoard implements BoardInterface2 {
     }
 
     @Override
-    public BoardInterface2 executeMove(final Move move) throws IllegalMoveException {
-        BoardInterface2 afterMove = this;
+    public BoardInterface executeMove(final Move move) throws IllegalMoveException {
+        BoardInterface afterMove = this;
         for (var dir : move.getMove()) {
             afterMove = afterMove.executeMove(dir);
         }
@@ -110,19 +110,19 @@ class ImmutableBoard implements BoardInterface2 {
         return allMoves.get();
     }
 
-    private void findAllMovesRecursively(final BoardInterface2 boardInterface2) {
+    private void findAllMovesRecursively(final BoardInterface boardInterface) {
 
-        for (var move : boardInterface2.getBallAPI().getAllowedDirection()) {
+        for (var move : boardInterface.getBallAPI().getAllowedDirection()) {
 
             stack.get().push(move);
-            final var afterMove = boardInterface2.executeMove(move);
+            final var afterMove = boardInterface.executeMove(move);
 
             if (isItEnd(afterMove.getBallAPI())) {
                 final var moveToSave = new Move(new ArrayList<>(stack.get()));
                 allMoves.get().add(moveToSave);
             } else {
 
-                final var afterMove2 = boardInterface2.executeMove(move);
+                final var afterMove2 = boardInterface.executeMove(move);
                 findAllMovesRecursively(afterMove2);
             }
 
@@ -131,7 +131,7 @@ class ImmutableBoard implements BoardInterface2 {
     }
 
     @Override
-    public Point2 getBallAPI() {
+    public Point getBallAPI() {
         return this.points.getBall();
     }
 
@@ -147,7 +147,7 @@ class ImmutableBoard implements BoardInterface2 {
                 this.points.getBall().getPosition() == 113;
     }
 
-    private boolean isItEnd(final Point2 ball) {
+    private boolean isItEnd(final Point ball) {
         return ball.getAllowedDirection().size() == 7 ||
                 ball.getAllowedDirection().size() == 0;
     }

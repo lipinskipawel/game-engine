@@ -6,12 +6,12 @@ import java.util.List;
 
 class PointUtils {
 
-    static List<Point2> initialPoints() {
-        List<Point2> tempListPoint = new ArrayList<>();
+    static List<Point> initialPoints() {
+        List<Point> tempListPoint = new ArrayList<>();
 
         for (int i = 0; i < 117; i++) {
             if (isInSideGoal(i)) {
-                Point2 point = new Point2(i);
+                Point point = new Point(i);
                 point.notAvailableDirections(Direction.S,
                         Direction.SW,
                         Direction.W,
@@ -31,7 +31,7 @@ class PointUtils {
 //                                )
 //                                .build());
             } else if (isCorner(i)) {
-                Point2 point = new Point2(i);
+                Point point = new Point(i);
                 point.notAvailableDirections(Direction.S,
                         Direction.SW,
                         Direction.W,
@@ -42,7 +42,7 @@ class PointUtils {
                         Direction.SE);
                 tempListPoint.add(point);
             } else if (isTopEdgeOfPitch(i)) {
-                Point2 point = new Point2(i);
+                Point point = new Point(i);
                 point.notAvailableDirections(Direction.W,
                         Direction.NW,
                         Direction.N,
@@ -50,19 +50,19 @@ class PointUtils {
                         Direction.E);
                 tempListPoint.add(point);
             } else if (isTopEdgeNearGoalRight(i)) {
-                Point2 point = new Point2(i);
+                Point point = new Point(i);
                 point.notAvailableDirections(Direction.N,
                         Direction.NE,
                         Direction.E);
                 tempListPoint.add(point);
             } else if (isTopEdgeNearGoalLeft(i)) {
-                Point2 point = new Point2(i);
+                Point point = new Point(i);
                 point.notAvailableDirections(Direction.N,
                         Direction.NW,
                         Direction.W);
                 tempListPoint.add(point);
             } else if (isBottomEdgeOfPitch(i)) {
-                Point2 point = new Point2(i);
+                Point point = new Point(i);
                 point.notAvailableDirections(Direction.E,
                         Direction.SE,
                         Direction.S,
@@ -70,19 +70,19 @@ class PointUtils {
                         Direction.W);
                 tempListPoint.add(point);
             } else if (isBottomEdgeNearGoalRight(i)) {
-                Point2 point = new Point2(i);
+                Point point = new Point(i);
                 point.notAvailableDirections(Direction.S,
                         Direction.SE,
                         Direction.E);
                 tempListPoint.add(point);
             } else if (isBottomEdgeNearGoalLeft(i)) {
-                Point2 point = new Point2(i);
+                Point point = new Point(i);
                 point.notAvailableDirections(Direction.S,
                         Direction.SW,
                         Direction.W);
                 tempListPoint.add(point);
             } else if (isLeftEdgeOfPitch(i)) {
-                Point2 point = new Point2(i);
+                Point point = new Point(i);
                 point.notAvailableDirections(Direction.S,
                         Direction.SW,
                         Direction.W,
@@ -90,7 +90,7 @@ class PointUtils {
                         Direction.N);
                 tempListPoint.add(point);
             } else if (isRightEdgeOfPitch(i)) {
-                Point2 point = new Point2(i);
+                Point point = new Point(i);
                 point.notAvailableDirections(Direction.S,
                         Direction.N,
                         Direction.NE,
@@ -98,7 +98,7 @@ class PointUtils {
                         Direction.SE);
                 tempListPoint.add(point);
             } else if (isOutSideOfPitch(i)) {
-                Point2 point = new Point2(i);
+                Point point = new Point(i);
                 point.notAvailableDirections(Direction.N,
                         Direction.NE,
                         Direction.E,
@@ -109,7 +109,7 @@ class PointUtils {
                         Direction.NW);
                 tempListPoint.add(point);
             } else {
-                tempListPoint.add(new Point2(i));
+                tempListPoint.add(new Point(i));
             }
         }
         return Collections.unmodifiableList(tempListPoint);
