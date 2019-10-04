@@ -24,7 +24,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
-@DisplayName("Running new API MutableBoard tests")
+@DisplayName("API -- ImmutableBoard")
 class ImmutableBoardTest {
 
     private BoardInterface board;
@@ -404,7 +404,7 @@ class ImmutableBoardTest {
         void undoMoveWhenGameJustBegun() {
 
             assertThrows(IllegalUndoMoveException.class,
-                    () -> board.undoMove(),
+                    () -> board.undo(),
                     () -> "Can't undo move when no move has been done");
         }
 
@@ -413,7 +413,7 @@ class ImmutableBoardTest {
         void makeAMoveSAndUndoMove() {
             //When:
             BoardInterface afterMove = board.executeMove(Direction.S);
-            BoardInterface afterUndo = afterMove.undoMove();
+            BoardInterface afterUndo = afterMove.undo();
 
             //Then:
             int actualBallPosition = afterUndo.getBallPosition();
@@ -425,7 +425,7 @@ class ImmutableBoardTest {
         void makeAMoveSAndUndoMoveAndCheckSanity() {
             //When:
             BoardInterface afterMove = board.executeMove(Direction.S);
-            BoardInterface afterUndo = afterMove.undoMove();
+            BoardInterface afterUndo = afterMove.undo();
 
             //Then:
             final var legalMoves = afterUndo.allLegalMoves();
@@ -442,7 +442,7 @@ class ImmutableBoardTest {
             final var afterSubMove = afterSecondMove.executeMove(Direction.SW);
 
             //Then:
-            final var shouldBeAfterSubMove = afterSubMove.undoMove();
+            final var shouldBeAfterSubMove = afterSubMove.undo();
             assertEquals(afterSecondMove.getBallPosition(), shouldBeAfterSubMove.getBallPosition(),
                     () -> "Ball should be in the same spot");
         }
@@ -457,7 +457,7 @@ class ImmutableBoardTest {
             final var afterSubMove = afterSecondMove.executeMove(Direction.SW);
 
             //Then:
-            final var shouldBeAfterSubMove = afterSubMove.undoMove();
+            final var shouldBeAfterSubMove = afterSubMove.undo();
             assertTrue(shouldBeAfterSubMove.isMoveAllowed(Direction.SW),
                     () -> "Make a move in 'undo' direction must be possible");
         }
@@ -466,16 +466,18 @@ class ImmutableBoardTest {
         @DisplayName("make 4 moves and undo 4 moves")
         void undoAllMoves() {
             final var afterThreeMoves = board
-                    .executeMove(new Move(List.of(Direction.N)))
-                    .executeMove(new Move(List.of(Direction.NE)))
-                    .executeMove(Direction.S)
-                    .executeMove(Direction.W);
+                    .executeMove(new Move(List.of(Direction.N))) // SEC
+                    .executeMove(new Move(List.of(Direction.NE))) // FIR
+                    .executeMove(Direction.S) // SEC
+                    .executeMove(Direction.W); // SEC
 
-            final var undoAllMoves = afterThreeMoves
-                    .undoMove()
-                    .undoMove()
-                    .undoMove()
-                    .undoMove();
+            final var temp = afterThreeMoves
+                    .undo()
+                    .undo()
+                    .undo();
+            System.out.println(temp.getPlayer());
+            final var undoAllMoves = temp
+                    .undo();
 
             Assertions.assertThat(undoAllMoves).isEqualToComparingFieldByFieldRecursively(board);
         }
@@ -490,7 +492,7 @@ class ImmutableBoardTest {
             final var afterSubMove = afterSecondMove.executeMove(Direction.SW);
 
             //Then:
-            final var shouldBeAfterSubMove = afterSubMove.undoMove();
+            final var shouldBeAfterSubMove = afterSubMove.undo();
             assertEquals(Player.FIRST, shouldBeAfterSubMove.getPlayer(),
                     () -> "Not change player");
         }
@@ -517,10 +519,25 @@ class ImmutableBoardTest {
             //When:
             final var afterTwoMoves = board.executeMove(Direction.W)
                     .executeMove(Direction.NW);
-            final var afterUndoMove = afterTwoMoves.undoMove();
+            final var afterUndoMove = afterTwoMoves.undo();
 
             //Then:
             assertEquals(Player.SECOND, afterUndoMove.getPlayer());
+        }
+
+        @Test
+        @DisplayName("Make a couple of moves and undo, should be the same player to move")
+        void makeMovesAndUndo() {
+            final var firstToMove = board
+                    .executeMove(Direction.E)
+                    .executeMove(Direction.N);
+
+            final var afterMoveAndUndo = firstToMove
+                    .executeMove(Direction.SW)
+                    .undo()
+                    .executeMove(Direction.SW);
+
+            Assertions.assertThat(afterMoveAndUndo.getPlayer()).isEqualByComparingTo(Player.FIRST);
         }
     }
 }

@@ -27,18 +27,18 @@ class LogicalPoints implements Transformation {
 
     LogicalPoints undoMove(final Direction direction) throws IllegalUndoMoveException {
 
-        final var afterMovePosition = computeBallPosition(direction.opposite());
+        final var newBallPosition = computeBallPosition(direction.opposite());
+        final var fakeNewMovePoints = new ArrayList<>(points);
 
-        final var afterMovePoints = new ArrayList<>(points);
+        final var newPositionPoint = points.get(this.ballPosition.getPosition());
+        newPositionPoint.setAvailableDirections(direction.opposite());
+        fakeNewMovePoints.set(this.ballPosition.getPosition(), newPositionPoint);
 
-        afterMovePoints.set(this.ballPosition.getPosition(),
-                new Point(this.ballPosition.getPosition()));
+        final var originalPositionPoint = fakeNewMovePoints.get(newBallPosition);
+        originalPositionPoint.setAvailableDirections(direction);
+        fakeNewMovePoints.set(newBallPosition, originalPositionPoint);
 
-        final var previousPositionPoint = afterMovePoints.get(afterMovePosition);
-        previousPositionPoint.setAvailableDirections(direction);
-        afterMovePoints.set(afterMovePosition, previousPositionPoint);
-
-        return new LogicalPoints(afterMovePoints, previousPositionPoint);
+        return new LogicalPoints(fakeNewMovePoints, originalPositionPoint);
     }
 
     LogicalPoints makeAMove(final Direction destination) {

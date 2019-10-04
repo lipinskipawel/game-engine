@@ -3,8 +3,15 @@ package io.lipinski.board.engine;
 import io.lipinski.board.engine.exceptions.IllegalMoveException;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Deque;
 import java.util.List;
 import java.util.Stack;
+import java.util.concurrent.ConcurrentLinkedDeque;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.toList;
 
 // TODO Ideally this class should be package-private
 // TODO refactor handling player, this 'if' should be replace somehow in the future
@@ -85,11 +92,10 @@ class ImmutableBoard implements BoardInterface {
     }
 
     @Override
-    public ImmutableBoard undoMove() {
-
+    public ImmutableBoard undo() {
         final var logicalPoints = this.points.undoMove(this.moveHistory.getLastMove());
         final var newMoveHistory = this.moveHistory.subtract();
-        final var player = computePlayerToMove(this.points);
+        final var player = computePlayerToMove(logicalPoints);
         final var moveLogg = this.playerToMove == player ? this.moveLog : this.moveLog.undoMove();
         final var interMove = this.playerToMove == player ? remove() : new ArrayList<Direction>();
 
@@ -98,6 +104,11 @@ class ImmutableBoard implements BoardInterface {
                 newMoveHistory,
                 moveLogg,
                 interMove);
+    }
+
+    @Override
+    public BoardInterface undoPlayerMove() {
+        return null;
     }
 
     @Override
@@ -154,7 +165,7 @@ class ImmutableBoard implements BoardInterface {
 
     @Override
     public Player getPlayer() {
-        return this.playerToMove;
+        return this.moveLog.currentPlayer();
     }
 
     @Override
@@ -163,6 +174,8 @@ class ImmutableBoard implements BoardInterface {
     }
 
     private Player computePlayerToMove(final LogicalPoints logicalPoints) {
+        if (this.intermediateMoves.size() > 0)
+            return this.playerToMove;
         var player = this.playerToMove;
 
         if (logicalPoints.isOtherPlayerToMove())
@@ -178,6 +191,8 @@ class ImmutableBoard implements BoardInterface {
     }
 
     private ArrayList<Direction> remove() {
+        if (this.intermediateMoves.size() == 0)
+            return new ArrayList<>();
         final var moves = new ArrayList<>(this.intermediateMoves);
         moves.remove(moves.size() - 1);
         return moves;

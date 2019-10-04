@@ -24,6 +24,7 @@ public class Point {
     }
 
     Point(Point point) {
+//        System.out.println("what " + point.position + " : " + Thread.currentThread().getName());
         this.position = point.position;
         this.availableDirections = point.availableDirections.entrySet()
                 .stream()
