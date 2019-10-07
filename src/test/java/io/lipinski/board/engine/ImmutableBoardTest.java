@@ -411,11 +411,9 @@ class ImmutableBoardTest {
         @Test
         @DisplayName("Make a one simple S move and then undo")
         void makeAMoveSAndUndoMove() {
-            //When:
             BoardInterface afterMove = board.executeMove(Direction.S);
             BoardInterface afterUndo = afterMove.undo();
 
-            //Then:
             int actualBallPosition = afterUndo.getBallPosition();
             assertEquals(STARTING_BALL_POSITION, actualBallPosition);
         }
@@ -423,11 +421,9 @@ class ImmutableBoardTest {
         @Test
         @DisplayName("Make a one simple S move and then undo")
         void makeAMoveSAndUndoMoveAndCheckSanity() {
-            //When:
             BoardInterface afterMove = board.executeMove(Direction.S);
             BoardInterface afterUndo = afterMove.undo();
 
-            //Then:
             final var legalMoves = afterUndo.allLegalMoves();
             Assertions.assertThat(legalMoves.size()).isEqualTo(8);
         }
@@ -435,13 +431,11 @@ class ImmutableBoardTest {
         @Test
         @DisplayName("Make a few moves and then complex one move and then undo sub move")
         void makeAMoveNAndUndoMove() {
-            //When:
             final var afterOneMove = board.executeMove(Direction.N);
             final var afterSecondMove = afterOneMove.executeMove(Direction.E);
 
             final var afterSubMove = afterSecondMove.executeMove(Direction.SW);
 
-            //Then:
             final var shouldBeAfterSubMove = afterSubMove.undo();
             assertEquals(afterSecondMove.getBallPosition(), shouldBeAfterSubMove.getBallPosition(),
                     () -> "Ball should be in the same spot");
@@ -450,13 +444,11 @@ class ImmutableBoardTest {
         @Test
         @DisplayName("Make a few moves and then complex one move and then undo sub move Another Check")
         void makeAMoveNAndUndoMoveAnotherCheck() {
-            //When:
             final var afterOneMove = board.executeMove(Direction.N);
             final var afterSecondMove = afterOneMove.executeMove(Direction.E);
 
             final var afterSubMove = afterSecondMove.executeMove(Direction.SW);
 
-            //Then:
             final var shouldBeAfterSubMove = afterSubMove.undo();
             assertTrue(shouldBeAfterSubMove.isMoveAllowed(Direction.SW),
                     () -> "Make a move in 'undo' direction must be possible");
@@ -466,17 +458,15 @@ class ImmutableBoardTest {
         @DisplayName("make 4 moves and undo 4 moves")
         void undoAllMoves() {
             final var afterThreeMoves = board
-                    .executeMove(new Move(List.of(Direction.N))) // SEC
-                    .executeMove(new Move(List.of(Direction.NE))) // FIR
-                    .executeMove(Direction.S) // SEC
-                    .executeMove(Direction.W); // SEC
+                    .executeMove(new Move(List.of(Direction.N)))
+                    .executeMove(new Move(List.of(Direction.NE)))
+                    .executeMove(Direction.S)
+                    .executeMove(Direction.W);
 
-            final var temp = afterThreeMoves
+            final var undoAllMoves = afterThreeMoves
                     .undo()
                     .undo()
-                    .undo();
-            System.out.println(temp.getPlayer());
-            final var undoAllMoves = temp
+                    .undo()
                     .undo();
 
             Assertions.assertThat(undoAllMoves).isEqualToComparingFieldByFieldRecursively(board);
@@ -485,18 +475,62 @@ class ImmutableBoardTest {
         @Test
         @DisplayName("Make a few moves and then complex one move and then undo sub move Another Check")
         void makeAMoveNAndUndoMoveAnotherCheckYetAnother() {
-            //When:
             final var afterOneMove = board.executeMove(Direction.N);
             final var afterSecondMove = afterOneMove.executeMove(Direction.E);
 
             final var afterSubMove = afterSecondMove.executeMove(Direction.SW);
 
-            //Then:
             final var shouldBeAfterSubMove = afterSubMove.undo();
             assertEquals(Player.FIRST, shouldBeAfterSubMove.getPlayer(),
                     () -> "Not change player");
         }
 
+    }
+
+    @Nested
+    @DisplayName("undoPlayerMove")
+    class UndoPlayerMoveTest {
+
+        @Test
+        @DisplayName("should not undo when no small moves are made")
+        void noUndoNoSmallMoves() {
+            final var afterTwoMoves = board
+                    .executeMove(Direction.N)
+                    .executeMove(Direction.NE);
+
+            final var undoPlayer = afterTwoMoves.undoPlayerMove();
+
+            Assertions.assertThat(undoPlayer.getPlayer()).isEqualByComparingTo(afterTwoMoves.getPlayer());
+        }
+
+        @Test
+        @DisplayName("should undo when on small move has been played")
+        void undoSmallMove() {
+            final var afterTwoMoves = board
+                    .executeMove(Direction.W)
+                    .executeMove(Direction.N);
+
+            final var smallMoveAndUndo = afterTwoMoves
+                    .executeMove(Direction.SE)
+                    .undoPlayerMove();
+
+            Assertions.assertThat(smallMoveAndUndo).isEqualToComparingFieldByFieldRecursively(afterTwoMoves);
+        }
+
+        @Test
+        @DisplayName("should undo one small move even executed twice")
+        void undoSmallMoveTwo() {
+            final var afterTwoMoves = board
+                    .executeMove(Direction.W)
+                    .executeMove(Direction.N);
+
+            final var smallMoveAndUndo = afterTwoMoves
+                    .executeMove(Direction.SE)
+                    .undoPlayerMove()
+                    .undoPlayerMove();
+
+            Assertions.assertThat(smallMoveAndUndo).isEqualToComparingFieldByFieldRecursively(afterTwoMoves);
+        }
     }
 
     @Nested
@@ -506,22 +540,40 @@ class ImmutableBoardTest {
         @Test
         @DisplayName("Make a move as FIRST player and check if this is SECOND player turn")
         void secondPlayerNeedToMove() {
-            //When:
             final var afterMove = board.executeMove(Direction.E);
 
-            //Then:
             assertEquals(Player.SECOND, afterMove.getPlayer());
+        }
+
+        @Test
+        @DisplayName("After two moves First player to move")
+        void afterTwoMoves() {
+            final var afterTwoMoves = board
+                    .executeMove(Direction.W)
+                    .executeMove(Direction.S);
+
+            Assertions.assertThat(afterTwoMoves.getPlayer()).isEqualByComparingTo(Player.FIRST);
+        }
+
+        @Test
+        @DisplayName("After two moves and small First player to move")
+        void afterTwoMovesAndSmallMove() {
+            final var afterTwoMoves = board
+                    .executeMove(Direction.W)
+                    .executeMove(Direction.S)
+                    .executeMove(Direction.NE);
+
+            Assertions.assertThat(afterTwoMoves.getPlayer()).isEqualByComparingTo(Player.FIRST);
         }
 
         @Test
         @DisplayName("Make a move, undo and check player turn")
         void makeTwoMovesAndCheckPlayerTurn() {
-            //When:
-            final var afterTwoMoves = board.executeMove(Direction.W)
+            final var afterTwoMoves = board
+                    .executeMove(Direction.W)
                     .executeMove(Direction.NW);
             final var afterUndoMove = afterTwoMoves.undo();
 
-            //Then:
             assertEquals(Player.SECOND, afterUndoMove.getPlayer());
         }
 

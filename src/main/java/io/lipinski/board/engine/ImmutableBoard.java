@@ -108,7 +108,10 @@ class ImmutableBoard implements BoardInterface {
 
     @Override
     public BoardInterface undoPlayerMove() {
-        return null;
+        if (this.intermediateMoves.size() > 0) {
+            return this.undo();
+        } else
+            return this;
     }
 
     @Override
