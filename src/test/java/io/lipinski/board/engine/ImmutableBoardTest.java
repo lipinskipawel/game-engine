@@ -403,7 +403,7 @@ class ImmutableBoardTest {
         @DisplayName("Try to undo move when no move has been done yet")
         void undoMoveWhenGameJustBegun() {
 
-            assertThrows(IllegalUndoMoveException.class,
+            assertThrows(RuntimeException.class,
                     () -> board.undo(),
                     () -> "Can't undo move when no move has been done");
         }
@@ -473,6 +473,34 @@ class ImmutableBoardTest {
         }
 
         @Test
+        @DisplayName("make 4 moves and undo 4 moves")
+        void undoOneMoves() {
+            final var temo = board
+                    .executeMove(new Move(List.of(Direction.NE)));
+
+            final var afterThreeMoves = board
+                    .executeMove(new Move(List.of(Direction.NE)))
+                    .executeMove(Direction.N)
+                    .undo();
+
+            Assertions.assertThat(afterThreeMoves).isEqualToComparingFieldByFieldRecursively(temo);
+        }
+
+        @Test
+        @DisplayName("sadasdasf ")
+        void saundoOneMoves() {
+            final var afterThreeMoves = board
+                    .executeMove(new Move(List.of(Direction.NE)))
+                    .executeMove(Direction.N);
+
+            final var second = board
+                    .executeMove(Direction.NE)
+                    .executeMove(Direction.N);
+
+            Assertions.assertThat(second).isEqualToComparingFieldByFieldRecursively(afterThreeMoves);
+        }
+
+        @Test
         @DisplayName("Make a few moves and then complex one move and then undo sub move Another Check")
         void makeAMoveNAndUndoMoveAnotherCheckYetAnother() {
             final var afterOneMove = board.executeMove(Direction.N);
@@ -484,7 +512,6 @@ class ImmutableBoardTest {
             assertEquals(Player.FIRST, shouldBeAfterSubMove.getPlayer(),
                     () -> "Not change player");
         }
-
     }
 
     @Nested
@@ -526,10 +553,11 @@ class ImmutableBoardTest {
 
             final var smallMoveAndUndo = afterTwoMoves
                     .executeMove(Direction.SE)
-                    .undoPlayerMove()
                     .undoPlayerMove();
 
-            Assertions.assertThat(smallMoveAndUndo).isEqualToComparingFieldByFieldRecursively(afterTwoMoves);
+            final var boardInterface = smallMoveAndUndo.undoPlayerMove();
+
+            Assertions.assertThat(boardInterface).isEqualToComparingFieldByFieldRecursively(smallMoveAndUndo);
         }
     }
 

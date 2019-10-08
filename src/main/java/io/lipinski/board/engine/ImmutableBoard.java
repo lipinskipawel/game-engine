@@ -3,25 +3,16 @@ package io.lipinski.board.engine;
 import io.lipinski.board.engine.exceptions.IllegalMoveException;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Deque;
 import java.util.List;
 import java.util.Stack;
-import java.util.concurrent.ConcurrentLinkedDeque;
-import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.stream.Collectors;
-
-import static java.util.stream.Collectors.toList;
 
 // TODO Ideally this class should be package-private
 // TODO refactor handling player, this 'if' should be replace somehow in the future
 class ImmutableBoard implements BoardInterface {
 
     private final LogicalPoints points;
-    private final MoveHistory moveHistory;
     private final Player playerToMove;
-    private final PlayerMoveLog moveLog;
-    private final List<Direction> intermediateMoves;
+    private final MoveHistory moveLog;
 
     private final static ThreadLocal<Stack<Direction>> stack = new ThreadLocal<>();
     private final static ThreadLocal<List<Move>> allMoves = new ThreadLocal<>();
@@ -29,26 +20,20 @@ class ImmutableBoard implements BoardInterface {
     ImmutableBoard() {
         this.points = new LogicalPoints();
         this.playerToMove = Player.FIRST;
-        this.moveHistory = new MoveHistory();
-        this.moveLog = new PlayerMoveLog();
-        this.intermediateMoves = new ArrayList<>();
+        this.moveLog = new MoveHistory();
     }
 
     private ImmutableBoard(final LogicalPoints points,
                            final Player currentPlayer,
-                           final MoveHistory moveHistory,
-                           final PlayerMoveLog playerMoveLog,
-                           final List<Direction> intermediateMoves) {
+                           final MoveHistory moveHistory) {
         this.points = points;
         this.playerToMove = currentPlayer;
-        this.moveHistory = moveHistory;
-        this.moveLog = playerMoveLog;
-        this.intermediateMoves = intermediateMoves;
+        this.moveLog = moveHistory;
     }
 
     @Override
     public List<Direction> allMoves() {
-        return this.moveHistory.allMoves();
+        return this.moveLog.allDirections();
     }
 
     @Override
@@ -65,21 +50,17 @@ class ImmutableBoard implements BoardInterface {
     public ImmutableBoard executeMove(final Direction destination) {
 
         final var logicalPoints = this.points.makeAMove(destination);
-        final var newMoveHistory = this.moveHistory.add(destination);
         final var player = computePlayerToMove(logicalPoints);
-        final var moveLogg = this.playerToMove == player ? this.moveLog : addMove(destination);
-        final var interMoves = this.playerToMove == player ? add(destination) : new ArrayList<Direction>();
+        final var moveLogg = this.playerToMove == player ? this.moveLog.add(destination) : this.moveLog.addMove(new Move(List.of(destination)));
 
         return new ImmutableBoard(logicalPoints,
                 player,
-                newMoveHistory,
-                moveLogg,
-                interMoves);
+                moveLogg);
     }
 
     @Override
     public BoardInterface executeMove(final Move move) throws IllegalMoveException {
-        BoardInterface afterMove = this;
+        BoardInterface afterMove = new ImmutableBoard(this.points, this.playerToMove, this.moveLog);
         for (var dir : move.getMove()) {
             afterMove = afterMove.executeMove(dir);
         }
@@ -93,25 +74,26 @@ class ImmutableBoard implements BoardInterface {
 
     @Override
     public ImmutableBoard undo() {
-        final var logicalPoints = this.points.undoMove(this.moveHistory.getLastMove());
-        final var newMoveHistory = this.moveHistory.subtract();
-        final var player = computePlayerToMove(logicalPoints);
-        final var moveLogg = this.playerToMove == player ? this.moveLog : this.moveLog.undoMove();
-        final var interMove = this.playerToMove == player ? remove() : new ArrayList<Direction>();
+        final var lol = this.moveLog
+                .getLastDirection()
+                .orElseThrow(() -> new RuntimeException("There is no move to undo"));
+        final var logicalPoints = this.points.undoMove(lol);
+        final var moveLogg = this.moveLog.forceUndo();
+        final var player = moveLogg.currentPlayer();
 
         return new ImmutableBoard(logicalPoints,
                 player,
-                newMoveHistory,
-                moveLogg,
-                interMove);
+                moveLogg);
     }
 
     @Override
     public BoardInterface undoPlayerMove() {
-        if (this.intermediateMoves.size() > 0) {
-            return this.undo();
-        } else
+        final var another = new ImmutableBoard(this.points, this.playerToMove, this.moveLog).undo();
+        if (this.playerToMove == another.playerToMove) {
+            return another;
+        } else {
             return this;
+        }
     }
 
     @Override
@@ -177,33 +159,11 @@ class ImmutableBoard implements BoardInterface {
     }
 
     private Player computePlayerToMove(final LogicalPoints logicalPoints) {
-        if (this.intermediateMoves.size() > 0)
-            return this.playerToMove;
         var player = this.playerToMove;
 
         if (logicalPoints.isOtherPlayerToMove())
             player = this.playerToMove.opposite();
 
         return player;
-    }
-
-    private PlayerMoveLog addMove(final Direction destination) {
-        final var list = new ArrayList<>(this.intermediateMoves);
-        list.add(destination);
-        return this.moveLog.addMove(new Move(list));
-    }
-
-    private ArrayList<Direction> remove() {
-        if (this.intermediateMoves.size() == 0)
-            return new ArrayList<>();
-        final var moves = new ArrayList<>(this.intermediateMoves);
-        moves.remove(moves.size() - 1);
-        return moves;
-    }
-
-    private List<Direction> add(final Direction destination) {
-        final var moves = new ArrayList<>(this.intermediateMoves);
-        moves.add(destination);
-        return moves;
     }
 }
