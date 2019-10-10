@@ -1,11 +1,11 @@
 module game.engine {
 
-    exports io.lipinski.board.engine;
-    exports io.lipinski.board.engine.exceptions;
+    exports com.github.lipinskipawel.board.engine;
+    exports com.github.lipinskipawel.board.engine.exceptions;
 
-    opens io.lipinski.board.engine;
-    opens io.lipinski.board.neuralnetwork;
-    opens io.lipinski.board.neuralnetwork.internal;
-    opens io.lipinski.board.neuralnetwork.internal.activation;
+    opens com.github.lipinskipawel.board.engine;
+    opens com.github.lipinskipawel.board.neuralnetwork;
+    opens com.github.lipinskipawel.board.neuralnetwork.internal;
+    opens com.github.lipinskipawel.board.neuralnetwork.internal.activation;
 
 }
