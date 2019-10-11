@@ -150,7 +150,7 @@ class ImmutableBoard implements BoardInterface {
 
     @Override
     public Player getPlayer() {
-        return this.moveLog.currentPlayer();
+        return this.playerToMove;
     }
 
     @Override

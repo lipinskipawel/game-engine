@@ -392,6 +392,19 @@ class ImmutableBoardTest {
                     () -> assertTrue(afterMoves.isMoveAllowed(Direction.W))
             );
         }
+
+        @Test
+        @DisplayName("four moves (inside is one small move)")
+        void shouldBePlayerFirstToMove() {
+            final var afterMoves = board
+                    .executeMove(Direction.NE)
+                    .executeMove(Direction.NW)
+                    .executeMove(Direction.S)
+                    .executeMove(Direction.S)
+                    .executeMove(Direction.W);
+
+            Assertions.assertThat(afterMoves.getPlayer()).isEqualByComparingTo(Player.FIRST);
+        }
     }
 
     @Nested
