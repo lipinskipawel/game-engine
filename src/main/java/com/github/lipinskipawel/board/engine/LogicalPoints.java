@@ -1,14 +1,11 @@
 package com.github.lipinskipawel.board.engine;
 
-import com.github.lipinskipawel.board.engine.exceptions.IllegalMoveException;
-import com.github.lipinskipawel.board.engine.exceptions.IllegalUndoMoveException;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 
-class LogicalPoints implements Transformation {
+final class LogicalPoints implements Transformation {
 
     private final List<Point> points;
     private final Point ballPosition;
@@ -25,7 +22,7 @@ class LogicalPoints implements Transformation {
         this.ballPosition = points.get(ballPosition.getPosition());
     }
 
-    LogicalPoints undoMove(final Direction direction) throws IllegalUndoMoveException {
+    LogicalPoints undoMove(final Direction direction) {
 
         final var newBallPosition = computeBallPosition(direction.opposite());
         final var fakeNewMovePoints = new ArrayList<>(points);
@@ -54,7 +51,7 @@ class LogicalPoints implements Transformation {
             afterMove.set(newPosition, afterMove.get(newPosition).notAvailableDirection(destination.opposite()));
             return new LogicalPoints(afterMove, afterMove.get(newPosition));
         }
-        throw new IllegalMoveException("Can't make a move " + destination.toString());
+        throw new RuntimeException("Can't make a move " + destination.toString());
     }
 
     private int computeBallPosition(final Direction destination) {

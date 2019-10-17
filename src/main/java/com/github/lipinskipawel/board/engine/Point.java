@@ -10,9 +10,10 @@ import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
 import static java.util.stream.Collectors.toUnmodifiableList;
 
-//TODO refactor this class with PointUtils
-// put them into the same package and play with package scope
-public class Point {
+/**
+ * This class represents point on the board.
+ */
+final public class Point {
 
     private int position;
     private Map<Direction, Boolean> availableDirections;
@@ -24,7 +25,6 @@ public class Point {
     }
 
     Point(Point point) {
-//        System.out.println("what " + point.position + " : " + Thread.currentThread().getName());
         this.position = point.position;
         this.availableDirections = point.availableDirections.entrySet()
                 .stream()

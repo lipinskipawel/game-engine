@@ -1,7 +1,5 @@
 package com.github.lipinskipawel.board.engine;
 
-import com.github.lipinskipawel.board.engine.exceptions.IllegalMoveException;
-
 import java.util.List;
 
 public interface BoardInterface extends Transformation {
@@ -11,9 +9,9 @@ public interface BoardInterface extends Transformation {
      *
      * @param direction this is the direction to move a ball
      * @return a new BoardInterface object with a ball position
-     * @throws IllegalMoveException when the move can not be made
+     * @throws RuntimeException when the move can not be made
      */
-    BoardInterface executeMove(final Direction direction) throws IllegalMoveException;
+    BoardInterface executeMove(final Direction direction);
 
     /**
      * This method will move the ball by the given move.
@@ -21,9 +19,9 @@ public interface BoardInterface extends Transformation {
      *
      * @param move this move will be made
      * @return a new BoardInterface object with a new move
-     * @throws IllegalMoveException when the move can not be made
+     * @throws RuntimeException when the move can not be made
      */
-    BoardInterface executeMove(final Move move) throws IllegalMoveException;
+    BoardInterface executeMove(final Move move);
 
     /**
      * This method will undo only current player small moves.
@@ -39,13 +37,13 @@ public interface BoardInterface extends Transformation {
      * If method is call enough time it is possible to undo whole game.
      *
      * @return a new BoardInterface object with a undo move
+     * @throws RuntimeException when the move can not be undo at the beggining of the game
      */
     BoardInterface undo();
 
     List<Move> allLegalMoves();
 
     /**
-     *
      * @return all Moves made by each {@link Player}
      */
     List<Move> moveHistory();
@@ -57,9 +55,13 @@ public interface BoardInterface extends Transformation {
      * @return all 'small' which has been made
      */
     List<Direction> allMoves();
+
     boolean isMoveAllowed(final Direction destination);
+
     int getBallPosition();
+
     Point getBallAPI();
+
     boolean isGoal();
 
     Player getPlayer();

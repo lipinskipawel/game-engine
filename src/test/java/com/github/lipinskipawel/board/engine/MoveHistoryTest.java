@@ -260,7 +260,7 @@ class MoveHistoryTest {
 
     @Nested
     @DisplayName("currentPlayer")
-    class CurrentPLayerTest {
+    class CurrentPlayerTest {
 
         @Test
         @DisplayName("one move")

@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
 class PointTest {
 
     @Nested
-    @DisplayName("Kick ball to")
+    @DisplayName("kickBallTo")
     class KickBall {
 
         @Test

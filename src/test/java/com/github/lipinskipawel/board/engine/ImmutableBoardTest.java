@@ -63,9 +63,8 @@ class ImmutableBoardTest {
     class LegalMoves {
 
         @Test
-        @DisplayName("List of legal moves with clean board")
+        @DisplayName("zero moves")
         void allLegalMoves() {
-            //Given:
             final var preparedMoves = List.of(
                     new Move(Collections.singletonList(Direction.N)),
                     new Move(Collections.singletonList(Direction.NE)),
@@ -77,18 +76,37 @@ class ImmutableBoardTest {
                     new Move(Collections.singletonList(Direction.NW))
             );
 
-            //When:
             final var allMoves = board.allLegalMoves();
 
-            //Then:
             Assertions.assertThat(allMoves)
                     .containsExactlyInAnyOrderElementsOf(preparedMoves);
         }
 
         @Test
-        @DisplayName("List of legal moves after N, E")
+        @DisplayName("two moves, one undo")
+        void shouldReturnTheSameMoveAsOnlyOneMoveHadBeenMade() {
+            final var preparedMoves = List.of(
+                    new Move(Collections.singletonList(Direction.SW)),
+                    new Move(Collections.singletonList(Direction.N)),
+                    new Move(Collections.singletonList(Direction.NE)),
+                    new Move(Collections.singletonList(Direction.S)),
+                    new Move(Collections.singletonList(Direction.W)),
+                    new Move(Collections.singletonList(Direction.NW)),
+                    new Move(Collections.singletonList(Direction.E))
+            );
+            final var afterMoves = board
+                    .executeMove(Direction.NW)
+                    .executeMove(Direction.N)
+                    .undo();
+
+            final var allMoves = afterMoves.allLegalMoves();
+
+            Assertions.assertThat(allMoves).containsExactlyInAnyOrderElementsOf(preparedMoves);
+        }
+
+        @Test
+        @DisplayName("two moves, one point of contact")
         void allLegalMovesAfterSomeMoves() {
-            //Given:
             final var preparedMoves = List.of(
                     new Move(Collections.singletonList(Direction.NW)),
                     new Move(Collections.singletonList(Direction.N)),
@@ -104,20 +122,18 @@ class ImmutableBoardTest {
                     new Move(Arrays.asList(Direction.SW, Direction.NW))
             );
 
-            //When:
-            final var afterTwoMoves = board.executeMove(Direction.N)
-                    .executeMove(Direction.E);
-            final var allMoves = afterTwoMoves.allLegalMoves();
+            final var allMoves = board
+                    .executeMove(Direction.N)
+                    .executeMove(Direction.E)
+                    .allLegalMoves();
 
-            //Then:
             Assertions.assertThat(allMoves)
                     .containsExactlyInAnyOrderElementsOf(preparedMoves);
         }
 
         @Test
-        @DisplayName("List of legal moves after NE, NE, N, NE. Ball close to corner")
+        @DisplayName("four moves, close to corner")
         void allLegalMoveCloseToCorner() {
-            //Given:
             final var preparedMoves = List.of(
                     new Move(Collections.singletonList(Direction.W)),
                     new Move(Arrays.asList(Direction.NW, Direction.SW)),
@@ -146,23 +162,20 @@ class ImmutableBoardTest {
                     new Move(Collections.singletonList(Direction.S))
             );
 
-            //When:
-            final var afterMoves = board
+            final var allMoves = board
                     .executeMove(Direction.NE)
                     .executeMove(Direction.NE)
                     .executeMove(Direction.N)
-                    .executeMove(Direction.NE);
-            final var allMoves = afterMoves.allLegalMoves();
+                    .executeMove(Direction.NE)
+                    .allLegalMoves();
 
-            //Then:
             Assertions.assertThat(allMoves)
                     .containsExactlyInAnyOrderElementsOf(preparedMoves);
         }
 
         @Test
-        @DisplayName("List of legal moves after N, E. MultiThreaded")
+        @DisplayName("two moves, 5 threads")
         void allLegalMovesAfterSomeMovesMultiThread() {
-            //Given:
             final var preparedMoves = List.of(
                     new Move(Collections.singletonList(Direction.NW)),
                     new Move(Collections.singletonList(Direction.N)),
@@ -178,8 +191,9 @@ class ImmutableBoardTest {
                     new Move(Arrays.asList(Direction.SW, Direction.NW))
             );
 
-            //When:
-            final var afterTwoMoves = board.executeMove(Direction.N).executeMove(Direction.E);
+            final var afterTwoMoves = board
+                    .executeMove(Direction.N)
+                    .executeMove(Direction.E);
 
             final var legalMoves1 = executor.submit(afterTwoMoves::allLegalMoves);
             final var legalMoves2 = executor.submit(afterTwoMoves::allLegalMoves);
@@ -187,7 +201,6 @@ class ImmutableBoardTest {
             final var legalMoves4 = executor.submit(afterTwoMoves::allLegalMoves);
             final var legalMoves5 = executor.submit(afterTwoMoves::allLegalMoves);
 
-            //Then:
             try {
                 final var results = List.of(
                         legalMoves1.get(),
@@ -215,9 +228,8 @@ class ImmutableBoardTest {
         }
 
         @Test
-        @DisplayName("List of legal moves after NE, NE, N, NE. Ball close to corner. MultiThreaded")
+        @DisplayName("four moves, 5 threads")
         void allLegalMoveCloseToCornerMultiThread() {
-            //Given:
             final var preparedMoves = List.of(
                     new Move(Collections.singletonList(Direction.W)),
                     new Move(Arrays.asList(Direction.NW, Direction.SW)),
@@ -246,7 +258,6 @@ class ImmutableBoardTest {
                     new Move(Collections.singletonList(Direction.S))
             );
 
-            //When:
             final var afterMoves = board
                     .executeMove(Direction.NE)
                     .executeMove(Direction.NE)
@@ -259,7 +270,6 @@ class ImmutableBoardTest {
             final var legalMoves4 = executor.submit(afterMoves::allLegalMoves);
             final var legalMoves5 = executor.submit(afterMoves::allLegalMoves);
 
-            //Then:
             try {
                 final var results = List.of(
                         legalMoves1.get(),
@@ -293,12 +303,22 @@ class ImmutableBoardTest {
     class MakeAMove {
 
         @Test
+        @DisplayName("one move, one move in opposite direction to first one")
+        void shouldThrowRuntimeException() {
+            final var throwable = Assertions.catchThrowable(
+                    () -> board
+                            .executeMove(Direction.NW)
+                            .executeMove(Direction.SE)
+            );
+
+            Assertions.assertThat(throwable).isInstanceOf(RuntimeException.class);
+        }
+
+        @Test
         @DisplayName("Make a proper full move towards North")
         void makeAMoveN() {
-            //When:
-            BoardInterface afterMove = board.executeMove(Direction.N);
+            final var afterMove = board.executeMove(Direction.N);
 
-            //Then:
             int actualBallPosition = afterMove.getBallPosition();
             assertEquals(POSITION_AFTER_N_MOVE, actualBallPosition);
         }
@@ -306,10 +326,8 @@ class ImmutableBoardTest {
         @Test
         @DisplayName("Make a proper full move towards South")
         void makeAMoveS() {
-            //When:
-            BoardInterface afterMove = board.executeMove(Direction.S);
+            final var afterMove = board.executeMove(Direction.S);
 
-            //Then:
             int actualBallPosition = afterMove.getBallPosition();
             assertEquals(POSITION_AFTER_S_MOVE, actualBallPosition);
         }
@@ -317,11 +335,9 @@ class ImmutableBoardTest {
         @Test
         @DisplayName("Make a proper full move towards East, North and check allowed moves")
         void makeAMoveEN() {
-            //When:
-            BoardInterface afterMove = board.executeMove(Direction.E)
+            final var afterMove = board.executeMove(Direction.E)
                     .executeMove(Direction.N);
 
-            //Then:
             assertAll(
                     () -> assertTrue(afterMove.isMoveAllowed(Direction.N)),
                     () -> assertTrue(afterMove.isMoveAllowed(Direction.NE)),
@@ -337,26 +353,22 @@ class ImmutableBoardTest {
         @Test
         @DisplayName("Make a one full move and don't allow to move backwards")
         void notAllowToMakeAMove() {
-            //When:
-            BoardInterface afterFirstMove = board.executeMove(Direction.N);
+            final var afterFirstMove = board.executeMove(Direction.N);
             BoardInterface afterSecondMove = null;
             if (afterFirstMove.isMoveAllowed(Direction.S)) {
                 afterSecondMove = board.executeMove(Direction.S);
             }
 
-            //Then:
             assertNull(afterSecondMove);
         }
 
         @Test
         @DisplayName("Can't follow executed moves")
         void makeTwoMovesAndTryFollowExecutedMoves() {
-            //When:
             final var afterMoves = board.executeMove(Direction.N)
                     .executeMove(Direction.E)
                     .executeMove(Direction.SW);
 
-            //Then:
             assertAll(
                     () -> assertTrue(afterMoves.isMoveAllowed(Direction.NW)),
                     () -> assertFalse(afterMoves.isMoveAllowed(Direction.N)),
@@ -372,7 +384,6 @@ class ImmutableBoardTest {
         @Test
         @DisplayName("Can't follow executed moves, move sample")
         void makeTwoMovesAndTryFollowExecutedMovesMoreSample() {
-            //When:
             final var afterMoves = board.executeMove(Direction.N)
                     .executeMove(Direction.E)
                     .executeMove(Direction.SW)
@@ -380,7 +391,6 @@ class ImmutableBoardTest {
                     .executeMove(Direction.E)
                     .executeMove(Direction.N);
 
-            //Then:
             assertAll(
                     () -> assertTrue(afterMoves.isMoveAllowed(Direction.NW)),
                     () -> assertFalse(afterMoves.isMoveAllowed(Direction.N)),
@@ -543,7 +553,7 @@ class ImmutableBoardTest {
         }
 
         @Test
-        @DisplayName("should undo when on small move has been played")
+        @DisplayName("should undo when small move has been played")
         void undoSmallMove() {
             final var afterTwoMoves = board
                     .executeMove(Direction.W)
@@ -574,20 +584,26 @@ class ImmutableBoardTest {
     }
 
     @Nested
-    @DisplayName("Make a move, and check player")
+    @DisplayName("getPlayer")
     class MakeAMoveAndCheckPlayer {
 
         @Test
-        @DisplayName("Make a move as FIRST player and check if this is SECOND player turn")
-        void secondPlayerNeedToMove() {
+        @DisplayName("zero moves")
+        void shouldBeTheFirstPlayerToMoveEmptyBoard() {
+            Assertions.assertThat(board.getPlayer()).isEqualByComparingTo(Player.FIRST);
+        }
+
+        @Test
+        @DisplayName("one move")
+        void shouldBeSecondPlayerToMove() {
             final var afterMove = board.executeMove(Direction.E);
 
             assertEquals(Player.SECOND, afterMove.getPlayer());
         }
 
         @Test
-        @DisplayName("After two moves First player to move")
-        void afterTwoMoves() {
+        @DisplayName("two moves")
+        void shouldBeFirstPlayerToMove() {
             final var afterTwoMoves = board
                     .executeMove(Direction.W)
                     .executeMove(Direction.S);
@@ -596,8 +612,8 @@ class ImmutableBoardTest {
         }
 
         @Test
-        @DisplayName("After two moves and small First player to move")
-        void afterTwoMovesAndSmallMove() {
+        @DisplayName("two moves, small move")
+        void shouldBeTheFirstPlayerToMove() {
             final var afterTwoMoves = board
                     .executeMove(Direction.W)
                     .executeMove(Direction.S)
@@ -607,19 +623,19 @@ class ImmutableBoardTest {
         }
 
         @Test
-        @DisplayName("Make a move, undo and check player turn")
-        void makeTwoMovesAndCheckPlayerTurn() {
+        @DisplayName("two moves, one undo")
+        void shouldBeTheSecondPlayer() {
             final var afterTwoMoves = board
                     .executeMove(Direction.W)
                     .executeMove(Direction.NW);
             final var afterUndoMove = afterTwoMoves.undo();
 
-            assertEquals(Player.SECOND, afterUndoMove.getPlayer());
+            Assertions.assertThat(afterUndoMove.getPlayer()).isEqualByComparingTo(Player.SECOND);
         }
 
         @Test
-        @DisplayName("Make a couple of moves and undo, should be the same player to move")
-        void makeMovesAndUndo() {
+        @DisplayName("two moves, one small move, one undo, small move")
+        void shouldBeThatSamePlayer() {
             final var firstToMove = board
                     .executeMove(Direction.E)
                     .executeMove(Direction.N);

@@ -1,14 +1,12 @@
 package com.github.lipinskipawel.board.engine;
 
-import com.github.lipinskipawel.board.engine.exceptions.IllegalMoveException;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
 
 // TODO Ideally this class should be package-private
 // TODO refactor handling player, this 'if' should be replace somehow in the future
-class ImmutableBoard implements BoardInterface {
+final class ImmutableBoard implements BoardInterface {
 
     private final LogicalPoints points;
     private final Player playerToMove;
@@ -53,13 +51,11 @@ class ImmutableBoard implements BoardInterface {
         final var player = computePlayerToMove(logicalPoints);
         final var moveLogg = this.playerToMove == player ? this.moveLog.add(destination) : this.moveLog.addMove(new Move(List.of(destination)));
 
-        return new ImmutableBoard(logicalPoints,
-                player,
-                moveLogg);
+        return new ImmutableBoard(logicalPoints, player, moveLogg);
     }
 
     @Override
-    public BoardInterface executeMove(final Move move) throws IllegalMoveException {
+    public BoardInterface executeMove(final Move move) {
         BoardInterface afterMove = new ImmutableBoard(this.points, this.playerToMove, this.moveLog);
         for (var dir : move.getMove()) {
             afterMove = afterMove.executeMove(dir);
@@ -74,16 +70,14 @@ class ImmutableBoard implements BoardInterface {
 
     @Override
     public ImmutableBoard undo() {
-        final var lol = this.moveLog
+        final var lastDirection = this.moveLog
                 .getLastDirection()
                 .orElseThrow(() -> new RuntimeException("There is no move to undo"));
-        final var logicalPoints = this.points.undoMove(lol);
+        final var logicalPoints = this.points.undoMove(lastDirection);
         final var moveLogg = this.moveLog.forceUndo();
         final var player = moveLogg.currentPlayer();
 
-        return new ImmutableBoard(logicalPoints,
-                player,
-                moveLogg);
+        return new ImmutableBoard(logicalPoints, player, moveLogg);
     }
 
     @Override
