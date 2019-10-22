@@ -2,7 +2,13 @@ package com.github.lipinskipawel.board.engine;
 
 import com.github.lipinskipawel.board.neuralnetwork.internal.ResultInterface;
 
-public enum Direction implements ResultInterface {
+import java.io.Serializable;
+
+/**
+ * Binary compatibility of this enum will change in the future.
+ * This enum is unstable only in terms of adding and removing interfaces.
+ */
+public enum Direction implements Serializable, ResultInterface {
 
     S(4) {
         @Override

@@ -1,10 +1,11 @@
 package com.github.lipinskipawel.board.engine;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-final public class Move {
+final public class Move implements Serializable {
 
     private List<Direction> directions;
 
