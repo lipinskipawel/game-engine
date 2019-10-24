@@ -1,4 +1,5 @@
 [![CircleCI](https://circleci.com/gh/lipinskipawel/game-engine.svg?style=svg)](https://circleci.com/gh/lipinskipawel/game-engine)
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.lipinskipawel/game-engine/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.github.lipinskipawel/game-engine)
 
 # Game engine
 Engine for 2D football game
