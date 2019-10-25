@@ -49,8 +49,9 @@ final class MoveHistory {
     MoveHistory addMove(final Move move) {
         if (this.smallMove.size() > 0) {
             final var copyMoves = new ArrayDeque<>(this.moves);
-            copyMoves.add(new Move(new ArrayList<>(this.smallMove)));
-            copyMoves.add(move);
+            final var copySmallMoves = new ArrayList<>(this.smallMove);
+            copySmallMoves.addAll(move.getMove());
+            copyMoves.add(new Move(copySmallMoves));
             return new MoveHistory(copyMoves, new ArrayList<>());
         } else {
             final var copyMoves = new ArrayDeque<>(this.moves);

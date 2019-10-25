@@ -59,6 +59,27 @@ class ImmutableBoardTest {
     }
 
     @Nested
+    @DisplayName("sanity -- recursively")
+    class SanityTest {
+
+        @Test
+        @DisplayName("three moves with undo inside")
+        void shouldBeThreeMoves() {
+            final ImmutableBoard afterMoves = (ImmutableBoard) board
+                    .executeMove(Direction.SE)
+                    .executeMove(Direction.W)
+                    .executeMove(Direction.N)
+                    .undo()
+                    .executeMove(Direction.N)
+                    .executeMove(Direction.W);
+
+            final ImmutableBoard undo = (ImmutableBoard) afterMoves.undoPlayerMove();
+
+            Assertions.assertThat(afterMoves).isEqualToComparingFieldByFieldRecursively(undo);
+        }
+    }
+
+    @Nested
     @DisplayName("allLegalMoves")
     class LegalMoves {
 
@@ -295,7 +316,6 @@ class ImmutableBoardTest {
                 fail("Can't get result from all 5 threads");
             }
         }
-
     }
 
     @Nested

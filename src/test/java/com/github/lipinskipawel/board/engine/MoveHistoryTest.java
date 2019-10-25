@@ -33,6 +33,25 @@ class MoveHistoryTest {
 
             Assertions.assertThat(afterMoves).isEqualToComparingFieldByFieldRecursively(moveLog);
         }
+
+        @Test
+        @DisplayName("two moves, one small, one undo, one small, one move")
+        void shouldBeOverallThreMovesMade() {
+            final var prepared = moveLog
+                    .addMove(new Move(List.of(Direction.SE)))
+                    .addMove(new Move(List.of(Direction.W)))
+                    .addMove(new Move(List.of(Direction.N, Direction.W)));
+
+            final var afterMoves = moveLog
+                    .addMove(new Move(List.of(Direction.SE)))
+                    .addMove(new Move(List.of(Direction.W)))
+                    .add(Direction.N)
+                    .undo()
+                    .add(Direction.N)
+                    .addMove(new Move(List.of(Direction.W)));
+
+            Assertions.assertThat(afterMoves).isEqualToComparingFieldByFieldRecursively(prepared);
+        }
     }
 
     @Nested
@@ -307,7 +326,7 @@ class MoveHistoryTest {
                     .add(Direction.W)
                     .addMove(new Move(List.of(Direction.N)));
 
-            Assertions.assertThat(afterMoves.currentPlayer()).isEqualByComparingTo(Player.SECOND);
+            Assertions.assertThat(afterMoves.currentPlayer()).isEqualByComparingTo(Player.FIRST);
         }
 
         @Test
