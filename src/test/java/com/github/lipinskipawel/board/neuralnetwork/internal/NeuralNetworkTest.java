@@ -1,5 +1,6 @@
 package com.github.lipinskipawel.board.neuralnetwork.internal;
 
+import com.github.lipinskipawel.board.neuralnetwork.internal.activation.Relu;
 import com.github.lipinskipawel.board.neuralnetwork.internal.activation.Tanh;
 import com.github.lipinskipawel.board.neuralnetwork.internal.lossfunction.MSE;
 import com.github.lipinskipawel.board.neuralnetwork.internal.activation.Linear;
@@ -8,8 +9,10 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.stream.IntStream;
 
 import static org.assertj.core.api.Java6Assertions.catchThrowable;
 import static org.assertj.core.api.Java6Assertions.offset;
@@ -92,6 +95,21 @@ class NeuralNetworkTest {
                     () -> Assertions.assertThat(output1).isCloseTo(19.0, withPercentage(5)),
                     () -> Assertions.assertThat(output2).isCloseTo(-7.0, offset(0.05))
             );
+        }
+
+        @Test
+        @DisplayName("input 1, 3 -> 2")
+        void sillyTest3() {
+            final var model = new DeepNeuralNetwork.Builder()
+                    .addLayer(new Layer(2, new Tanh()))
+                    .addLayer(new Layer(1, new Relu()))
+                    .compile()
+                    .lossFunction(new MSE())
+                    .build();
+
+            IntStream.range(0, 20_00).forEach(number -> model.train(new int[]{1, 3}, 2));
+            final var result = (double) model.predict(new int[]{1, 3}).getBestValue();
+            Assertions.assertThat(result).isCloseTo(2, offset(0.001));
         }
     }
 
