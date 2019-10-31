@@ -43,7 +43,7 @@ public interface Matrix {
      * amount rows as elements in passed arrays.
      *
      * @param column
-     * @return instance of Matrix interface
+     * @return instance of Matrix interface. Shape 1x@param.size
      */
     static Matrix of(final int[] column) {
         final var data = new double[column.length][1];
