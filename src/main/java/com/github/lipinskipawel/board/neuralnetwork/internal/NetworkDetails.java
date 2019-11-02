@@ -10,9 +10,6 @@ import java.util.stream.Collectors;
 
 final class NetworkDetails {
 
-    List<Matrix> nodes;
-    List<Matrix> biases;
-    List<ActivationFunction> activations;
     private final List<LayerInternal> layers;
 
     NetworkDetails(List<Layer> layers) {
@@ -24,38 +21,30 @@ final class NetworkDetails {
                 .stream()
                 .map(Layer::getActivationFunction)
                 .collect(Collectors.toList());
-        this.nodes = new ArrayList<>(architecture.length);
-        this.biases = new ArrayList<>(architecture.length);
-        this.activations = new ArrayList<>(architecture.length);
-
+        this.layers = new ArrayList<>(architecture.length);
         for (int i = 0; i < architecture.length; i++) {
-            if (i == 0)
-                this.nodes.add(Matrix.of(architecture[i], architecture[i]));
-            else
-                this.nodes.add(Matrix.of(architecture[i], architecture[i - 1]));
-            this.biases.add(Matrix.of(architecture[i], 1));
-            this.activations.add(activationFunctions.get(i));
-        }
-        this.layers = new ArrayList<>();
-        if (this.nodes.size() == this.biases.size() && this.nodes.size() == this.activations.size()) {
-            for (var index = 0; index < this.nodes.size(); index++) {
-                this.layers.add(new LayerInternal(this.nodes.get(index), this.biases.get(index), this.activations.get(index)));
+            if (i == 0) {
+                this.layers.add(new LayerInternal(
+                        Matrix.of(architecture[i], architecture[i]),
+                        Matrix.of(architecture[i], 1),
+                        activationFunctions.get(i)));
+            } else {
+                this.layers.add(new LayerInternal(
+                        Matrix.of(architecture[i], architecture[i - 1]),
+                        Matrix.of(architecture[i], 1),
+                        activationFunctions.get(i)));
             }
         }
         randomize();
     }
 
     NetworkDetails(List<Matrix> weights, List<Matrix> biases, List<ActivationFunction> activations) {
-        this.nodes = new ArrayList<>(weights);
-        this.biases = new ArrayList<>(biases);
-        this.activations = activations;
         this.layers = new ArrayList<>();
-        if (this.nodes.size() == this.biases.size() && this.nodes.size() == this.activations.size()) {
-            for (var index = 0; index < this.nodes.size(); index++) {
-                this.layers.add(new LayerInternal(this.nodes.get(index), this.biases.get(index), this.activations.get(index)));
+        if (weights.size() == biases.size() && weights.size() == activations.size()) {
+            for (var index = 0; index < weights.size(); index++) {
+                this.layers.add(new LayerInternal(weights.get(index), biases.get(index), activations.get(index)));
             }
         }
-        randomize();
     }
 
     /**
