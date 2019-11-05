@@ -1,10 +1,12 @@
 module game.engine {
 
     exports com.github.lipinskipawel.board.engine;
+    exports com.github.lipinskipawel.board.ai;
+    exports com.github.lipinskipawel.board.ai.bruteforce;
 
     opens com.github.lipinskipawel.board.engine;
-    opens com.github.lipinskipawel.board.neuralnetwork;
-    opens com.github.lipinskipawel.board.neuralnetwork.internal;
-    opens com.github.lipinskipawel.board.neuralnetwork.internal.activation;
+    opens com.github.lipinskipawel.board.ai.bruteforce;
+    opens com.github.lipinskipawel.board.ai.ml;
+    opens com.github.lipinskipawel.board.ai.ml.activation;
 
 }

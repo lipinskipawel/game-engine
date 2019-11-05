@@ -1,6 +1,6 @@
 package com.github.lipinskipawel.board.engine;
 
-import com.github.lipinskipawel.board.neuralnetwork.internal.ResultInterface;
+import com.github.lipinskipawel.board.ai.ml.ResultInterface;
 
 import java.io.Serializable;
 
