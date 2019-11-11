@@ -64,6 +64,8 @@ public interface BoardInterface extends Transformation {
 
     boolean isGoal();
 
+    boolean isOver();
+
     Player getPlayer();
 
 }
