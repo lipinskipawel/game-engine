@@ -43,7 +43,7 @@ class MiniMaxTest {
 
             assertAll(
                     () -> Assertions.assertThat(afterAiMove.isGoal()).isTrue(),
-                    () -> Assertions.assertThat(afterAiMove.getPlayer()).isEqualByComparingTo(Player.FIRST)
+                    () -> Assertions.assertThat(afterAiMove.getPlayer()).isEqualByComparingTo(Player.SECOND)
             );
         }
 

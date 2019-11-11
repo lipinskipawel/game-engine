@@ -668,4 +668,35 @@ class ImmutableBoardTest {
             Assertions.assertThat(afterMoveAndUndo.getPlayer()).isEqualByComparingTo(Player.FIRST);
         }
     }
+
+    @Nested
+    @DisplayName("moveHistory")
+    class MoveHistoryTest {
+
+        @Test
+        @DisplayName("5 moves to north goal")
+        void fiveMovesToNorthGoal() {
+            final var thisIsGoal = board
+                    .executeMove(Direction.N)
+                    .executeMove(Direction.N)
+                    .executeMove(Direction.N)
+                    .executeMove(Direction.N)
+                    .executeMove(new Move(List.of(Direction.NW, Direction.NE)));
+
+            Assertions.assertThat(thisIsGoal.moveHistory().size()).isEqualTo(5);
+        }
+
+        @Test
+        @DisplayName("5 moves to south goal")
+        void fiveMovesToSouthGoal() {
+            final var thisIsGoal = board
+                    .executeMove(Direction.S)
+                    .executeMove(Direction.S)
+                    .executeMove(Direction.S)
+                    .executeMove(Direction.S)
+                    .executeMove(new Move(List.of(Direction.SE, Direction.SW)));
+
+            Assertions.assertThat(thisIsGoal.moveHistory().size()).isEqualTo(5);
+        }
+    }
 }
