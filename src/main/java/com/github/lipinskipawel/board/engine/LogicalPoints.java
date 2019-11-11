@@ -66,14 +66,9 @@ final class LogicalPoints implements Transformation {
      * @return
      */
     boolean isOtherPlayerToMove() {
-        if (ballPosition.getPosition() == 3 ||
-                ballPosition.getPosition() == 4 ||
-                ballPosition.getPosition() == 5 ||
-                ballPosition.getPosition() == 111 ||
-                ballPosition.getPosition() == 112 ||
-                ballPosition.getPosition() == 113)
-            return true;
-        return ballPosition.getUnavailableDirection().size() == 1 || ballPosition.getAllowedDirection().size() == 8;
+        return ballPosition.isOnTop() || ballPosition.isOnBottom() ||
+                ballPosition.getUnavailableDirection().size() == 1 ||
+                ballPosition.getAllowedDirection().size() == 8;
     }
 
     Point getBall() {

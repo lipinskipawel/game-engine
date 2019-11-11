@@ -39,7 +39,6 @@ final public class Point {
     }
 
     /**
-     *
      * @param destinationPoint this is number of different point
      * @return Direction to reach this #destinationPoint
      */
@@ -54,6 +53,14 @@ final public class Point {
         if (collect.size() != 1)
             throw new RuntimeException("Can't make a move in this direction");
         return collect.get(0);
+    }
+
+    boolean isOnTop() {
+        return this.position == 3 || this.position == 4 || this.position == 5;
+    }
+
+    boolean isOnBottom() {
+        return this.position == 111 || this.position == 112 || this.position == 113;
     }
 
     int getPosition() {
