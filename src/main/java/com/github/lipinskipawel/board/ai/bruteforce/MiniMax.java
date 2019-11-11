@@ -6,6 +6,8 @@ import com.github.lipinskipawel.board.engine.BoardInterface;
 import com.github.lipinskipawel.board.engine.Move;
 import com.github.lipinskipawel.board.engine.Player;
 
+import java.util.Collections;
+
 public final class MiniMax implements MoveStrategy {
 
     @Override
@@ -18,9 +20,9 @@ public final class MiniMax implements MoveStrategy {
     public Move execute(final BoardInterface board,
                         final int depth,
                         final BoardEvaluator evaluator) {
-        Move bestMove = null;
+        Move bestMove = new Move(Collections.emptyList());
 
-        var highestSeenValue = Double.MIN_VALUE;
+        var highestSeenValue = -Double.MAX_VALUE;
         var lowestSeenValue = Double.MAX_VALUE;
         double currentValue;
 
@@ -71,7 +73,7 @@ public final class MiniMax implements MoveStrategy {
         if (depth <= 0)
             return evaluator.evaluate(board);
 
-        var highestSeenValue = Double.MIN_VALUE;
+        var highestSeenValue = -Double.MAX_VALUE;
 
         for (Move move : board.allLegalMoves()) {
             BoardInterface afterMove = board.executeMove(move);

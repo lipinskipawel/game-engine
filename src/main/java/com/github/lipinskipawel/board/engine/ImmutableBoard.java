@@ -136,6 +136,11 @@ final class ImmutableBoard implements BoardInterface {
     }
 
     @Override
+    public boolean isOver() {
+        return isGoal() || allLegalMoves().isEmpty();
+    }
+
+    @Override
     public Player getPlayer() {
         return this.playerToMove;
     }

@@ -1,10 +1,8 @@
 package com.github.lipinskipawel.board.ai.bruteforce;
 
+import com.github.lipinskipawel.board.ai.BoardEvaluator;
 import com.github.lipinskipawel.board.ai.MoveStrategy;
-import com.github.lipinskipawel.board.engine.BoardInterface;
-import com.github.lipinskipawel.board.engine.Boards;
-import com.github.lipinskipawel.board.engine.Direction;
-import com.github.lipinskipawel.board.engine.Player;
+import com.github.lipinskipawel.board.engine.*;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -64,6 +62,24 @@ class MiniMaxTest {
                     () -> Assertions.assertThat(afterAiMove.isGoal()).isFalse(),
                     () -> Assertions.assertThat(afterAiMove.getPlayer()).isEqualByComparingTo(Player.FIRST)
             );
+        }
+
+        @Test
+        @DisplayName("SmartBoardEvaluator should beat DummyBoardEvaluator")
+        void checkBetterEvaluator() {
+            final var dummyEvaluator = new DummyBoardEvaluator();
+            final var smartEvaluator = new SmartBoardEvaluator();
+
+            var gameBoard = board;
+            BoardEvaluator evaluator = dummyEvaluator;
+
+            while (!gameBoard.isOver()) {
+                Move move = bruteForce.execute(gameBoard, 1, evaluator);
+                gameBoard = gameBoard.executeMove(move);
+                evaluator = evaluator == dummyEvaluator ? smartEvaluator : dummyEvaluator;
+            }
+
+            Assertions.assertThat(gameBoard.getPlayer()).isEqualByComparingTo(Player.FIRST);
         }
     }
 }
