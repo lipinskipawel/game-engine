@@ -125,16 +125,9 @@ final class ImmutableBoard implements BoardInterface {
         return this.points.getBall();
     }
 
-    // TODO need a layer of abstraction
-    // TODO some class that will accept BoardInterface2?? and compute the output
     @Override
     public boolean isGoal() {
-        return this.points.getBall().getPosition() == 3 ||
-                this.points.getBall().getPosition() == 4 ||
-                this.points.getBall().getPosition() == 5 ||
-                this.points.getBall().getPosition() == 112 ||
-                this.points.getBall().getPosition() == 111 ||
-                this.points.getBall().getPosition() == 113;
+        return this.points.getBall().isOnTop() || this.points.getBall().isOnBottom();
     }
 
     private boolean isItEnd(final Point ball) {
