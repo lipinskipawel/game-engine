@@ -41,6 +41,13 @@ public interface BoardInterface extends Transformation {
      */
     BoardInterface undo();
 
+    /**
+     * Returns all possible moves whenever this move ends up hitting the corner or not.
+     * This method could be time consuming based on the board state. There can be many
+     * moves already played on the board and the complexity could be high.
+     *
+     * @return Returns all possible moves for current {@link Player}
+     */
     List<Move> allLegalMoves();
 
     /**
@@ -56,19 +63,54 @@ public interface BoardInterface extends Transformation {
      */
     List<Direction> allMoves();
 
+    /**
+     * Move is allowed when it hasn't been made or the move from opposite
+     * direction was't made yet.
+     *
+     * @param destination possible direction to move ball
+     * @return true or false whenever the move is allowed
+     */
     boolean isMoveAllowed(final Direction destination);
 
+    /**
+     * This method will be move into {@link Point} API.
+     *
+     * @return position where the ball is
+     */
+    @Deprecated
     int getBallPosition();
 
+    /**
+     * @return current {@link Point} where the ball is present
+     */
     Point getBallAPI();
 
+    /**
+     * Goal area is defined by the three inner points. On the board there are
+     * two goal area.
+     *
+     * @return true or false whenever ball in the one of the goal area
+     */
     boolean isGoal();
+
+    /**
+     * Returns current {@link Player} to move. When new board is created
+     * then this method will return {@link Player#FIRST}. Whenever new move
+     * has been made then opposite Player will be returned. <p>A new move is made
+     * only when</p>:
+     * - ball has been kicked to new point
+     * - ball has been kicked into the goal area
+     * - ball has been stuck into corner or other forms without possibility to move
+     *
+     * <p>This method will not return opposite player when</p>:
+     * - ball has been kicked to the wall or to already drawn move
+     *
+     * @return {@link Player#FIRST} or {@link Player#SECOND}
+     */
+    Player getPlayer();
 
     /**
      * @return true if any of player score a goal or there are no possible moves to make. Otherwise false.
      */
     boolean isOver();
-
-    Player getPlayer();
-
 }
