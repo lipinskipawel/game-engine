@@ -605,7 +605,7 @@ class ImmutableBoardTest {
 
     @Nested
     @DisplayName("getPlayer")
-    class MakeAMoveAndCheckPlayer {
+    class GetPlayerTest {
 
         @Test
         @DisplayName("zero moves")
@@ -666,6 +666,68 @@ class ImmutableBoardTest {
                     .executeMove(Direction.SW);
 
             Assertions.assertThat(afterMoveAndUndo.getPlayer()).isEqualByComparingTo(Player.FIRST);
+        }
+
+        @Test
+        @DisplayName("5 moves to north goal")
+        void fiveMovesToNorthGoal() {
+            final var thisIsGoal = board
+                    .executeMove(Direction.N)
+                    .executeMove(Direction.N)
+                    .executeMove(Direction.N)
+                    .executeMove(Direction.N)
+                    .executeMove(new Move(List.of(Direction.NW, Direction.NE)));
+
+            Assertions.assertThat(thisIsGoal.getPlayer()).isEqualByComparingTo(Player.SECOND);
+        }
+
+        @Test
+        @DisplayName("5 moves to south goal")
+        void fiveMovesToSouthGoal() {
+            final var thisIsGoal = board
+                    .executeMove(Direction.S)
+                    .executeMove(Direction.S)
+                    .executeMove(Direction.S)
+                    .executeMove(Direction.S)
+                    .executeMove(new Move(List.of(Direction.SE, Direction.SW)));
+
+            Assertions.assertThat(thisIsGoal.getPlayer()).isEqualByComparingTo(Player.SECOND);
+        }
+
+        @Test
+        @DisplayName("moves to SE corner")
+        void movesToSeCorner() {
+            final var ballInTheCorner = board
+                    .executeMove(Direction.SE)
+                    .executeMove(Direction.SE)
+                    .executeMove(Direction.SE)
+                    .executeMove(Direction.S)
+                    .executeMove(Direction.SE);
+
+            Assertions.assertThat(ballInTheCorner.getPlayer()).isEqualByComparingTo(Player.SECOND);
+        }
+
+        @Test
+        @DisplayName("15 moves and hit inner corner")
+        void fifteenMovesAndHitTheInnerCorner() {
+            final var afterMoves = board
+                    .executeMove(Direction.N)
+                    .executeMove(Direction.SE)
+                    .executeMove(Direction.W)
+                    .executeMove(Direction.NE)
+                    .executeMove(Direction.W)
+                    .executeMove(Direction.SW)
+                    .executeMove(Direction.E)
+                    .executeMove(Direction.NW)
+                    .executeMove(Direction.S)
+                    .executeMove(Direction.SE)
+                    .executeMove(Direction.N)
+                    .executeMove(Direction.SE)
+                    .executeMove(Direction.W)
+                    .executeMove(Direction.W)
+                    .executeMove(Direction.NE);
+
+            Assertions.assertThat(afterMoves.allLegalMoves().isEmpty()).isTrue();
         }
     }
 
