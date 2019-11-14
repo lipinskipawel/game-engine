@@ -64,6 +64,9 @@ public interface BoardInterface extends Transformation {
 
     boolean isGoal();
 
+    /**
+     * @return true if any of player score a goal or there are no possible moves to make. Otherwise false.
+     */
     boolean isOver();
 
     Player getPlayer();
