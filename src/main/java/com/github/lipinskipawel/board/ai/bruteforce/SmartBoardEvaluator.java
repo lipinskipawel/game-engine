@@ -5,7 +5,7 @@ import com.github.lipinskipawel.board.engine.BoardInterface;
 
 import java.util.List;
 
-public final class SmartBoardEvaluator implements BoardEvaluator {
+final class SmartBoardEvaluator implements BoardEvaluator {
 
     private static List<Integer> POINTS = List.of(
             -60, -60, -60, -60, -60, -60, -60, -60, -60,

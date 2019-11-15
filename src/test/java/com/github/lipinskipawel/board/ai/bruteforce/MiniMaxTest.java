@@ -5,6 +5,7 @@ import com.github.lipinskipawel.board.ai.MoveStrategy;
 import com.github.lipinskipawel.board.engine.*;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -65,6 +66,7 @@ class MiniMaxTest {
         }
 
         @Test
+        @Disabled
         @DisplayName("SmartBoardEvaluator should beat DummyBoardEvaluator")
         void checkBetterEvaluator() {
             final var dummyEvaluator = new DummyBoardEvaluator();
