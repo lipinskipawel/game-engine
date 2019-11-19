@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
 import static java.util.stream.Collectors.toUnmodifiableList;
 
@@ -44,15 +43,13 @@ final public class Point {
      */
     public Direction kickBallTo(final int destinationPoint) {
         final var findThatNumber = destinationPoint - position;
-        final var collect = availableDirections.entrySet()
+        return availableDirections.entrySet()
                 .stream()
                 .filter(entry -> entry.getValue().booleanValue() == Boolean.TRUE)
                 .map(Map.Entry::getKey)
                 .filter(direction -> direction.changeToInt() == findThatNumber)
-                .collect(toList());
-        if (collect.size() != 1)
-            throw new RuntimeException("Can't make a move in this direction");
-        return collect.get(0);
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("Can't make a move in this direction"));
     }
 
     boolean isOnTop() {
