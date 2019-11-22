@@ -2,10 +2,12 @@ package com.github.lipinskipawel.board.ai.bruteforce;
 
 import com.github.lipinskipawel.board.ai.BoardEvaluator;
 import com.github.lipinskipawel.board.ai.MoveStrategy;
-import com.github.lipinskipawel.board.engine.*;
+import com.github.lipinskipawel.board.engine.BoardInterface;
+import com.github.lipinskipawel.board.engine.Boards;
+import com.github.lipinskipawel.board.engine.Direction;
+import com.github.lipinskipawel.board.engine.Player;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -66,7 +68,6 @@ class MiniMaxTest {
         }
 
         @Test
-        @Disabled
         @DisplayName("SmartBoardEvaluator should beat DummyBoardEvaluator")
         void checkBetterEvaluator() {
             final var dummyEvaluator = new DummyBoardEvaluator();
@@ -80,8 +81,11 @@ class MiniMaxTest {
                 gameBoard = gameBoard.executeMove(move);
                 evaluator = evaluator == dummyEvaluator ? smartEvaluator : dummyEvaluator;
             }
+            final var playerThatWon = board.isGoal()
+                    ? board.getPlayer()
+                    : board.getPlayer().opposite();
 
-            Assertions.assertThat(gameBoard.getPlayer()).isEqualByComparingTo(Player.FIRST);
+            Assertions.assertThat(playerThatWon).isEqualByComparingTo(Player.SECOND);
         }
     }
 }

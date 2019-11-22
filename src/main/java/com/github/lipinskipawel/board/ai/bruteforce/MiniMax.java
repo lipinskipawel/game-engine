@@ -7,6 +7,7 @@ import com.github.lipinskipawel.board.engine.Move;
 import com.github.lipinskipawel.board.engine.Player;
 
 import java.util.Collections;
+import java.util.List;
 
 public final class MiniMax implements MoveStrategy {
 
@@ -25,8 +26,10 @@ public final class MiniMax implements MoveStrategy {
         var highestSeenValue = -Double.MAX_VALUE;
         var lowestSeenValue = Double.MAX_VALUE;
         double currentValue;
+        final var allLegalMoves = board.allLegalMoves();
+        Collections.shuffle(allLegalMoves);
 
-        for (final Move move : board.allLegalMoves()) {
+        for (final Move move : allLegalMoves) {
 
             BoardInterface afterMove = board.executeMove(move);
 
