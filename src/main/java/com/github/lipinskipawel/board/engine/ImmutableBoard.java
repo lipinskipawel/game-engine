@@ -136,8 +136,8 @@ final class ImmutableBoard implements BoardInterface {
     }
 
     @Override
-    public boolean isOver() {
-        return isGoal() || allLegalMoves().isEmpty();
+    public boolean isGameOver() {
+        return isGoal() || points.getBall().getUnavailableDirection().size() == 8;
     }
 
     @Override

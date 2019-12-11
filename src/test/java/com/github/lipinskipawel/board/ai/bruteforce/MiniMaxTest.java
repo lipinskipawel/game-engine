@@ -76,7 +76,7 @@ class MiniMaxTest {
             var gameBoard = board;
             BoardEvaluator evaluator = dummyEvaluator;
 
-            while (!gameBoard.isOver()) {
+            while (!gameBoard.isGameOver()) {
                 var move = bruteForce.execute(gameBoard, 1, evaluator);
                 gameBoard = gameBoard.executeMove(move);
                 evaluator = evaluator == dummyEvaluator ? smartEvaluator : dummyEvaluator;

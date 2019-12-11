@@ -761,4 +761,42 @@ class ImmutableBoardTest {
             Assertions.assertThat(thisIsGoal.moveHistory().size()).isEqualTo(5);
         }
     }
+
+    @Nested
+    @DisplayName("isGameOver")
+    class IsGameOver {
+
+        @Test
+        @DisplayName("0 moves")
+        void shouldNotEndTheGameAfter0Moves() {
+            Assertions.assertThat(board.isGameOver()).isFalse();
+        }
+
+        @Test
+        @DisplayName("5 moves to north goal")
+        void shouldBeGameOverWhenPlayerScoreAGoal() {
+            final var afterMoves = board
+                    .executeMove(Direction.N)
+                    .executeMove(Direction.N)
+                    .executeMove(Direction.N)
+                    .executeMove(Direction.N)
+                    .executeMove(Direction.NE)
+                    .executeMove(Direction.NW);
+
+            Assertions.assertThat(afterMoves.isGameOver()).isTrue();
+        }
+
+        @Test
+        @DisplayName("moves to SE corner")
+        void shouldEndedTheGameWhenPlayerHitsTheCorner() {
+            final var afterMoves = board
+                    .executeMove(Direction.SE)
+                    .executeMove(Direction.SE)
+                    .executeMove(Direction.SE)
+                    .executeMove(Direction.S)
+                    .executeMove(Direction.SE);
+
+            Assertions.assertThat(afterMoves.isGameOver()).isTrue();
+        }
+    }
 }

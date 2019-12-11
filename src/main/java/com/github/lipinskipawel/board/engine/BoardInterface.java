@@ -112,5 +112,5 @@ public interface BoardInterface extends Transformation {
     /**
      * @return true if any of player score a goal or there are no possible moves to make. Otherwise false.
      */
-    boolean isOver();
+    boolean isGameOver();
 }
