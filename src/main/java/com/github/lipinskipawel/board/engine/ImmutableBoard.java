@@ -141,6 +141,11 @@ final class ImmutableBoard implements BoardInterface {
     }
 
     @Override
+    public BoardInterface nextPlayerToMove(final Player nextPlayerToMove) throws ChangePlayerIsNotAllowed {
+        throw new RuntimeException("Not Implemented yet");
+    }
+
+    @Override
     public Player getPlayer() {
         return this.playerToMove;
     }

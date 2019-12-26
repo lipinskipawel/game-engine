@@ -113,4 +113,14 @@ public interface BoardInterface extends Transformation {
      * @return true if any of player score a goal or there are no possible moves to make. Otherwise false.
      */
     boolean isGameOver();
+
+    /**
+     * This method is able to change player which is allowed to make a move. It could be invoked in any board state.
+     * This method will succeed only when non small moves has been made.
+     *
+     * @param nextPlayerToMove this PLayer will be next to move
+     * @return a new instance of BoardInterface with the same logical state <strong>except</strong> next player to move
+     * @throws ChangePlayerIsNotAllowed whenever small move has been made and wasn't undo
+     */
+    BoardInterface nextPlayerToMove(final Player nextPlayerToMove) throws ChangePlayerIsNotAllowed;
 }
