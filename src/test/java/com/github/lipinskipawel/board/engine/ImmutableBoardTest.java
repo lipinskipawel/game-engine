@@ -1,10 +1,10 @@
 package com.github.lipinskipawel.board.engine;
 
+import com.github.lipinskipawel.board.engine.exception.ChangePlayerIsNotAllowed;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -810,11 +810,10 @@ class ImmutableBoardTest {
     }
 
     @Nested
-    @DisplayName("nextPlayerToMove - under development")
+    @DisplayName("nextPlayerToMove")
     class NextPlayerToMove {
 
         @Test
-        @Disabled
         @DisplayName("0 moves, SECOND player to move")
         void changePlayerZeroMoves() {
             final var wantedPlayer = SECOND;
@@ -825,7 +824,6 @@ class ImmutableBoardTest {
         }
 
         @Test
-        @Disabled
         @DisplayName("1 move, FIRST player to move")
         void oneMoveStillFirstPlayerToMove() {
             final var wantedPlayer = FIRST;
@@ -838,7 +836,6 @@ class ImmutableBoardTest {
         }
 
         @Test
-        @Disabled
         @DisplayName("5 moves to goal")
         void shouldChangePlayerInGoalArea() {
             final var wantedPlayer = FIRST;
@@ -859,7 +856,6 @@ class ImmutableBoardTest {
         }
 
         @Test
-        @Disabled
         @DisplayName("5 moves to corner")
         void shouldChangePlayerInCornerKill() {
             final var wantedPlayer = FIRST;
@@ -879,7 +875,6 @@ class ImmutableBoardTest {
         }
 
         @Test
-        @Disabled
         @DisplayName("one move, one undo, change player")
         void shouldChangeOnUnchangedBoard() {
             final var wantedPlayer = SECOND;
@@ -893,7 +888,6 @@ class ImmutableBoardTest {
         }
 
         @Test
-        @Disabled
         @DisplayName("undo small move, change player")
         void shouldChangePlayerAfterSmallUndo() {
             final var wantedPlayer = SECOND;
@@ -909,7 +903,6 @@ class ImmutableBoardTest {
         }
 
         @Test
-        @Disabled
         @DisplayName("throw exception during small move")
         void shouldThrowExceptionDuringSmallMoveForTheSamePlayer() {
             final var exception = assertThrows(ChangePlayerIsNotAllowed.class,
@@ -921,11 +914,10 @@ class ImmutableBoardTest {
                     () -> "Switching player during small moves is NOT acceptable"
             );
 
-            Assertions.assertThat(exception).isSameAs(ChangePlayerIsNotAllowed.class);
+            Assertions.assertThat(exception).isInstanceOf(ChangePlayerIsNotAllowed.class);
         }
 
         @Test
-        @Disabled
         @DisplayName("throw exception during small move")
         void shouldThrowExceptionDuringSmallMoveForNextPlayer() {
             final var exception = assertThrows(ChangePlayerIsNotAllowed.class,
@@ -937,7 +929,7 @@ class ImmutableBoardTest {
                     () -> "Switching player during small moves is NOT acceptable"
             );
 
-            Assertions.assertThat(exception).isSameAs(ChangePlayerIsNotAllowed.class);
+            Assertions.assertThat(exception).isInstanceOf(ChangePlayerIsNotAllowed.class);
         }
     }
 }

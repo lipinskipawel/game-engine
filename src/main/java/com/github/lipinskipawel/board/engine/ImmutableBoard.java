@@ -1,5 +1,7 @@
 package com.github.lipinskipawel.board.engine;
 
+import com.github.lipinskipawel.board.engine.exception.ChangePlayerIsNotAllowed;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
@@ -142,7 +144,11 @@ final class ImmutableBoard implements BoardInterface {
 
     @Override
     public BoardInterface nextPlayerToMove(final Player nextPlayerToMove) throws ChangePlayerIsNotAllowed {
-        throw new RuntimeException("Not Implemented yet");
+        if (this.moveLog.isSmallMoveHasBeenMade()) {
+            throw new ChangePlayerIsNotAllowed();
+        }
+        final var newPlayer = computePlayerToMove(this.points);
+        return new ImmutableBoard(this.points, newPlayer, this.moveLog);
     }
 
     @Override

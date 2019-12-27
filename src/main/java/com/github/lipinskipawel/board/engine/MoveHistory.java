@@ -133,6 +133,10 @@ final class MoveHistory {
         }
     }
 
+    boolean isSmallMoveHasBeenMade() {
+        return !this.smallMove.isEmpty();
+    }
+
     Optional<Move> getLastMove() {
         try {
             return Optional.of(this.moves.peek());

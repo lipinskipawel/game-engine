@@ -1,5 +1,7 @@
 package com.github.lipinskipawel.board.engine;
 
+import com.github.lipinskipawel.board.engine.exception.ChangePlayerIsNotAllowed;
+
 import java.util.List;
 
 public interface BoardInterface extends Transformation {
