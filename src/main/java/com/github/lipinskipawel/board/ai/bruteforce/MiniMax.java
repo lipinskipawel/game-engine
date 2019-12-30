@@ -7,7 +7,6 @@ import com.github.lipinskipawel.board.engine.Move;
 import com.github.lipinskipawel.board.engine.Player;
 
 import java.util.Collections;
-import java.util.List;
 
 public final class MiniMax implements MoveStrategy {
 
@@ -37,7 +36,6 @@ public final class MiniMax implements MoveStrategy {
                     min(afterMove, depth - 1, evaluator) : // here is AFTER board
                     max(afterMove, depth - 1, evaluator); // here is AFTER board
 
-
             if (board.getPlayer() == Player.FIRST &&
                     currentValue >= highestSeenValue) {
 
@@ -56,7 +54,7 @@ public final class MiniMax implements MoveStrategy {
     private double min(final BoardInterface board,
                     final int depth,
                     final BoardEvaluator evaluator) {
-        if (depth <= 0)
+        if (depth <= 0 || board.isGameOver())
             return evaluator.evaluate(board);
 
         var lowestSeenValue = Double.MAX_VALUE;
@@ -73,7 +71,7 @@ public final class MiniMax implements MoveStrategy {
     private double max(final BoardInterface board,
                     final int depth,
                     final BoardEvaluator evaluator) {
-        if (depth <= 0)
+        if (depth <= 0 || board.isGameOver())
             return evaluator.evaluate(board);
 
         var highestSeenValue = -Double.MAX_VALUE;
