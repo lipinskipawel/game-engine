@@ -12,6 +12,11 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
+import static com.github.lipinskipawel.board.engine.Direction.N;
+import static com.github.lipinskipawel.board.engine.Direction.NW;
+import static com.github.lipinskipawel.board.engine.Direction.S;
+import static com.github.lipinskipawel.board.engine.Direction.SE;
+import static com.github.lipinskipawel.board.engine.Direction.W;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 @DisplayName("Testing brute force - minimax")
@@ -40,12 +45,10 @@ class MiniMaxTest {
             gameBoard = gameBoard.executeMove(move);
             evaluator = evaluator == dummyEvaluator ? smartEvaluator : dummyEvaluator;
         }
-        final var playerThatWon = board.isGoal()
-                ? board.getPlayer()
-                : board.getPlayer().opposite();
 
-        Assertions.assertThat(playerThatWon).isEqualByComparingTo(Player.SECOND);
+        Assertions.assertThat(gameBoard.getPlayer()).isEqualByComparingTo(Player.SECOND);
     }
+
 
     @Nested
     @DisplayName("Dummy evaluator")
@@ -59,10 +62,10 @@ class MiniMaxTest {
             @DisplayName("Should score the goal when player FIRST")
             void scoreAGoal() {
                 final var after4Moves = board
-                        .executeMove(Direction.N)
-                        .executeMove(Direction.N)
-                        .executeMove(Direction.N)
-                        .executeMove(Direction.N);
+                        .executeMove(N)
+                        .executeMove(N)
+                        .executeMove(N)
+                        .executeMove(N);
 
                 final var bestMove = bruteForce.execute(after4Moves, 1);
                 final var afterAiMove = after4Moves.executeMove(bestMove);
@@ -77,11 +80,11 @@ class MiniMaxTest {
             @DisplayName("Should NOT score the goal when player FIRST")
             void shouldNotMakeSuicideMove() {
                 final var after4Moves = board
-                        .executeMove(Direction.N)
-                        .executeMove(Direction.N)
-                        .executeMove(Direction.N)
-                        .executeMove(Direction.N)
-                        .executeMove(Direction.N);
+                        .executeMove(N)
+                        .executeMove(N)
+                        .executeMove(N)
+                        .executeMove(N)
+                        .executeMove(N);
 
                 final var bestMove = bruteForce.execute(after4Moves, 1);
                 final var afterAiMove = after4Moves.executeMove(bestMove);
@@ -96,10 +99,10 @@ class MiniMaxTest {
             @DisplayName("Should score the goal when player FIRST, depth 2")
             void scoreAGoalDepth2() {
                 final var after4Moves = board
-                        .executeMove(Direction.N)
-                        .executeMove(Direction.N)
-                        .executeMove(Direction.N)
-                        .executeMove(Direction.N);
+                        .executeMove(N)
+                        .executeMove(N)
+                        .executeMove(N)
+                        .executeMove(N);
 
                 final var bestMove = bruteForce.execute(after4Moves, 2);
                 final var afterAiMove = after4Moves.executeMove(bestMove);
@@ -114,11 +117,11 @@ class MiniMaxTest {
             @DisplayName("Should NOT score the goal when player FIRST, depth 2")
             void shouldNotMakeSuicideMoveDepth2() {
                 final var after4Moves = board
-                        .executeMove(Direction.N)
-                        .executeMove(Direction.N)
-                        .executeMove(Direction.N)
-                        .executeMove(Direction.N)
-                        .executeMove(Direction.N);
+                        .executeMove(N)
+                        .executeMove(N)
+                        .executeMove(N)
+                        .executeMove(N)
+                        .executeMove(N);
 
                 final var bestMove = bruteForce.execute(after4Moves, 2);
                 final var afterAiMove = after4Moves.executeMove(bestMove);
@@ -133,10 +136,10 @@ class MiniMaxTest {
             @DisplayName("Should score the goal when player FIRST, depth 3")
             void scoreAGoalDepth3() {
                 final var after4Moves = board
-                        .executeMove(Direction.N)
-                        .executeMove(Direction.N)
-                        .executeMove(Direction.N)
-                        .executeMove(Direction.N);
+                        .executeMove(N)
+                        .executeMove(N)
+                        .executeMove(N)
+                        .executeMove(N);
 
                 final var bestMove = bruteForce.execute(after4Moves, 3);
                 final var afterAiMove = after4Moves.executeMove(bestMove);
@@ -151,11 +154,11 @@ class MiniMaxTest {
             @DisplayName("Should NOT score the goal when player FIRST, depth 3")
             void shouldNotMakeSuicideMoveDepth3() {
                 final var after4Moves = board
-                        .executeMove(Direction.N)
-                        .executeMove(Direction.N)
-                        .executeMove(Direction.N)
-                        .executeMove(Direction.N)
-                        .executeMove(Direction.N);
+                        .executeMove(N)
+                        .executeMove(N)
+                        .executeMove(N)
+                        .executeMove(N)
+                        .executeMove(N);
 
                 final var bestMove = bruteForce.execute(after4Moves, 3);
                 final var afterAiMove = after4Moves.executeMove(bestMove);
@@ -175,11 +178,11 @@ class MiniMaxTest {
             @DisplayName("Should score a goal when player SECOND")
             void scoreAGoalInSecondDay() {
                 final var after4Moves = board
-                        .executeMove(Direction.S)
-                        .executeMove(Direction.S)
-                        .executeMove(Direction.S)
-                        .executeMove(Direction.S)
-                        .executeMove(Direction.S);
+                        .executeMove(S)
+                        .executeMove(S)
+                        .executeMove(S)
+                        .executeMove(S)
+                        .executeMove(S);
 
                 final var bestMove = bruteForce.execute(after4Moves, 1);
                 final var afterAiMove = after4Moves.executeMove(bestMove);
@@ -194,10 +197,10 @@ class MiniMaxTest {
             @DisplayName("Should NOT score a goal when player FIRST")
             void shouldNotMakeSuicideMove() {
                 final var after4Moves = board
-                        .executeMove(Direction.S)
-                        .executeMove(Direction.S)
-                        .executeMove(Direction.S)
-                        .executeMove(Direction.S);
+                        .executeMove(S)
+                        .executeMove(S)
+                        .executeMove(S)
+                        .executeMove(S);
 
                 final var bestMove = bruteForce.execute(after4Moves, 1);
                 final var afterAiMove = after4Moves.executeMove(bestMove);
@@ -212,11 +215,11 @@ class MiniMaxTest {
             @DisplayName("Should score a goal when player SECOND, depth 2")
             void scoreAGoalInSecondDayDepth2() {
                 final var after4Moves = board
-                        .executeMove(Direction.S)
-                        .executeMove(Direction.S)
-                        .executeMove(Direction.S)
-                        .executeMove(Direction.S)
-                        .executeMove(Direction.S);
+                        .executeMove(S)
+                        .executeMove(S)
+                        .executeMove(S)
+                        .executeMove(S)
+                        .executeMove(S);
 
                 final var bestMove = bruteForce.execute(after4Moves, 2);
                 final var afterAiMove = after4Moves.executeMove(bestMove);
@@ -231,10 +234,10 @@ class MiniMaxTest {
             @DisplayName("Should NOT score a goal when player FIRST, depth 2")
             void shouldNotMakeSuicideMoveDepth2() {
                 final var after4Moves = board
-                        .executeMove(Direction.S)
-                        .executeMove(Direction.S)
-                        .executeMove(Direction.S)
-                        .executeMove(Direction.S);
+                        .executeMove(S)
+                        .executeMove(S)
+                        .executeMove(S)
+                        .executeMove(S);
 
                 final var bestMove = bruteForce.execute(after4Moves, 2);
                 final var afterAiMove = after4Moves.executeMove(bestMove);
@@ -249,11 +252,11 @@ class MiniMaxTest {
             @DisplayName("Should score a goal when player SECOND, depth 3")
             void scoreAGoalInSecondDayDepth3() {
                 final var after4Moves = board
-                        .executeMove(Direction.S)
-                        .executeMove(Direction.S)
-                        .executeMove(Direction.S)
-                        .executeMove(Direction.S)
-                        .executeMove(Direction.S);
+                        .executeMove(S)
+                        .executeMove(S)
+                        .executeMove(S)
+                        .executeMove(S)
+                        .executeMove(S);
 
                 final var bestMove = bruteForce.execute(after4Moves, 3);
                 final var afterAiMove = after4Moves.executeMove(bestMove);
@@ -268,10 +271,10 @@ class MiniMaxTest {
             @DisplayName("Should NOT score a goal when player FIRST, depth 3")
             void shouldNotMakeSuicideMoveDepth3() {
                 final var after4Moves = board
-                        .executeMove(Direction.S)
-                        .executeMove(Direction.S)
-                        .executeMove(Direction.S)
-                        .executeMove(Direction.S);
+                        .executeMove(S)
+                        .executeMove(S)
+                        .executeMove(S)
+                        .executeMove(S);
 
                 final var bestMove = bruteForce.execute(after4Moves, 3);
                 final var afterAiMove = after4Moves.executeMove(bestMove);
@@ -280,6 +283,337 @@ class MiniMaxTest {
                         () -> Assertions.assertThat(afterAiMove.isGoal()).isFalse(),
                         () -> Assertions.assertThat(afterAiMove.getPlayer()).isEqualByComparingTo(Player.SECOND)
                 );
+            }
+        }
+
+        @Nested
+        @DisplayName("Close corner")
+        class CornerTest {
+
+            @Test
+            @DisplayName("should not hit the corner, depth 1")
+            void rightUpperCorner() {
+                final var afterMoves = board
+                        .executeMove(Direction.NE)
+                        .executeMove(S)
+                        .executeMove(Direction.NE)
+                        .executeMove(Direction.NE)
+                        .executeMove(NW)
+                        .executeMove(Direction.NE)
+                        .executeMove(N)
+                        .executeMove(SE)
+                        .executeMove(W)
+                        .executeMove(W);
+
+                final var best = bruteForce.execute(afterMoves, 1);
+                final var afterAi = afterMoves.executeMove(best);
+
+                Assertions.assertThat(afterAi.isGameOver()).isFalse();
+            }
+
+            @Test
+            @DisplayName("should not hit the corner, depth 2")
+            void rightUpperCorner2() {
+                final var afterMoves = board
+                        .executeMove(Direction.NE)
+                        .executeMove(S)
+                        .executeMove(Direction.NE)
+                        .executeMove(Direction.NE)
+                        .executeMove(NW)
+                        .executeMove(Direction.NE)
+                        .executeMove(N)
+                        .executeMove(SE)
+                        .executeMove(W)
+                        .executeMove(W);
+
+                final var best = bruteForce.execute(afterMoves, 2);
+                final var afterAi = afterMoves.executeMove(best);
+
+                Assertions.assertThat(afterAi.isGameOver()).isFalse();
+            }
+        }
+    }
+
+    @Nested
+    @DisplayName("Smart evaluator")
+    class SmartEvaluator {
+
+        @Nested
+        @DisplayName("Upper goal")
+        class UpperGoal {
+
+            @Test
+            @DisplayName("Should score the goal when player FIRST")
+            void scoreAGoal() {
+                final var after4Moves = board
+                        .executeMove(N)
+                        .executeMove(N)
+                        .executeMove(N)
+                        .executeMove(N);
+
+                final var bestMove = bruteForce.execute(after4Moves, 1, new SmartBoardEvaluator());
+                final var afterAiMove = after4Moves.executeMove(bestMove);
+
+                assertAll(
+                        () -> Assertions.assertThat(afterAiMove.isGoal()).isTrue(),
+                        () -> Assertions.assertThat(afterAiMove.getPlayer()).isEqualByComparingTo(Player.SECOND)
+                );
+            }
+
+            @Test
+            @DisplayName("Should NOT score the goal when player FIRST")
+            void shouldNotMakeSuicideMove() {
+                final var after4Moves = board
+                        .executeMove(N)
+                        .executeMove(N)
+                        .executeMove(N)
+                        .executeMove(N)
+                        .executeMove(N);
+
+                final var bestMove = bruteForce.execute(after4Moves, 1, new SmartBoardEvaluator());
+                final var afterAiMove = after4Moves.executeMove(bestMove);
+
+                assertAll(
+                        () -> Assertions.assertThat(afterAiMove.isGoal()).isFalse(),
+                        () -> Assertions.assertThat(afterAiMove.getPlayer()).isEqualByComparingTo(Player.FIRST)
+                );
+            }
+
+            @Test
+            @DisplayName("Should score the goal when player FIRST, depth 2")
+            void scoreAGoalDepth2() {
+                final var after4Moves = board
+                        .executeMove(N)
+                        .executeMove(N)
+                        .executeMove(N)
+                        .executeMove(N);
+
+                final var bestMove = bruteForce.execute(after4Moves, 2, new SmartBoardEvaluator());
+                final var afterAiMove = after4Moves.executeMove(bestMove);
+
+                assertAll(
+                        () -> Assertions.assertThat(afterAiMove.isGoal()).isTrue(),
+                        () -> Assertions.assertThat(afterAiMove.getPlayer()).isEqualByComparingTo(Player.SECOND)
+                );
+            }
+
+            @Test
+            @DisplayName("Should NOT score the goal when player FIRST, depth 2")
+            void shouldNotMakeSuicideMoveDepth2() {
+                final var after4Moves = board
+                        .executeMove(N)
+                        .executeMove(N)
+                        .executeMove(N)
+                        .executeMove(N)
+                        .executeMove(N);
+
+                final var bestMove = bruteForce.execute(after4Moves, 2, new SmartBoardEvaluator());
+                final var afterAiMove = after4Moves.executeMove(bestMove);
+
+                assertAll(
+                        () -> Assertions.assertThat(afterAiMove.isGoal()).isFalse(),
+                        () -> Assertions.assertThat(afterAiMove.getPlayer()).isEqualByComparingTo(Player.FIRST)
+                );
+            }
+
+            @Test
+            @DisplayName("Should score the goal when player FIRST, depth 3")
+            void scoreAGoalDepth3() {
+                final var after4Moves = board
+                        .executeMove(N)
+                        .executeMove(N)
+                        .executeMove(N)
+                        .executeMove(N);
+
+                final var bestMove = bruteForce.execute(after4Moves, 3, new SmartBoardEvaluator());
+                final var afterAiMove = after4Moves.executeMove(bestMove);
+
+                assertAll(
+                        () -> Assertions.assertThat(afterAiMove.isGoal()).isTrue(),
+                        () -> Assertions.assertThat(afterAiMove.getPlayer()).isEqualByComparingTo(Player.SECOND)
+                );
+            }
+
+            @Test
+            @DisplayName("Should NOT score the goal when player FIRST, depth 3")
+            void shouldNotMakeSuicideMoveDepth3() {
+                final var after4Moves = board
+                        .executeMove(N)
+                        .executeMove(N)
+                        .executeMove(N)
+                        .executeMove(N)
+                        .executeMove(N);
+
+                final var bestMove = bruteForce.execute(after4Moves, 3, new SmartBoardEvaluator());
+                final var afterAiMove = after4Moves.executeMove(bestMove);
+
+                assertAll(
+                        () -> Assertions.assertThat(afterAiMove.isGoal()).isFalse(),
+                        () -> Assertions.assertThat(afterAiMove.getPlayer()).isEqualByComparingTo(Player.FIRST)
+                );
+            }
+        }
+
+        @Nested
+        @DisplayName("Bottom goal")
+        class BottomGoal {
+
+            @Test
+            @DisplayName("Should score a goal when player SECOND")
+            void scoreAGoalInSecondDay() {
+                final var after4Moves = board
+                        .executeMove(S)
+                        .executeMove(S)
+                        .executeMove(S)
+                        .executeMove(S)
+                        .executeMove(S);
+
+                final var bestMove = bruteForce.execute(after4Moves, 1, new SmartBoardEvaluator());
+                final var afterAiMove = after4Moves.executeMove(bestMove);
+
+                assertAll(
+                        () -> Assertions.assertThat(afterAiMove.isGoal()).isTrue(),
+                        () -> Assertions.assertThat(afterAiMove.getPlayer()).isEqualByComparingTo(Player.FIRST)
+                );
+            }
+
+            @Test
+            @DisplayName("Should NOT score a goal when player FIRST")
+            void shouldNotMakeSuicideMove() {
+                final var after4Moves = board
+                        .executeMove(S)
+                        .executeMove(S)
+                        .executeMove(S)
+                        .executeMove(S);
+
+                final var bestMove = bruteForce.execute(after4Moves, 1, new SmartBoardEvaluator());
+                final var afterAiMove = after4Moves.executeMove(bestMove);
+
+                assertAll(
+                        () -> Assertions.assertThat(afterAiMove.isGoal()).isFalse(),
+                        () -> Assertions.assertThat(afterAiMove.getPlayer()).isEqualByComparingTo(Player.SECOND)
+                );
+            }
+
+            @Test
+            @DisplayName("Should score a goal when player SECOND, depth 2")
+            void scoreAGoalInSecondDayDepth2() {
+                final var after4Moves = board
+                        .executeMove(S)
+                        .executeMove(S)
+                        .executeMove(S)
+                        .executeMove(S)
+                        .executeMove(S);
+
+                final var bestMove = bruteForce.execute(after4Moves, 2, new SmartBoardEvaluator());
+                final var afterAiMove = after4Moves.executeMove(bestMove);
+
+                assertAll(
+                        () -> Assertions.assertThat(afterAiMove.isGoal()).isTrue(),
+                        () -> Assertions.assertThat(afterAiMove.getPlayer()).isEqualByComparingTo(Player.FIRST)
+                );
+            }
+
+            @Test
+            @DisplayName("Should NOT score a goal when player FIRST, depth 2")
+            void shouldNotMakeSuicideMoveDepth2() {
+                final var after4Moves = board
+                        .executeMove(S)
+                        .executeMove(S)
+                        .executeMove(S)
+                        .executeMove(S);
+
+                final var bestMove = bruteForce.execute(after4Moves, 2, new SmartBoardEvaluator());
+                final var afterAiMove = after4Moves.executeMove(bestMove);
+
+                assertAll(
+                        () -> Assertions.assertThat(afterAiMove.isGoal()).isFalse(),
+                        () -> Assertions.assertThat(afterAiMove.getPlayer()).isEqualByComparingTo(Player.SECOND)
+                );
+            }
+
+            @Test
+            @DisplayName("Should score a goal when player SECOND, depth 3")
+            void scoreAGoalInSecondDayDepth3() {
+                final var after4Moves = board
+                        .executeMove(S)
+                        .executeMove(S)
+                        .executeMove(S)
+                        .executeMove(S)
+                        .executeMove(S);
+
+                final var bestMove = bruteForce.execute(after4Moves, 3, new SmartBoardEvaluator());
+                final var afterAiMove = after4Moves.executeMove(bestMove);
+
+                assertAll(
+                        () -> Assertions.assertThat(afterAiMove.isGoal()).isTrue(),
+                        () -> Assertions.assertThat(afterAiMove.getPlayer()).isEqualByComparingTo(Player.FIRST)
+                );
+            }
+
+            @Test
+            @DisplayName("Should NOT score a goal when player FIRST, depth 3")
+            void shouldNotMakeSuicideMoveDepth3() {
+                final var after4Moves = board
+                        .executeMove(S)
+                        .executeMove(S)
+                        .executeMove(S)
+                        .executeMove(S);
+
+                final var bestMove = bruteForce.execute(after4Moves, 3, new SmartBoardEvaluator());
+                final var afterAiMove = after4Moves.executeMove(bestMove);
+
+                assertAll(
+                        () -> Assertions.assertThat(afterAiMove.isGoal()).isFalse(),
+                        () -> Assertions.assertThat(afterAiMove.getPlayer()).isEqualByComparingTo(Player.SECOND)
+                );
+            }
+        }
+
+        @Nested
+        @DisplayName("Close corner")
+        class CornerTest {
+
+            @Test
+            @DisplayName("should not hit the corner, depth 1")
+            void rightUpperCorner() {
+                final var afterMoves = board
+                        .executeMove(Direction.NE)
+                        .executeMove(S)
+                        .executeMove(Direction.NE)
+                        .executeMove(Direction.NE)
+                        .executeMove(NW)
+                        .executeMove(Direction.NE)
+                        .executeMove(N)
+                        .executeMove(SE)
+                        .executeMove(W)
+                        .executeMove(W);
+
+                final var best = bruteForce.execute(afterMoves, 1, new SmartBoardEvaluator());
+                final var afterAi = afterMoves.executeMove(best);
+
+                Assertions.assertThat(afterAi.isGameOver()).isFalse();
+            }
+
+            @Test
+            @DisplayName("should not hit the corner, depth 2")
+            void rightUpperCorner2() {
+                final var afterMoves = board
+                        .executeMove(Direction.NE)
+                        .executeMove(S)
+                        .executeMove(Direction.NE)
+                        .executeMove(Direction.NE)
+                        .executeMove(NW)
+                        .executeMove(Direction.NE)
+                        .executeMove(N)
+                        .executeMove(SE)
+                        .executeMove(W)
+                        .executeMove(W);
+
+                final var best = bruteForce.execute(afterMoves, 2, new SmartBoardEvaluator());
+                final var afterAi = afterMoves.executeMove(best);
+
+                Assertions.assertThat(afterAi.isGameOver()).isFalse();
             }
         }
     }

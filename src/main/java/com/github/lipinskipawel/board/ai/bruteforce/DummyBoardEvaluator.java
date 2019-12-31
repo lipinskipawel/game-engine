@@ -3,10 +3,13 @@ package com.github.lipinskipawel.board.ai.bruteforce;
 import com.github.lipinskipawel.board.ai.BoardEvaluator;
 import com.github.lipinskipawel.board.engine.BoardInterface;
 
-final class DummyBoardEvaluator implements BoardEvaluator {
+public final class DummyBoardEvaluator implements BoardEvaluator {
 
     @Override
     public double evaluate(final BoardInterface board) {
+        if (!board.isGoal() && board.isGameOver()) {
+            return 1000;
+        }
         if (board.getBallPosition() == 3 ||
                 board.getBallPosition() == 4 ||
                 board.getBallPosition() == 5)
