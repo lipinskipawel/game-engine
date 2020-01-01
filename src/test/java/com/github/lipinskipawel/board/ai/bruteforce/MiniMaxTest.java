@@ -4,7 +4,6 @@ import com.github.lipinskipawel.board.ai.BoardEvaluator;
 import com.github.lipinskipawel.board.ai.MoveStrategy;
 import com.github.lipinskipawel.board.engine.BoardInterface;
 import com.github.lipinskipawel.board.engine.Boards;
-import com.github.lipinskipawel.board.engine.Direction;
 import com.github.lipinskipawel.board.engine.Player;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -13,10 +12,13 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import static com.github.lipinskipawel.board.engine.Direction.N;
+import static com.github.lipinskipawel.board.engine.Direction.NE;
 import static com.github.lipinskipawel.board.engine.Direction.NW;
 import static com.github.lipinskipawel.board.engine.Direction.S;
 import static com.github.lipinskipawel.board.engine.Direction.SE;
 import static com.github.lipinskipawel.board.engine.Direction.W;
+import static com.github.lipinskipawel.board.engine.Player.FIRST;
+import static com.github.lipinskipawel.board.engine.Player.SECOND;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 @DisplayName("Testing brute force - minimax")
@@ -46,9 +48,18 @@ class MiniMaxTest {
             evaluator = evaluator == dummyEvaluator ? smartEvaluator : dummyEvaluator;
         }
 
-        Assertions.assertThat(gameBoard.getPlayer()).isEqualByComparingTo(Player.SECOND);
+        final var winner = computeWinner(gameBoard);
+        Assertions.assertThat(winner).isEqualByComparingTo(Player.SECOND);
     }
 
+    private Player computeWinner(final BoardInterface gameBoard) {
+        if (gameBoard.isGoal() && gameBoard.getBallPosition() < 20) {
+            return FIRST;
+        } else if (gameBoard.isGoal() && gameBoard.getBallPosition() > 50) {
+            return SECOND;
+        }
+        return gameBoard.getPlayer();
+    }
 
     @Nested
     @DisplayName("Dummy evaluator")
@@ -91,7 +102,7 @@ class MiniMaxTest {
 
                 assertAll(
                         () -> Assertions.assertThat(afterAiMove.isGoal()).isFalse(),
-                        () -> Assertions.assertThat(afterAiMove.getPlayer()).isEqualByComparingTo(Player.FIRST)
+                        () -> Assertions.assertThat(afterAiMove.getPlayer()).isEqualByComparingTo(FIRST)
                 );
             }
 
@@ -128,7 +139,7 @@ class MiniMaxTest {
 
                 assertAll(
                         () -> Assertions.assertThat(afterAiMove.isGoal()).isFalse(),
-                        () -> Assertions.assertThat(afterAiMove.getPlayer()).isEqualByComparingTo(Player.FIRST)
+                        () -> Assertions.assertThat(afterAiMove.getPlayer()).isEqualByComparingTo(FIRST)
                 );
             }
 
@@ -165,7 +176,7 @@ class MiniMaxTest {
 
                 assertAll(
                         () -> Assertions.assertThat(afterAiMove.isGoal()).isFalse(),
-                        () -> Assertions.assertThat(afterAiMove.getPlayer()).isEqualByComparingTo(Player.FIRST)
+                        () -> Assertions.assertThat(afterAiMove.getPlayer()).isEqualByComparingTo(FIRST)
                 );
             }
         }
@@ -189,7 +200,7 @@ class MiniMaxTest {
 
                 assertAll(
                         () -> Assertions.assertThat(afterAiMove.isGoal()).isTrue(),
-                        () -> Assertions.assertThat(afterAiMove.getPlayer()).isEqualByComparingTo(Player.FIRST)
+                        () -> Assertions.assertThat(afterAiMove.getPlayer()).isEqualByComparingTo(FIRST)
                 );
             }
 
@@ -226,7 +237,7 @@ class MiniMaxTest {
 
                 assertAll(
                         () -> Assertions.assertThat(afterAiMove.isGoal()).isTrue(),
-                        () -> Assertions.assertThat(afterAiMove.getPlayer()).isEqualByComparingTo(Player.FIRST)
+                        () -> Assertions.assertThat(afterAiMove.getPlayer()).isEqualByComparingTo(FIRST)
                 );
             }
 
@@ -263,7 +274,7 @@ class MiniMaxTest {
 
                 assertAll(
                         () -> Assertions.assertThat(afterAiMove.isGoal()).isTrue(),
-                        () -> Assertions.assertThat(afterAiMove.getPlayer()).isEqualByComparingTo(Player.FIRST)
+                        () -> Assertions.assertThat(afterAiMove.getPlayer()).isEqualByComparingTo(FIRST)
                 );
             }
 
@@ -294,12 +305,12 @@ class MiniMaxTest {
             @DisplayName("should not hit the corner, depth 1")
             void rightUpperCorner() {
                 final var afterMoves = board
-                        .executeMove(Direction.NE)
+                        .executeMove(NE)
                         .executeMove(S)
-                        .executeMove(Direction.NE)
-                        .executeMove(Direction.NE)
+                        .executeMove(NE)
+                        .executeMove(NE)
                         .executeMove(NW)
-                        .executeMove(Direction.NE)
+                        .executeMove(NE)
                         .executeMove(N)
                         .executeMove(SE)
                         .executeMove(W)
@@ -315,12 +326,12 @@ class MiniMaxTest {
             @DisplayName("should not hit the corner, depth 2")
             void rightUpperCorner2() {
                 final var afterMoves = board
-                        .executeMove(Direction.NE)
+                        .executeMove(NE)
                         .executeMove(S)
-                        .executeMove(Direction.NE)
-                        .executeMove(Direction.NE)
+                        .executeMove(NE)
+                        .executeMove(NE)
                         .executeMove(NW)
-                        .executeMove(Direction.NE)
+                        .executeMove(NE)
                         .executeMove(N)
                         .executeMove(SE)
                         .executeMove(W)
@@ -375,7 +386,7 @@ class MiniMaxTest {
 
                 assertAll(
                         () -> Assertions.assertThat(afterAiMove.isGoal()).isFalse(),
-                        () -> Assertions.assertThat(afterAiMove.getPlayer()).isEqualByComparingTo(Player.FIRST)
+                        () -> Assertions.assertThat(afterAiMove.getPlayer()).isEqualByComparingTo(FIRST)
                 );
             }
 
@@ -412,7 +423,7 @@ class MiniMaxTest {
 
                 assertAll(
                         () -> Assertions.assertThat(afterAiMove.isGoal()).isFalse(),
-                        () -> Assertions.assertThat(afterAiMove.getPlayer()).isEqualByComparingTo(Player.FIRST)
+                        () -> Assertions.assertThat(afterAiMove.getPlayer()).isEqualByComparingTo(FIRST)
                 );
             }
 
@@ -449,7 +460,7 @@ class MiniMaxTest {
 
                 assertAll(
                         () -> Assertions.assertThat(afterAiMove.isGoal()).isFalse(),
-                        () -> Assertions.assertThat(afterAiMove.getPlayer()).isEqualByComparingTo(Player.FIRST)
+                        () -> Assertions.assertThat(afterAiMove.getPlayer()).isEqualByComparingTo(FIRST)
                 );
             }
         }
@@ -473,7 +484,7 @@ class MiniMaxTest {
 
                 assertAll(
                         () -> Assertions.assertThat(afterAiMove.isGoal()).isTrue(),
-                        () -> Assertions.assertThat(afterAiMove.getPlayer()).isEqualByComparingTo(Player.FIRST)
+                        () -> Assertions.assertThat(afterAiMove.getPlayer()).isEqualByComparingTo(FIRST)
                 );
             }
 
@@ -510,7 +521,7 @@ class MiniMaxTest {
 
                 assertAll(
                         () -> Assertions.assertThat(afterAiMove.isGoal()).isTrue(),
-                        () -> Assertions.assertThat(afterAiMove.getPlayer()).isEqualByComparingTo(Player.FIRST)
+                        () -> Assertions.assertThat(afterAiMove.getPlayer()).isEqualByComparingTo(FIRST)
                 );
             }
 
@@ -547,7 +558,7 @@ class MiniMaxTest {
 
                 assertAll(
                         () -> Assertions.assertThat(afterAiMove.isGoal()).isTrue(),
-                        () -> Assertions.assertThat(afterAiMove.getPlayer()).isEqualByComparingTo(Player.FIRST)
+                        () -> Assertions.assertThat(afterAiMove.getPlayer()).isEqualByComparingTo(FIRST)
                 );
             }
 
@@ -578,12 +589,12 @@ class MiniMaxTest {
             @DisplayName("should not hit the corner, depth 1")
             void rightUpperCorner() {
                 final var afterMoves = board
-                        .executeMove(Direction.NE)
+                        .executeMove(NE)
                         .executeMove(S)
-                        .executeMove(Direction.NE)
-                        .executeMove(Direction.NE)
+                        .executeMove(NE)
+                        .executeMove(NE)
                         .executeMove(NW)
-                        .executeMove(Direction.NE)
+                        .executeMove(NE)
                         .executeMove(N)
                         .executeMove(SE)
                         .executeMove(W)
@@ -599,12 +610,12 @@ class MiniMaxTest {
             @DisplayName("should not hit the corner, depth 2")
             void rightUpperCorner2() {
                 final var afterMoves = board
-                        .executeMove(Direction.NE)
+                        .executeMove(NE)
                         .executeMove(S)
-                        .executeMove(Direction.NE)
-                        .executeMove(Direction.NE)
+                        .executeMove(NE)
+                        .executeMove(NE)
                         .executeMove(NW)
-                        .executeMove(Direction.NE)
+                        .executeMove(NE)
                         .executeMove(N)
                         .executeMove(SE)
                         .executeMove(W)
