@@ -147,6 +147,9 @@ final class ImmutableBoard implements BoardInterface {
         if (this.moveLog.isSmallMoveHasBeenMade()) {
             throw new ChangePlayerIsNotAllowed();
         }
+        if (nextPlayerToMove == this.playerToMove) {
+            return this;
+        }
         final var newPlayer = computePlayerToMove(this.points);
         return new ImmutableBoard(this.points, newPlayer, this.moveLog);
     }
