@@ -3,6 +3,7 @@ package com.github.lipinskipawel.board.engine;
 import com.github.lipinskipawel.board.engine.exception.ChangePlayerIsNotAllowed;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface BoardInterface extends Transformation {
 
@@ -125,4 +126,14 @@ public interface BoardInterface extends Transformation {
      * @throws ChangePlayerIsNotAllowed whenever small move has been made and wasn't undo
      */
     BoardInterface nextPlayerToMove(final Player nextPlayerToMove) throws ChangePlayerIsNotAllowed;
+
+    /**
+     * This method will return the winner of the game. If game ends with the ball inside of the goal area the method
+     * will calculate the winner. If one of the player hits the corner the method will calculate the winner properly.
+     * The result of this method can and will differ from {@link BoardInterface#getPlayer()} after the returning the
+     * true from {@link BoardInterface#isGameOver()}.
+     *
+     * @return the winner of the game or {@link Optional#empty()} if the game is not decided yet
+     */
+    Optional<Player> takeTheWinner();
 }

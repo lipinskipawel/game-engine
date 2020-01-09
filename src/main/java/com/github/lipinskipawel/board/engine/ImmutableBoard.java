@@ -4,7 +4,11 @@ import com.github.lipinskipawel.board.engine.exception.ChangePlayerIsNotAllowed;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Stack;
+
+import static com.github.lipinskipawel.board.engine.Player.FIRST;
+import static com.github.lipinskipawel.board.engine.Player.SECOND;
 
 // TODO Ideally this class should be package-private
 // TODO refactor handling player, this 'if' should be replace somehow in the future
@@ -19,7 +23,7 @@ final class ImmutableBoard implements BoardInterface {
 
     ImmutableBoard() {
         this.points = new LogicalPoints();
-        this.playerToMove = Player.FIRST;
+        this.playerToMove = FIRST;
         this.moveLog = new MoveHistory();
     }
 
@@ -140,6 +144,19 @@ final class ImmutableBoard implements BoardInterface {
     @Override
     public boolean isGameOver() {
         return isGoal() || points.getBall().getUnavailableDirection().size() == 8;
+    }
+
+    @Override
+    public Optional<Player> takeTheWinner() {
+        if (!isGameOver())
+            return Optional.empty();
+        if (isGoal() && getBallPosition() < 20) {
+            return Optional.of(FIRST);
+        }
+        if (!isGoal() && isGameOver()) {
+            return Optional.of(getPlayer());
+        }
+        return Optional.of(SECOND);
     }
 
     @Override
