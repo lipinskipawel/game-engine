@@ -17,7 +17,7 @@ public final class SmartBoardEvaluator implements BoardEvaluator {
                 return 1000;
             }
             if (board.isGoal()) {
-                return 0;
+                return -1000;
             }
             return eval(numberOfPointsOnBoard - board.getBallPosition());
         } else {
