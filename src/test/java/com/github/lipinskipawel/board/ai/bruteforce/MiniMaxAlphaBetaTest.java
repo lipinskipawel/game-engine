@@ -21,15 +21,15 @@ import static com.github.lipinskipawel.board.engine.Player.FIRST;
 import static com.github.lipinskipawel.board.engine.Player.SECOND;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
-@DisplayName("API -- Minimax")
-class MiniMaxTest {
+@DisplayName("API -- Minimax alpha-beta")
+class MiniMaxAlphaBetaTest {
 
     private MoveStrategy bruteForce;
     private BoardInterface board;
 
     @BeforeEach
     void setUp() {
-        this.bruteForce = new MiniMax();
+        this.bruteForce = new MiniMaxAlphaBeta(new DummyBoardEvaluator());
         this.board = Boards.immutableBoard();
     }
 
