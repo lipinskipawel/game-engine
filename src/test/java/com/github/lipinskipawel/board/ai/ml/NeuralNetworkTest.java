@@ -1,9 +1,9 @@
 package com.github.lipinskipawel.board.ai.ml;
 
+import com.github.lipinskipawel.board.ai.ml.activation.Linear;
 import com.github.lipinskipawel.board.ai.ml.activation.Relu;
 import com.github.lipinskipawel.board.ai.ml.activation.Tanh;
 import com.github.lipinskipawel.board.ai.ml.lossfunction.MSE;
-import com.github.lipinskipawel.board.ai.ml.activation.Linear;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
