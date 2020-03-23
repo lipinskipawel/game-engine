@@ -6,8 +6,9 @@ import com.github.lipinskipawel.board.ai.ml.lossfunction.MSE;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
-public final class SimpleNeuralNetwork implements NeuralNetwork {
+final class SimpleNeuralNetwork implements NeuralNetwork {
 
     private final NetworkDetails networkDetails;
 
@@ -23,10 +24,10 @@ public final class SimpleNeuralNetwork implements NeuralNetwork {
         randomize();
     }
 
-    private SimpleNeuralNetwork(final List<Matrix> weights,
-                                final List<Matrix> biases,
-                                final List<ActivationFunction> activations,
-                                final double learningRate) {
+    SimpleNeuralNetwork(final List<Matrix> weights,
+                        final List<Matrix> biases,
+                        final List<ActivationFunction> activations,
+                        final double learningRate) {
         this.networkDetails = new NetworkDetails(weights, biases, activations);
         this.learningRate = learningRate;
         this.lossFunction = new MSE();
@@ -82,5 +83,24 @@ public final class SimpleNeuralNetwork implements NeuralNetwork {
 
     private void randomize() {
         this.networkDetails.randomize();
+    }
+
+    NetworkDetails networkDetails() {
+        return new NetworkDetails(networkDetails);
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        final SimpleNeuralNetwork that = (SimpleNeuralNetwork) o;
+        return Double.compare(that.learningRate, learningRate) == 0 &&
+                Objects.equals(networkDetails, that.networkDetails) &&
+                Objects.equals(lossFunction, that.lossFunction);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(networkDetails, learningRate, lossFunction);
     }
 }

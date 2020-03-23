@@ -9,7 +9,7 @@ public final class Layer {
     private final ActivationFunction activationFunction;
 
     Layer(final int numberOfNodes,
-                  final ActivationFunction activationFunction) {
+          final ActivationFunction activationFunction) {
         this.numberOfNodes = numberOfNodes;
         this.activationFunction = activationFunction;
     }

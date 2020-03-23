@@ -2,6 +2,8 @@ package com.github.lipinskipawel.board.ai.ml;
 
 import com.github.lipinskipawel.board.ai.ml.activation.ActivationFunction;
 
+import java.util.Objects;
+
 final class LayerInternal {
 
     private Matrix weight;
@@ -53,6 +55,23 @@ final class LayerInternal {
     void randomize(final Func fun) {
         this.weight = this.weight.forEach(fun);
         this.bias = this.bias.forEach(fun);
+    }
 
+    LayerDTO toDTO() {
+        return new LayerDTO(this.weight, this.bias, this.activation);
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        final LayerInternal that = (LayerInternal) o;
+        return weight.equals(that.weight) &&
+                bias.equals(that.bias);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(weight, bias);
     }
 }

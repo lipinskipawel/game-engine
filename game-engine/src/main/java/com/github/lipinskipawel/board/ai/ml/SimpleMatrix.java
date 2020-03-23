@@ -138,7 +138,7 @@ final class SimpleMatrix implements Matrix {
         if (this.data.length != another.rawData().length ||
                 this.data[0].length != another.rawData()[0].length)
             throw new ArithmeticException("Different shapes to add elementwise" + this.data.length + "x" + this.data[0].length +
-                    ", another " + another.rawData().length + "x" + + another.rawData()[0].length);
+                    ", another " + another.rawData().length + "x" + another.rawData()[0].length);
     }
 
     @Override
@@ -146,7 +146,7 @@ final class SimpleMatrix implements Matrix {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         final SimpleMatrix that = (SimpleMatrix) o;
-        return Arrays.equals(data, that.data);
+        return Arrays.deepEquals(data, that.data);
     }
 
     @Override

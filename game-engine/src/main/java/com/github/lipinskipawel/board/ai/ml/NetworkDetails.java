@@ -6,6 +6,7 @@ import com.github.lipinskipawel.board.ai.ml.lossfunction.LossFunction;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 final class NetworkDetails {
@@ -45,6 +46,10 @@ final class NetworkDetails {
                 this.layers.add(new LayerInternal(weights.get(index), biases.get(index), activations.get(index)));
             }
         }
+    }
+
+    NetworkDetails(final NetworkDetails networkDetails) {
+        this.layers = networkDetails.layers;
     }
 
     /**
@@ -113,7 +118,27 @@ final class NetworkDetails {
         }
     }
 
+    List<LayerDTO> layers() {
+        return this.layers
+                .stream()
+                .map(LayerInternal::toDTO)
+                .collect(Collectors.toList());
+    }
+
     private boolean wrongShape(final Matrix inputData) {
         return inputData.rawData()[0].length != 1;
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        final NetworkDetails that = (NetworkDetails) o;
+        return Objects.equals(layers, that.layers);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(layers);
     }
 }

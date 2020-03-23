@@ -2,6 +2,7 @@ package com.github.lipinskipawel.board.ai.ml;
 
 import com.github.lipinskipawel.board.ai.ml.activation.Linear;
 import com.github.lipinskipawel.board.ai.ml.activation.Relu;
+import com.github.lipinskipawel.board.ai.ml.activation.Softmax;
 import com.github.lipinskipawel.board.ai.ml.activation.Tanh;
 import com.github.lipinskipawel.board.ai.ml.lossfunction.MSE;
 import org.assertj.core.api.Assertions;
@@ -11,6 +12,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import static org.assertj.core.api.Java6Assertions.catchThrowable;
@@ -127,6 +129,51 @@ class NeuralNetworkTest {
 
             Assertions.assertThat(model)
                     .isNull();
+        }
+    }
+
+    @Nested
+    @DisplayName("Transform")
+    class Transform {
+
+        @Test
+        @DisplayName("fromModelToString - one layer")
+        void fromModelToStringThenFromStringToModel1() {
+            final NeuralNetwork model = new DeepNeuralNetwork.Builder()
+                    .addLayer(new Layer(1, new Relu()))
+                    .compile()
+                    .lossFunction(new MSE())
+                    .build();
+
+            final var transformed = model.transform(NeuralNetwork.fromModelToString());
+            final var lines = transformed.lines().collect(Collectors.toList());
+            final var clazzName = lines.get(0);
+            final var size = lines.size();
+            final var row = lines.get(1).split(":");
+
+            Assertions.assertThat(size).isEqualTo(2);
+            Assertions.assertThat(clazzName).isEqualTo("com.github.lipinskipawel.board.ai.ml.SimpleNeuralNetwork");
+            Assertions.assertThat(row[0]).contains("[[");
+            Assertions.assertThat(row[1]).contains("]]");
+            Assertions.assertThat(row[2]).isEqualTo("com.github.lipinskipawel.board.ai.ml.activation.Relu");
+        }
+
+        @Test
+        @DisplayName("fromModelToString -> fromStringToModel - two layers")
+        void fromModelToStringThenFromStringToModel() {
+            final NeuralNetwork model = new DeepNeuralNetwork.Builder()
+                    .addLayer(new Layer(2, new Relu()))
+                    .addLayer(new Layer(3, new Softmax()))
+                    .compile()
+                    .lossFunction(new MSE())
+                    .build();
+
+            final var transformed = model.transform(NeuralNetwork.fromModelToString());
+            final var backToModel = NeuralNetwork.fromStringToModel(transformed);
+
+            Assertions.assertThat(model).usingRecursiveComparison()
+                    .usingDefaultComparator()
+                    .isEqualTo(backToModel);
         }
     }
 }
