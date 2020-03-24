@@ -60,13 +60,9 @@ public final class LayerDTO {
         return activationFunction;
     }
 
-    private static ActivationFunction convertActivationFunction(final String classToString) {
-        try {
-            return (ActivationFunction) Class.forName(classToString).getConstructors()[0].newInstance(null);
-        } catch (InstantiationException | ClassNotFoundException | InvocationTargetException | IllegalAccessException e) {
-            e.printStackTrace();
-            return new Relu();
-        }
+    private static ActivationFunction convertActivationFunction(final String classToString)
+            throws ClassNotFoundException, IllegalAccessException, InvocationTargetException, InstantiationException {
+        return (ActivationFunction) Class.forName(classToString).getConstructors()[0].newInstance(null);
     }
 
     private static Matrix convert(final String arraysDeepToString) {

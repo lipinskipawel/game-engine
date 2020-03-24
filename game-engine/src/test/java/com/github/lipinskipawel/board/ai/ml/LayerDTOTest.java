@@ -36,6 +36,15 @@ class LayerDTOTest {
         }
 
         @Test
+        @DisplayName("invalid input - non existing activation function")
+        void nonExistingActivationFunction() {
+            final var throwable = catchThrowable(
+                    () -> LayerDTO.parseStringDoubleWeightDoubleBiasClassActivationFunction("[[1, 1]]:[[4, 3]]:NonExistingActivationFunction"));
+
+            Assertions.assertThat(throwable).isInstanceOf(InvalidInputFormatException.class);
+        }
+
+        @Test
         @DisplayName("parse 1d arrays")
         void shouldParseStringFrom1dArray() {
             final var preparedWeight = Matrix.of(new double[]{0.8, -1.2});
