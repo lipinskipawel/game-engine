@@ -10,10 +10,20 @@ import java.util.Collections;
 
 public final class MiniMax implements MoveStrategy {
 
+    private final BoardEvaluator evaluator;
+
+    public MiniMax() {
+        this.evaluator = new DummyBoardEvaluator();
+    }
+
+    public MiniMax(final BoardEvaluator evaluator) {
+        this.evaluator = evaluator;
+    }
+
     @Override
     public Move execute(final BoardInterface board,
                         final int depth) {
-        return execute(board, depth, new DummyBoardEvaluator());
+        return execute(board, depth, this.evaluator);
     }
 
     @Override
@@ -52,8 +62,8 @@ public final class MiniMax implements MoveStrategy {
     }
 
     private double min(final BoardInterface board,
-                    final int depth,
-                    final BoardEvaluator evaluator) {
+                       final int depth,
+                       final BoardEvaluator evaluator) {
         if (depth <= 0 || board.isGameOver())
             return evaluator.evaluate(board);
 
@@ -69,8 +79,8 @@ public final class MiniMax implements MoveStrategy {
     }
 
     private double max(final BoardInterface board,
-                    final int depth,
-                    final BoardEvaluator evaluator) {
+                       final int depth,
+                       final BoardEvaluator evaluator) {
         if (depth <= 0 || board.isGameOver())
             return evaluator.evaluate(board);
 
