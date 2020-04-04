@@ -1,9 +1,10 @@
 package com.github.lipinskipawel.board.engine;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Comparator;
+import java.util.Arrays;
 import java.util.List;
+
+import static java.util.Comparator.comparingInt;
 
 final class LogicalPoints implements Transformation {
 
@@ -94,10 +95,50 @@ final class LogicalPoints implements Transformation {
     public int[] transform() {
         return points
                 .stream()
-                .sorted(Comparator.comparingInt(Point::getPosition))
+                .sorted(comparingInt(Point::getPosition))
                 .map(Point::getAllDirections)
-                .flatMap(Collection::stream)
+                .flatMap(List::stream)
                 .mapToInt(x -> x ? 1 : 0)
                 .toArray();
+    }
+
+    @Override
+    public double[] nonBinaryTransformation() {
+        return points
+                .stream()
+                .sorted(comparingInt(Point::getPosition))
+                .map(LogicalPoints::nonBinary)
+                .flatMapToDouble(Arrays::stream)
+                .toArray();
+    }
+
+    /**
+     * This method convert {@link Point} into double[].
+     * Each direction has it's mapping. List of mappings:
+     * {@link Direction#N}  to 0.1
+     * {@link Direction#NE} to 0.2
+     * {@link Direction#E}  to 0.3
+     * {@link Direction#SE} to 0.4
+     * {@link Direction#S}  to 0.5
+     * {@link Direction#SW} to 0.6
+     * {@link Direction#W}  to 0.7
+     * {@link Direction#NW} to 0.8
+     * In case of false in any particular direction then 0.9 is provided.
+     *
+     * @param point is the object to convert
+     * @return double[] after conversion of {@link Point}
+     */
+    static double[] nonBinary(final Point point) {
+        final var directions = point.getAllDirections();
+        final var doubles = new double[8];
+        doubles[0] = directions.get(0) ? 0.1 : 0.9;
+        doubles[1] = directions.get(1) ? 0.2 : 0.9;
+        doubles[2] = directions.get(2) ? 0.3 : 0.9;
+        doubles[3] = directions.get(3) ? 0.4 : 0.9;
+        doubles[4] = directions.get(4) ? 0.5 : 0.9;
+        doubles[5] = directions.get(5) ? 0.6 : 0.9;
+        doubles[6] = directions.get(6) ? 0.7 : 0.9;
+        doubles[7] = directions.get(7) ? 0.8 : 0.9;
+        return doubles;
     }
 }

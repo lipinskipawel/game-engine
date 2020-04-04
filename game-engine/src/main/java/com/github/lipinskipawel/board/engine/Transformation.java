@@ -20,4 +20,6 @@ interface Transformation {
      *          `point` pares `Direction` always in the same order (Comparator)
      */
     int[] transform();
+
+    double[] nonBinaryTransformation();
 }

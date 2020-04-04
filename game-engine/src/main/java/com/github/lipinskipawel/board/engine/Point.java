@@ -1,6 +1,5 @@
 package com.github.lipinskipawel.board.engine;
 
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -90,7 +89,7 @@ final public class Point {
                 .collect(toUnmodifiableList());
     }
 
-    Collection<Boolean> getAllDirections() {
+    List<Boolean> getAllDirections() {
         return List.of(
                 this.availableDirections.get(Direction.N),
                 this.availableDirections.get(Direction.NE),

@@ -181,6 +181,11 @@ final class ImmutableBoard implements BoardInterface {
         return this.points.transform();
     }
 
+    @Override
+    public double[] nonBinaryTransformation() {
+        return this.points.nonBinaryTransformation();
+    }
+
     private Player computePlayerToMove(final LogicalPoints logicalPoints) {
         var player = this.playerToMove;
 
