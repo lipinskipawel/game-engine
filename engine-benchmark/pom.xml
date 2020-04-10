@@ -20,6 +20,11 @@
 
     <dependencies>
         <dependency>
+            <groupId>com.github.lipinskipawel</groupId>
+            <artifactId>game-engine</artifactId>
+            <version>${version}</version>
+        </dependency>
+        <dependency>
             <groupId>org.openjdk.jmh</groupId>
             <artifactId>jmh-core</artifactId>
             <version>${jmh.version}</version>
