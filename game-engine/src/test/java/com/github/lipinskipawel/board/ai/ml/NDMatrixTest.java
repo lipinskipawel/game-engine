@@ -1,7 +1,6 @@
 package com.github.lipinskipawel.board.ai.ml;
 
 import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -11,7 +10,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 class NDMatrixTest {
 
     @Test
-    @Disabled
+    @DisplayName("multiply")
     void multiply() {
         final var first = new NDMatrix(new double[][]{{1, 2}, {0, 1}});
         final var second = new NDMatrix(new double[][]{{2, 5}, {6, 7}});
@@ -42,5 +41,15 @@ class NDMatrixTest {
         assertAll("cModel or fModel does not work properly",
                 () -> Assertions.assertThat(cModel).containsSequence(preparedCModel),
                 () -> Assertions.assertThat(fModel).containsSequence(preparedFModel));
+    }
+
+    @Test
+    @DisplayName("should create NDMatrix from cModel")
+    void shouldCreateNDMatrixFromCModel() {
+        final var preparedMatrix = new NDMatrix(new double[][]{{1, 0}, {2, 3}});
+
+        final var cModel = NDMatrix.fromCModel(new double[]{1, 0, 2, 3}, 2);
+
+        Assertions.assertThat(cModel).isEqualTo(preparedMatrix);
     }
 }
