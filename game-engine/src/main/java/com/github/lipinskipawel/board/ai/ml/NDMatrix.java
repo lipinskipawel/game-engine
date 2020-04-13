@@ -1,6 +1,5 @@
 package com.github.lipinskipawel.board.ai.ml;
 
-import java.nio.file.WatchEvent;
 import java.util.Arrays;
 import java.util.stream.IntStream;
 
@@ -32,10 +31,9 @@ final class NDMatrix {
     public static NDMatrix fromCModel(final double[] cModel,
                                       int numberOfRows) {
         final var result = new double[numberOfRows][];
-        var index = 0;
-        for (int i = 0; i < cModel.length; i = i + numberOfRows) {
-            result[index] = Arrays.copyOfRange(cModel, i, i + numberOfRows);
-            index++;
+        final var columns = cModel.length / numberOfRows;
+        for (int i = 0; i < numberOfRows; i++) {
+            result[i] = Arrays.copyOfRange(cModel, i * columns, i * columns + columns);
         }
         return new NDMatrix(result);
     }
