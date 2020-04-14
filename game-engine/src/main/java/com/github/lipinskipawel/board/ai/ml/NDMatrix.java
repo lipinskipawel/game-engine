@@ -51,9 +51,9 @@ final class NDMatrix {
     }
 
     public NDMatrix multiply(final NDMatrix another) throws ArithmeticException {
-        var result = new double[this.cModel().length];
+        var result = new double[this.shape[0] * another.shape[1]];
         for (int number = 0; number < this.shape[0]; number++) {
-            final var a = a(another, number);
+            final var a = computePseudoCModelForGivenRow(another, number);
             result = add(result, a);
         }
         return NDMatrix.fromCModel(result, this.shape[0]);
@@ -68,31 +68,43 @@ final class NDMatrix {
         return result;
     }
 
-    private double[] a(final NDMatrix another,
-                       final int factor) {
-        var pseudoResult = new double[this.cModel.length];
-        var indexIteration = 0;
-        var valueFromCModel = factor;
-        var startingIndex = 0;
-        var endingIndex = startingIndex + this.shape[0];
-        while (indexIteration != this.shape[0]) {
-            Arrays.fill(pseudoResult, startingIndex, endingIndex, this.cModel[valueFromCModel]);
-            indexIteration++;
-            startingIndex = startingIndex + this.shape[0];
-            endingIndex = endingIndex + this.shape[0];
-            valueFromCModel = valueFromCModel + this.shape[0];
-        }
-        var first_index = 0 + factor;
-        var second_index = this.shape[0] + factor;
+    private double[] computePseudoCModelForGivenRow(final NDMatrix another,
+                                                    final int factorOrARowNumber) {
+        var pseudoResult = new double[this.shape[0] * another.shape[1]];
+
+        var indexOfAGivenCycle = 0 + factorOrARowNumber;
+        var miniCycleCounter = 0;
+        var lengthOfCycle = another.shape[1];
+
+        //        while (indexIteration != another.shape[0]) {
         for (int index = 0; index < pseudoResult.length; index++) {
-            // TODO investigate if this is a bug
-            if (index % 2 == 0) { // for greater matrix's this could be different
-                pseudoResult[index] = pseudoResult[index] * another.fModel()[first_index];
+            if (miniCycleCounter < lengthOfCycle) {
+                miniCycleCounter++;
             } else {
-                pseudoResult[index] = pseudoResult[index] * another.fModel()[second_index];
+                indexOfAGivenCycle = indexOfAGivenCycle + another.shape[0];
+                miniCycleCounter = 0;
             }
+            pseudoResult[index] = this.cModel()[indexOfAGivenCycle];
+        }
+
+        var numberOfAllowedCycles = another.shape[1];
+        var numberOfCycle = 0;
+        var magicIndex = -another.shape[0] + factorOrARowNumber;
+        for (int index = 0; index < pseudoResult.length; index++) {
+            if (numberOfCycle < numberOfAllowedCycles) {
+                magicIndex = magicIndex + another.shape[0];
+                numberOfCycle++;
+            } else {
+                magicIndex = 0 + factorOrARowNumber;
+                numberOfCycle = 0;
+            }
+            pseudoResult[index] = pseudoResult[index] * another.fModel()[magicIndex];
         }
         return pseudoResult;
+    }
+
+    private int computeMagicNumber() {
+        return 0;
     }
 
     public NDMatrix add(final NDMatrix another) throws ArithmeticException {
