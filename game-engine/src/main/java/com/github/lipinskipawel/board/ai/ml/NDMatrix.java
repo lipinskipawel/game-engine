@@ -52,7 +52,7 @@ final class NDMatrix {
 
     public NDMatrix multiply(final NDMatrix another) throws ArithmeticException {
         var result = new double[this.shape[0] * another.shape[1]];
-        for (int number = 0; number < this.shape[0]; number++) {
+        for (int number = 0; number < another.shape[0]; number++) {
             final var a = computePseudoCModelForGivenRow(another, number);
             result = add(result, a);
         }
@@ -101,10 +101,6 @@ final class NDMatrix {
             pseudoResult[index] = pseudoResult[index] * another.fModel()[magicIndex];
         }
         return pseudoResult;
-    }
-
-    private int computeMagicNumber() {
-        return 0;
     }
 
     public NDMatrix add(final NDMatrix another) throws ArithmeticException {

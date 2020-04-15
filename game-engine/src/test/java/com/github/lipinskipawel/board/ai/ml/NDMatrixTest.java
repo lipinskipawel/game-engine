@@ -15,6 +15,42 @@ class NDMatrixTest {
     class Multiply {
 
         @Test
+        @DisplayName("1x3 with 3x1")
+        void multiply1x3With3x1() {
+            final var first = new NDMatrix(new double[][]{{1, 7, 3}});
+            final var second = new NDMatrix(new double[][]{{-2}, {6}, {2}});
+            final var expected = new NDMatrix(new double[][]{{46}});
+
+            final var result = first.multiply(second);
+
+            Assertions.assertThat(result).isEqualTo(expected);
+        }
+
+        @Test
+        @DisplayName("1x3 with 3x2")
+        void multiply1x3With3x2() {
+            final var first = new NDMatrix(new double[][]{{1, 2, 0}});
+            final var second = new NDMatrix(new double[][]{{-2, 5}, {6, -5}, {-2, 9}});
+            final var prepared = new NDMatrix(new double[][]{{10, -5}});
+
+            final var result = first.multiply(second);
+
+            Assertions.assertThat(result).isEqualTo(prepared);
+        }
+
+        @Test
+        @DisplayName("1x3 with 3x3")
+        void multiply1x3With3x3() {
+            final var first = new NDMatrix(new double[][]{{8, 1, -6}});
+            final var second = new NDMatrix(new double[][]{{-2, 5, 2}, {6, 1, 3}, {-2, 9, 3}});
+            final var prepared = new NDMatrix(new double[][]{{2, -13, 1}});
+
+            final var result = first.multiply(second);
+
+            Assertions.assertThat(result).isEqualTo(prepared);
+        }
+
+        @Test
         @DisplayName("2x2 with 2x1")
         void multiply2x2With2x1() {
             final var first = new NDMatrix(new double[][]{{1, 2}, {1, 1}});
@@ -28,7 +64,7 @@ class NDMatrixTest {
 
         @Test
         @DisplayName("2x2 with 2x2")
-        void multiply() {
+        void multiply2x2With2x2() {
             final var first = new NDMatrix(new double[][]{{1, 2}, {0, 1}});
             final var second = new NDMatrix(new double[][]{{2, 5}, {6, 7}});
             final var prepared = new NDMatrix(new double[][]{{14, 19}, {6, 7}});
@@ -40,10 +76,46 @@ class NDMatrixTest {
 
         @Test
         @DisplayName("2x2 with 2x3")
-        void multiply23() {
+        void multiply2x2With2x3() {
             final var first = new NDMatrix(new double[][]{{1, 2}, {1, 1}});
             final var second = new NDMatrix(new double[][]{{2, 3, 2}, {6, 0, 7}});
             final var prepared = new NDMatrix(new double[][]{{14, 3, 16}, {8, 3, 9}});
+
+            final var result = first.multiply(second);
+
+            Assertions.assertThat(result).isEqualTo(prepared);
+        }
+
+        @Test
+        @DisplayName("2x3 with 3x1")
+        void multiply2x3With3x1() {
+            final var first = new NDMatrix(new double[][]{{1, 2, 1}, {0, 1, 1}});
+            final var second = new NDMatrix(new double[][]{{2.0}, {6.0}, {1.0}});
+            final var expected = new NDMatrix(new double[][]{{15}, {7}});
+
+            final var result = first.multiply(second);
+
+            Assertions.assertThat(result).isEqualTo(expected);
+        }
+
+        @Test
+        @DisplayName("2x3 with 3x2")
+        void multiply2x3With3x2() {
+            final var first = new NDMatrix(new double[][]{{1, 2, 8}, {-3, 1, 6}});
+            final var second = new NDMatrix(new double[][]{{-2, 5}, {6, -5}, {2, 9}});
+            final var prepared = new NDMatrix(new double[][]{{26, 67}, {24, 34}});
+
+            final var result = first.multiply(second);
+
+            Assertions.assertThat(result).isEqualTo(prepared);
+        }
+
+        @Test
+        @DisplayName("2x3 with 3x3")
+        void multiply2x3With3x3() {
+            final var first = new NDMatrix(new double[][]{{0, 7, 3}, {-3, 1, 6}});
+            final var second = new NDMatrix(new double[][]{{-2, 5, 0}, {6, -5, -2}, {2, 3, 1}});
+            final var prepared = new NDMatrix(new double[][]{{48, -26, -11}, {24, -2, 4}});
 
             final var result = first.multiply(second);
 
