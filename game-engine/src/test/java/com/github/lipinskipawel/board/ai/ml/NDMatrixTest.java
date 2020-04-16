@@ -121,6 +121,30 @@ class NDMatrixTest {
 
             Assertions.assertThat(result).isEqualTo(prepared);
         }
+
+        @Test
+        @DisplayName("3x3 with 3x2")
+        void multiply3x3With3x2() {
+            final var first = new NDMatrix(new double[][]{{1, 2, 1}, {0, 1, 0}, {2, 3, 4}});
+            final var second = new NDMatrix(new double[][]{{2, 5}, {6, 7}, {1, 8}});
+            final var expected = new NDMatrix(new double[][]{{15, 27}, {6, 7}, {26, 63}});
+
+            final var result = first.multiply(second);
+
+            Assertions.assertThat(result).isEqualTo(expected);
+        }
+
+        @Test
+        @DisplayName("1x2 with 2x1")
+        void multiply1x2With2x1() {
+            final var first = new NDMatrix(new double[][]{{3, 5}});
+            final var second = new NDMatrix(new double[][]{{2}, {1}});
+            final var expected = new NDMatrix(new double[][]{{11}});
+
+            final var result = first.multiply(second);
+
+            Assertions.assertThat(result).isEqualTo(expected);
+        }
     }
 
     @Nested

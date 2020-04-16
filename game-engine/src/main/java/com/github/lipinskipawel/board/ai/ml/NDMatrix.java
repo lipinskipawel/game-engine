@@ -72,7 +72,7 @@ final class NDMatrix {
                                                     final int factorOrARowNumber) {
         var pseudoResult = new double[this.shape[0] * another.shape[1]];
 
-        var indexOfAGivenCycle = 0 + factorOrARowNumber;
+        var indexForAGivenCycle = 0 + factorOrARowNumber;
         var miniCycleCounter = 0;
         var lengthOfCycle = another.shape[1];
 
@@ -81,22 +81,22 @@ final class NDMatrix {
             if (miniCycleCounter < lengthOfCycle) {
                 miniCycleCounter++;
             } else {
-                indexOfAGivenCycle = indexOfAGivenCycle + another.shape[0];
-                miniCycleCounter = 0;
+                indexForAGivenCycle = indexForAGivenCycle + another.shape[0];
+                miniCycleCounter = 1;
             }
-            pseudoResult[index] = this.cModel()[indexOfAGivenCycle];
+            pseudoResult[index] = this.cModel()[indexForAGivenCycle];
         }
 
-        var numberOfAllowedCycles = another.shape[1];
-        var numberOfCycle = 0;
+        var lengthOfTheCycle = another.shape[1];
+        var numberInTheCycle = 0;
         var magicIndex = -another.shape[0] + factorOrARowNumber;
         for (int index = 0; index < pseudoResult.length; index++) {
-            if (numberOfCycle < numberOfAllowedCycles) {
+            if (numberInTheCycle < lengthOfTheCycle) {
                 magicIndex = magicIndex + another.shape[0];
-                numberOfCycle++;
+                numberInTheCycle++;
             } else {
                 magicIndex = 0 + factorOrARowNumber;
-                numberOfCycle = 0;
+                numberInTheCycle = 1;
             }
             pseudoResult[index] = pseudoResult[index] * another.fModel()[magicIndex];
         }
