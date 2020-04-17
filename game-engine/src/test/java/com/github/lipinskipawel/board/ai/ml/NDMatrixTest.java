@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @DisplayName("Internal -- NDMatrix")
 class NDMatrixTest {
@@ -144,6 +145,47 @@ class NDMatrixTest {
             final var result = first.multiply(second);
 
             Assertions.assertThat(result).isEqualTo(expected);
+        }
+    }
+
+    @Nested
+    @DisplayName("add")
+    class Add {
+
+        @Test
+        @DisplayName("2x2 with 2x2")
+        void add2x2With2x2() {
+            final var first = new NDMatrix(new double[][]{{1, 2}, {0, 1}});
+            final var second = new NDMatrix(new double[][]{{2, 5}, {6, 7}});
+            final var expected = new NDMatrix(new double[][]{{3, 7}, {6, 8}});
+
+            final var result = first.add(second);
+
+            Assertions.assertThat(result).isEqualTo(expected);
+        }
+
+        @Test
+        @DisplayName("2x2 with 1x2, error expected")
+        void addNotTheSameShape() {
+            final var first = new NDMatrix(new double[][]{{1, 2}, {0, 1}});
+            final var second = new NDMatrix(new double[][]{{2, 5}});
+
+            assertThrows(
+                    ArithmeticException.class,
+                    () -> first.add(second),
+                    "Can't add matrix's with different shapes");
+        }
+
+        @Test
+        @DisplayName("2x2 with 2x1, error expected")
+        void add2x2With2x1() {
+            final var first = new NDMatrix(new double[][]{{2, 2}, {3, 3}});
+            final var second = new NDMatrix(new double[][]{{1}, {2.5}});
+
+            assertThrows(
+                    ArithmeticException.class,
+                    () -> first.add(second),
+                    "Can't add matrix's with different shapes");
         }
     }
 

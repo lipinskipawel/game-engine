@@ -13,6 +13,12 @@ final class NDMatrix {
         this(new double[rows][columns]);
     }
 
+    NDMatrix(final double[] cModel, final double[] fModel, final int[] shape) {
+        this.shape = shape;
+        this.cModel = cModel;
+        this.fModel = fModel;
+    }
+
     public NDMatrix(final double[][] array) {
         this.shape = new int[]{array.length, array[0].length};
         this.cModel = Arrays.stream(array)
@@ -104,7 +110,23 @@ final class NDMatrix {
     }
 
     public NDMatrix add(final NDMatrix another) throws ArithmeticException {
-        return null;
+        if (shapesAreCoolForAdding(another)) {
+            final var resultCModel = cModel();
+            final var resultFModel = fModel();
+            for (int i = 0; i < resultCModel.length; i++) {
+                resultCModel[i] = this.cModel()[i] + another.cModel()[i];
+                resultFModel[i] = this.fModel()[i] + another.fModel()[i];
+            }
+            return new NDMatrix(resultCModel, resultFModel, this.shape);
+        }
+        throw new ArithmeticException("Can't add matrix's with different shapes: " +
+                this.shape[0] + "x" + this.shape[1] +
+                another.shape[0] + "x" + another.shape[1]
+        );
+    }
+
+    private boolean shapesAreCoolForAdding(final NDMatrix another) {
+        return this.shape[0] != 0 && this.shape[0] == another.shape[0] && this.shape[1] == another.shape[1];
     }
 
     public NDMatrix subtract(final NDMatrix another) {
