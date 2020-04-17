@@ -7,15 +7,19 @@ import org.openjdk.jmh.annotations.State;
 @State(Scope.Benchmark)
 public class SimpleMatrixEnvironment {
 
-    private final Matrix a = Matrix.of(100, 100);
-    private final Matrix b = Matrix.of(100, 100);
+    private final Matrix a100x100 = Matrix.of(100, 100);
+    private final Matrix b100x100 = Matrix.of(100, 100);
+    private final Matrix c100x101 = Matrix.of(100, 101);
 
-
-    public Matrix a() {
-        return a;
+    Matrix a100x100() {
+        return a100x100;
     }
 
-    public Matrix b() {
-        return b;
+    Matrix b100x100() {
+        return b100x100;
+    }
+
+    Matrix c100x101() {
+        return c100x101;
     }
 }
