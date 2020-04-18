@@ -166,7 +166,7 @@ class NDMatrixTest {
 
         @Test
         @DisplayName("2x2 with 1x2, error expected")
-        void addNotTheSameShape() {
+        void add2x2With1x2() {
             final var first = new NDMatrix(new double[][]{{1, 2}, {0, 1}});
             final var second = new NDMatrix(new double[][]{{2, 5}});
 
@@ -186,6 +186,47 @@ class NDMatrixTest {
                     ArithmeticException.class,
                     () -> first.add(second),
                     "Can't add matrix's with different shapes");
+        }
+    }
+
+    @Nested
+    @DisplayName("subtract")
+    class Subtract {
+
+        @Test
+        @DisplayName("2x2 with 2x2")
+        void subtract2x2With2x2() {
+            final var first = new NDMatrix(new double[][]{{1, 2}, {0, 1}});
+            final var second = new NDMatrix(new double[][]{{2, 5}, {6, 7}});
+            final var expected = new NDMatrix(new double[][]{{-1, -3}, {-6, -6}});
+
+            final var result = first.subtract(second);
+
+            Assertions.assertThat(result).isEqualTo(expected);
+        }
+
+        @Test
+        @DisplayName("2x2 with 1x2, error expected")
+        void subtract2x2With1x2() {
+            final var first = new NDMatrix(new double[][]{{1, 2}, {0, 1}});
+            final var second = new NDMatrix(new double[][]{{2, 5}});
+
+            assertThrows(
+                    ArithmeticException.class,
+                    () -> first.subtract(second),
+                    "Can't subtract matrix's with different shapes");
+        }
+
+        @Test
+        @DisplayName("2x2 with 2x1, error expected")
+        void subtract2x2With2x1() {
+            final var first = new NDMatrix(new double[][]{{2, 2}, {3, 3}});
+            final var second = new NDMatrix(new double[][]{{1}, {2.5}});
+
+            assertThrows(
+                    ArithmeticException.class,
+                    () -> first.subtract(second),
+                    "Can't subtract matrix's with different shapes");
         }
     }
 

@@ -109,8 +109,8 @@ final class NDMatrix {
         return pseudoResult;
     }
 
-    public NDMatrix add(final NDMatrix another) throws ArithmeticException {
-        if (shapesAreCoolForAdding(another)) {
+    public NDMatrix add(final NDMatrix another) {
+        if (shapesAreCoolForElementWiseOperation(another)) {
             final var resultCModel = cModel();
             final var resultFModel = fModel();
             for (int i = 0; i < resultCModel.length; i++) {
@@ -119,18 +119,31 @@ final class NDMatrix {
             }
             return new NDMatrix(resultCModel, resultFModel, this.shape);
         }
-        throw new ArithmeticException("Can't add matrix's with different shapes: " +
-                this.shape[0] + "x" + this.shape[1] +
-                another.shape[0] + "x" + another.shape[1]
-        );
+        return throwExceptionNotTheSameSize(another, "add");
     }
 
-    private boolean shapesAreCoolForAdding(final NDMatrix another) {
+    private boolean shapesAreCoolForElementWiseOperation(final NDMatrix another) {
         return this.shape[0] != 0 && this.shape[0] == another.shape[0] && this.shape[1] == another.shape[1];
     }
 
     public NDMatrix subtract(final NDMatrix another) {
-        return null;
+        if (shapesAreCoolForElementWiseOperation(another)) {
+            final var resultCModel = cModel();
+            final var resultFModel = fModel();
+            for (int i = 0; i < resultCModel.length; i++) {
+                resultCModel[i] = this.cModel()[i] - another.cModel()[i];
+                resultFModel[i] = this.fModel()[i] - another.fModel()[i];
+            }
+            return new NDMatrix(resultCModel, resultFModel, this.shape);
+        }
+        return throwExceptionNotTheSameSize(another, "subtract");
+    }
+
+    private NDMatrix throwExceptionNotTheSameSize(final NDMatrix another, final String operation) {
+        throw new ArithmeticException("Can't " + operation + " matrix's with different shapes: " +
+                this.shape[0] + "x" + this.shape[1] + " with " +
+                another.shape[0] + "x" + another.shape[1]
+        );
     }
 
     public NDMatrix transpose() {
