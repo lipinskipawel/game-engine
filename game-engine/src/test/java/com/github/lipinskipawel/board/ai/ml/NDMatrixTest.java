@@ -1,6 +1,7 @@
 package com.github.lipinskipawel.board.ai.ml;
 
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -64,11 +65,24 @@ class NDMatrixTest {
         }
 
         @Test
+        @Disabled
         @DisplayName("2x2 with 2x2")
         void multiply2x2With2x2() {
             final var first = new NDMatrix(new double[][]{{1, 2}, {0, 1}});
             final var second = new NDMatrix(new double[][]{{2, 5}, {6, 7}});
             final var prepared = new NDMatrix(new double[][]{{14, 19}, {6, 7}});
+
+            final var result = first.multiply(second);
+
+            Assertions.assertThat(result).isEqualTo(prepared);
+        }
+
+        @Test
+        @DisplayName("2x2 with 2x2")
+        void multiply2x2With2x2ElementWise() {
+            final var first = new NDMatrix(new double[][]{{1, 2}, {0, 1}});
+            final var second = new NDMatrix(new double[][]{{2, 5}, {6, 7}});
+            final var prepared = new NDMatrix(new double[][]{{2, 10}, {0, 7}});
 
             final var result = first.multiply(second);
 
@@ -327,11 +341,36 @@ class NDMatrixTest {
         }
     }
 
-    @Test
-    void rawDataTest() {
-        final var ndMatrix = new NDMatrix(new double[][]{{1, 2}, {3, 4}});
+    @Nested
+    @DisplayName("backport - forEach, numberOfRows")
+    class BackportMatrix {
 
-        Assertions.assertThat(ndMatrix.rawData()).containsSequence(new double[]{1, 2}, new double[]{3, 4});
+        @Test
+        @DisplayName("add 2 forEach element")
+        void add2ForEachElement() {
+            final var first = new NDMatrix(new double[][]{{2, 3}, {4, 5}});
+            final var expected = new NDMatrix(new double[][]{{4, 5}, {6, 7}});
+
+            final var actual = first.forEach(element -> element + 2);
+
+            Assertions.assertThat(actual).isEqualTo(expected);
+        }
+
+        @Test
+        @DisplayName("numberOfRows")
+        void numberOfRows() {
+            Assertions
+                    .assertThat(new NDMatrix(new double[][]{{0}, {1}}).numberOfRows())
+                    .isEqualTo(2);
+        }
+
+        @Test
+        @DisplayName("rawData")
+        void rawDataTest() {
+            final var ndMatrix = new NDMatrix(new double[][]{{1, 2}, {3, 4}});
+
+            Assertions.assertThat(ndMatrix.rawData()).containsSequence(new double[]{1, 2}, new double[]{3, 4});
+        }
     }
 
     @Test

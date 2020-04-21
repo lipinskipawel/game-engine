@@ -56,12 +56,25 @@ final class NDMatrix {
     }
 
     public NDMatrix multiply(final NDMatrix another) throws ArithmeticException {
+        if (shapesAreCoolForElementWiseOperation(another)) {
+            return elementWiseMultiply(another);
+        }
         var result = new double[this.shape[0] * another.shape[1]];
         for (int number = 0; number < another.shape[0]; number++) {
             final var a = computePseudoCModelForGivenRow(another, number);
             result = add(result, a);
         }
         return NDMatrix.fromCModel(result, this.shape[0]);
+    }
+
+    private NDMatrix elementWiseMultiply(final NDMatrix another) {
+        final var resultCModel = cModel();
+        final var resultFModel = fModel();
+        for (int i = 0; i < resultCModel.length; i++) {
+            resultCModel[i] = this.cModel()[i] * another.cModel()[i];
+            resultFModel[i] = this.fModel()[i] * another.fModel()[i];
+        }
+        return new NDMatrix(resultCModel, resultFModel, this.shape);
     }
 
     private double[] add(final double[] first,
@@ -151,11 +164,17 @@ final class NDMatrix {
     }
 
     public NDMatrix forEach(final Func func) {
-        return null;
+        final var resultCModel = cModel();
+        final var resultFModel = fModel();
+        for (int i = 0; i < resultCModel.length; i++) {
+            resultCModel[i] = func.apply(cModel()[i]);
+            resultFModel[i] = func.apply(fModel()[i]);
+        }
+        return new NDMatrix(resultCModel, resultFModel, this.shape);
     }
 
     public int numberOfRows() {
-        return 0;
+        return this.shape[0];
     }
 
     double[] cModel() {
