@@ -34,8 +34,7 @@ final class NDMatrix {
         }
     }
 
-    public static NDMatrix fromCModel(final double[] cModel,
-                                      int numberOfRows) {
+    public static NDMatrix fromCModel(final double[] cModel, int numberOfRows) {
         final var result = new double[numberOfRows][];
         final var columns = cModel.length / numberOfRows;
         for (int i = 0; i < numberOfRows; i++) {
@@ -147,7 +146,8 @@ final class NDMatrix {
     }
 
     public NDMatrix transpose() {
-        return null;
+        final var newShape = new int[]{this.shape[1], this.shape[0]};
+        return new NDMatrix(this.fModel(), this.cModel(), newShape);
     }
 
     public NDMatrix forEach(final Func func) {

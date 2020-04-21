@@ -231,6 +231,38 @@ class NDMatrixTest {
     }
 
     @Nested
+    @DisplayName("transpose")
+    class Transpose {
+
+        @Test
+        @DisplayName("2x2 into 2x2")
+        void transpose() {
+            final var matrix = new NDMatrix(new double[][]{{2, 3}, {1, 4}});
+            final var expected = new NDMatrix(new double[][]{{2, 1}, {3, 4}});
+
+            Assertions.assertThat(matrix.transpose()).isEqualTo(expected);
+        }
+
+        @Test
+        @DisplayName("1x3 into 3x1")
+        void transposeSecond() {
+            final var matrix = new NDMatrix(new double[][]{{2, 3, 4}});
+            final var expected = new NDMatrix(new double[][]{{2}, {3}, {4}});
+
+            Assertions.assertThat(matrix.transpose()).isEqualTo(expected);
+        }
+
+        @Test
+        @DisplayName("3x1 into 1x3")
+        void transposeThird() {
+            final var matrix = new NDMatrix(new double[][]{{2}, {3}, {4}});
+            final var expected = new NDMatrix(new double[][]{{2, 3, 4}});
+
+            Assertions.assertThat(matrix.transpose()).isEqualTo(expected);
+        }
+    }
+
+    @Nested
     @DisplayName("fromCModel")
     class FromCModelToNDMatrix {
 
