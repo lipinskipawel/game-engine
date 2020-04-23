@@ -8,18 +8,7 @@ import org.openjdk.jmh.infra.Blackhole;
 
 import java.util.concurrent.TimeUnit;
 
-public class SimpleMatrix {
-
-    @Benchmark
-    @BenchmarkMode(Mode.Throughput)
-    @OutputTimeUnit(TimeUnit.SECONDS)
-    public void multiplicationElementWise(SimpleMatrixEnvironment matrixEnvironment,
-                                          Blackhole blackhole) {
-        final var a = matrixEnvironment.a100x100();
-        final var b = matrixEnvironment.b100x100();
-
-        blackhole.consume(a.multiply(b));
-    }
+public class SimpleMatrixBenchmark {
 
     @Benchmark
     @BenchmarkMode(Mode.Throughput)
@@ -30,6 +19,17 @@ public class SimpleMatrix {
         final var c = matrixEnvironment.c100x101();
 
         blackhole.consume(a.multiply(c));
+    }
+
+    @Benchmark
+    @BenchmarkMode(Mode.Throughput)
+    @OutputTimeUnit(TimeUnit.SECONDS)
+    public void multiplicationElementWise(SimpleMatrixEnvironment matrixEnvironment,
+                                          Blackhole blackhole) {
+        final var a = matrixEnvironment.a100x100();
+        final var b = matrixEnvironment.b100x100();
+
+        blackhole.consume(a.multiply(b));
     }
 
     @Benchmark

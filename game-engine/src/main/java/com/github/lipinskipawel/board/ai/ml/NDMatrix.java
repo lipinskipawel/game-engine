@@ -3,7 +3,7 @@ package com.github.lipinskipawel.board.ai.ml;
 import java.util.Arrays;
 import java.util.stream.IntStream;
 
-final class NDMatrix {
+public final class NDMatrix {
 
     private final double[] cModel;
     private final double[] fModel;
