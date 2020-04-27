@@ -53,7 +53,7 @@
 
     <profiles>
         <profile>
-            <id>release</id>
+            <id>releases</id>
             <build>
                 <plugins>
                     <plugin>
@@ -170,6 +170,16 @@
                 <plugin>
                     <artifactId>maven-project-info-reports-plugin</artifactId>
                     <version>3.0.0</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-release-plugin</artifactId>
+                    <version>3.0.0-M1</version>
+                    <configuration>
+                        <tagNameFormat>v@{project.version}</tagNameFormat>
+                        <autoVersionSubmodules>true</autoVersionSubmodules>
+                        <releaseProfiles>releases</releaseProfiles>
+                    </configuration>
                 </plugin>
             </plugins>
         </pluginManagement>
