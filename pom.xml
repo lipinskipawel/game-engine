@@ -5,13 +5,17 @@
 
     <groupId>com.github.lipinskipawel</groupId>
     <artifactId>game-engine-parent</artifactId>
-    <version>3.3.1-SNAPSHOT</version>
+    <version>${revision}</version>
     <packaging>pom</packaging>
 
     <name>game-engine</name>
     <url>https://github.com/lipinskipawel/game-engine</url>
     <description>This is engine for 2D football game plus it contains framework for creating neural networks
     </description>
+
+    <properties>
+        <revision>3.4.1-SNAPSHOT</revision>
+    </properties>
 
     <modules>
         <module>game-engine</module>

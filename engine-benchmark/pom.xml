@@ -4,9 +4,13 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.github.lipinskipawel</groupId>
+    <parent>
+        <groupId>com.github.lipinskipawel</groupId>
+        <artifactId>game-engine-parent</artifactId>
+        <version>${revision}</version>
+    </parent>
+
     <artifactId>engine-benchmark</artifactId>
-    <version>3.3.1-SNAPSHOT</version>
 
     <name>engine-benchmark</name>
 
@@ -22,7 +26,7 @@
         <dependency>
             <groupId>com.github.lipinskipawel</groupId>
             <artifactId>game-engine</artifactId>
-            <version>${version}</version>
+            <version>${revision}</version>
         </dependency>
         <dependency>
             <groupId>org.openjdk.jmh</groupId>
