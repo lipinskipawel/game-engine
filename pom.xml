@@ -8,11 +8,6 @@
     <version>${revision}</version>
     <packaging>pom</packaging>
 
-    <name>game-engine</name>
-    <url>https://github.com/lipinskipawel/game-engine</url>
-    <description>This is engine for 2D football game plus it contains framework for creating neural networks
-    </description>
-
     <properties>
         <revision>3.4.1-SNAPSHOT</revision>
     </properties>
