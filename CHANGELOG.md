@@ -6,6 +6,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## Unreleased
 
+## 3.4.0 - 2020-04-29
+
 ### Added
 - Add non binary transformation for BoardInterface
 - Add alpha-beta version of MiniMax algorithm
