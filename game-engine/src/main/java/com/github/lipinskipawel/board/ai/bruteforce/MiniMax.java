@@ -11,13 +11,21 @@ import java.util.Collections;
 public final class MiniMax implements MoveStrategy {
 
     private final BoardEvaluator evaluator;
+    private final int depth;
 
     public MiniMax() {
         this.evaluator = new DummyBoardEvaluator();
+        this.depth = 1;
     }
 
     public MiniMax(final BoardEvaluator evaluator) {
         this.evaluator = evaluator;
+        this.depth = 1;
+    }
+
+    public MiniMax(final BoardEvaluator evaluator, final int depth) {
+        this.evaluator = evaluator;
+        this.depth = depth;
     }
 
     @Override
@@ -30,6 +38,7 @@ public final class MiniMax implements MoveStrategy {
     public Move execute(final BoardInterface board,
                         final int depth,
                         final BoardEvaluator evaluator) {
+        final var actualDepth = this.depth == 1 ? depth : this.depth;
         Move bestMove = new Move(Collections.emptyList());
 
         var highestSeenValue = -Double.MAX_VALUE;
@@ -43,8 +52,8 @@ public final class MiniMax implements MoveStrategy {
             BoardInterface afterMove = board.executeMove(move);
 
             currentValue = board.getPlayer() == Player.FIRST ? // here is CURRENT board
-                    min(afterMove, depth - 1, evaluator) : // here is AFTER board
-                    max(afterMove, depth - 1, evaluator); // here is AFTER board
+                    min(afterMove, actualDepth - 1, evaluator) : // here is AFTER board
+                    max(afterMove, actualDepth - 1, evaluator); // here is AFTER board
 
             if (board.getPlayer() == Player.FIRST &&
                     currentValue >= highestSeenValue) {

@@ -14,9 +14,11 @@ import static java.lang.Math.min;
 public final class MiniMaxAlphaBeta implements MoveStrategy {
 
     private final BoardEvaluator defaultEvaluator;
+    private final int depth;
 
     public MiniMaxAlphaBeta(final BoardEvaluator defaultEvaluator) {
         this.defaultEvaluator = defaultEvaluator;
+        this.depth = 1;
     }
 
     @Override
@@ -26,6 +28,7 @@ public final class MiniMaxAlphaBeta implements MoveStrategy {
 
     @Override
     public Move execute(final BoardInterface board, final int depth, final BoardEvaluator evaluator) {
+        final var actualDepth = this.depth == 1 ? depth : this.depth;
         Move bestMove = new Move(Collections.emptyList());
 
         var highestSeenValue = -Double.MAX_VALUE;
@@ -40,7 +43,7 @@ public final class MiniMaxAlphaBeta implements MoveStrategy {
 
             currentValue = minimax(
                     afterMove,
-                    depth - 1,
+                    actualDepth - 1,
                     0.0,
                     0.0,
                     board.getPlayer() == Player.FIRST,
