@@ -27,46 +27,66 @@ import java.util.stream.Stream;
 @DisplayName("Internal -- TicTacToe")
 class TicTacToeTest {
 
+    private static final int NUMBER_OF_GAMES = 100;
+
     @Test
     void agentTraining() {
-        var game = TicTacToe.createGame();
-        var ticTacToeBruteForce = new MiniMaxAlphaBeta(new TicTacToeEvaluator());
-
-        final var nnEvaluator = new NeuralNetworkEvaluator(game);
-        final var agentStrategy = new MiniMax(nnEvaluator, 1);
-
-        MoveStrategy currentStrategy = ticTacToeBruteForce;
-
-        do {
-            final var move = currentStrategy.execute(game, 9);
-            System.out.println("Best move for player " + game.getPlayer() + " is: " + move.getMove());
-            game = game.executeMove(move);
-            currentStrategy = game.getPlayer() == Player.FIRST ? ticTacToeBruteForce : agentStrategy;
-        } while (!game.isGameOver());
-
         final WinnerKeeper state = new WinnerKeeper();
-        game
-                .takeTheWinner()
-                .ifPresentOrElse(player -> {
-                            System.out.println("The winner is: " + player);
-                            if (player == Player.FIRST) {
+        for (int i = 0; i < NUMBER_OF_GAMES; i++) {
+            var game = TicTacToe.createGame();
+            var ticTacToeBruteForce = new MiniMaxAlphaBeta(new TicTacToeEvaluator());
+
+            final var nnEvaluator = new NeuralNetworkEvaluator(game);
+            final var agentStrategy = new MiniMax(nnEvaluator, 1);
+
+            MoveStrategy currentStrategy = ticTacToeBruteForce;
+
+            do {
+                final var move = currentStrategy.execute(game, 9);
+//                System.out.println("Best move for player " + game.getPlayer() + " is: " + move.getMove());
+                game = game.executeMove(move);
+                currentStrategy = game.getPlayer() == Player.FIRST ? ticTacToeBruteForce : agentStrategy;
+            } while (!game.isGameOver());
+
+            game
+                    .takeTheWinner()
+                    .ifPresentOrElse(player -> {
+//                                System.out.println("The winner is: " + player);
+                                state.takeWinner(player);
+                                if (player == Player.FIRST) {
+                                    state.didSecondWinTheGame = false;
+                                }
+                            },
+                            () -> {
+                                System.out.println("No winner");
+                                state.tie++;
                                 state.didSecondWinTheGame = false;
-                            }
-                        },
-                        () -> {
-                            System.out.println("No winner");
-                            state.didSecondWinTheGame = false;
-                        });
-        if (state.didSecondWinTheGame) {
-            System.out.println(new TicTacToeEvaluator().evaluate(game));
-            System.out.println(game);
-            Assertions.fail("SECOND won the game");
+                            });
+            if (state.didSecondWinTheGame) {
+                System.out.println(new TicTacToeEvaluator().evaluate(game));
+                System.out.println(game);
+                Assertions.fail("SECOND won the game");
+            }
         }
+        System.out.println("First: " + state.firstWon);
+        System.out.println("Second: " + state.secondWon);
+        System.out.println("Tie: " + state.tie);
     }
 }
 
 final class WinnerKeeper {
     boolean didSecondWinTheGame = true;
+    int firstWon = 0;
+    int secondWon = 0;
+    int tie = 0;
+
+    void takeWinner(final Player player) {
+        if (player == Player.FIRST) {
+            firstWon++;
+        } else {
+            secondWon++;
+        }
+    }
 }
 
 final class NeuralNetworkEvaluator implements BoardEvaluator {
@@ -86,7 +106,7 @@ final class NeuralNetworkEvaluator implements BoardEvaluator {
     @Override
     public double evaluate(final BoardInterface board) {
         final var predict = this.agent.predict(board.nonBinaryTransformation()).getBestValue().doubleValue();
-        System.out.println("NN predicted: " + predict);
+//        System.out.println("NN predicted: " + predict);
         return predict;
     }
 }
