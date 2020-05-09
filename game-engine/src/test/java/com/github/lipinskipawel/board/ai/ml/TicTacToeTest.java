@@ -2,7 +2,6 @@ package com.github.lipinskipawel.board.ai.ml;
 
 import com.github.lipinskipawel.board.ai.BoardEvaluator;
 import com.github.lipinskipawel.board.ai.MoveStrategy;
-import com.github.lipinskipawel.board.ai.bruteforce.MiniMax;
 import com.github.lipinskipawel.board.ai.bruteforce.MiniMaxAlphaBeta;
 import com.github.lipinskipawel.board.ai.ml.activation.Relu;
 import com.github.lipinskipawel.board.ai.ml.activation.Sigmoid;
@@ -14,6 +13,7 @@ import com.github.lipinskipawel.board.engine.Player;
 import com.github.lipinskipawel.board.engine.Point;
 import com.github.lipinskipawel.board.engine.exception.ChangePlayerIsNotAllowed;
 import org.assertj.core.api.Assertions;
+import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -34,10 +34,9 @@ class TicTacToeTest {
         final WinnerKeeper state = new WinnerKeeper();
         for (int i = 0; i < NUMBER_OF_GAMES; i++) {
             var game = TicTacToe.createGame();
-            var ticTacToeBruteForce = new MiniMaxAlphaBeta(new TicTacToeEvaluator());
 
-            final var nnEvaluator = new NeuralNetworkEvaluator(game);
-            final var agentStrategy = new MiniMax(nnEvaluator, 1);
+            final var ticTacToeBruteForce = new MiniMaxAlphaBeta(new TicTacToeEvaluator());
+            final var agentStrategy = new NeuralNetworkPolicy(game);
 
             MoveStrategy currentStrategy = ticTacToeBruteForce;
 
@@ -55,6 +54,9 @@ class TicTacToeTest {
                                 state.takeWinner(player);
                                 if (player == Player.FIRST) {
                                     state.didSecondWinTheGame = false;
+                                    agentStrategy.learn(true);
+                                } else {
+                                    agentStrategy.learn(false);
                                 }
                             },
                             () -> {
@@ -88,6 +90,55 @@ final class WinnerKeeper {
         }
     }
 }
+
+final class NeuralNetworkPolicy implements MoveStrategy, BoardEvaluator {
+
+    private final NeuralNetwork agent;
+    private final List<Double> historyOfMovePredictions;
+
+    NeuralNetworkPolicy(final BoardInterface game) {
+        this.agent = new DeepNeuralNetwork.Builder()
+                .addLayer(new Layer(game.nonBinaryTransformation().length, new Relu()))
+                .addLayer(new Layer(5, new Relu()))
+                .addLayer(new Layer(1, new Sigmoid()))
+                .compile()
+                .lossFunction(new MSE())
+                .build();
+        this.historyOfMovePredictions = new ArrayList<>();
+    }
+
+    @Override
+    public Move execute(final BoardInterface board, final int depth) {
+        return execute(board, depth, this);
+    }
+
+    @Override
+    public Move execute(final BoardInterface board, final int depth, final BoardEvaluator evaluator) {
+        var bestMove = new Move(Lists.emptyList());
+        var bestPrediction = Double.MIN_VALUE;
+        final var moves = board.allLegalMoves();
+        for (var move : moves) {
+            final var afterMove = board.executeMove(move);
+            final var predicted = evaluate(afterMove);
+            if (predicted > bestPrediction) {
+                bestPrediction = predicted;
+                bestMove = move;
+            }
+        }
+        this.historyOfMovePredictions.add(bestPrediction);
+        return bestMove;
+    }
+
+    void learn(final boolean didIWonTheGame) {
+
+    }
+
+    @Override
+    public double evaluate(final BoardInterface board) {
+        return this.agent.predict(board.nonBinaryTransformation()).getBestValue().doubleValue();
+    }
+}
+
 
 final class NeuralNetworkEvaluator implements BoardEvaluator {
 
