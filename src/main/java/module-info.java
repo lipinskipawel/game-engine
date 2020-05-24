@@ -9,5 +9,4 @@ module game.engine {
     opens com.github.lipinskipawel.board.ai.bruteforce;
     opens com.github.lipinskipawel.board.ai.ml;
     opens com.github.lipinskipawel.board.ai.ml.activation;
-
 }

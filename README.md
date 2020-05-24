@@ -17,4 +17,3 @@ Use maven as a build tool and execute command `mvn clean package` to create jar 
  - decided which version you will be releasing according to [semver](https://semver.org)
  - execute `mvn release:perform`
  - enter your passphrase
- - update `revision` property in main [pom](pom.xml) according to released version
