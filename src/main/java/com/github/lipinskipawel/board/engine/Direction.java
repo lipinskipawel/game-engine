@@ -1,16 +1,14 @@
 package com.github.lipinskipawel.board.engine;
 
-import com.github.lipinskipawel.board.ai.ml.ResultInterface;
-
 import java.io.Serializable;
 
 /**
  * Binary compatibility of this enum will change in the future.
  * This enum is unstable only in terms of adding and removing interfaces.
  */
-public enum Direction implements Serializable, ResultInterface {
+public enum Direction implements Serializable {
 
-    S(4) {
+    S {
         @Override
         public Direction opposite() {
             return N;
@@ -21,7 +19,7 @@ public enum Direction implements Serializable, ResultInterface {
             return 9;
         }
     },
-    SW(5) {
+    SW {
         @Override
         public Direction opposite() {
             return NE;
@@ -32,7 +30,7 @@ public enum Direction implements Serializable, ResultInterface {
             return 8;
         }
     },
-    W(6) {
+    W {
         @Override
         public Direction opposite() {
             return E;
@@ -43,7 +41,7 @@ public enum Direction implements Serializable, ResultInterface {
             return -1;
         }
     },
-    NW(7) {
+    NW {
         @Override
         public Direction opposite() {
             return SE;
@@ -54,7 +52,7 @@ public enum Direction implements Serializable, ResultInterface {
             return -10;
         }
     },
-    N(0) {
+    N {
         @Override
         public Direction opposite() {
             return S;
@@ -65,7 +63,7 @@ public enum Direction implements Serializable, ResultInterface {
             return -9;
         }
     },
-    NE(1) {
+    NE {
         @Override
         public Direction opposite() {
             return SW;
@@ -76,7 +74,7 @@ public enum Direction implements Serializable, ResultInterface {
             return -8;
         }
     },
-    E(2) {
+    E {
         @Override
         public Direction opposite() {
             return W;
@@ -87,7 +85,7 @@ public enum Direction implements Serializable, ResultInterface {
             return 1;
         }
     },
-    SE(3) {
+    SE {
         @Override
         public Direction opposite() {
             return NW;
@@ -99,24 +97,12 @@ public enum Direction implements Serializable, ResultInterface {
         }
     };
 
-
-    private final int order;
-
-    Direction(final int order) {
-        this.order = order;
-    }
-
-    @Override
-    public int order() {
-        return this.order;
-    }
-
     @Override
     public String toString() {
         return this.name();
     }
 
     public abstract Direction opposite();
-    public abstract int changeToInt();
 
+    public abstract int changeToInt();
 }

@@ -6,6 +6,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## Unreleased
 
+### Removed
+- The direction class is no more coupled with [neuristic] library
+
+[neuristic]: https://github.com/lipinskipawel/neuristic
+
 ### Added
 - Ability to provide default depth for supported Board Evaluators
 

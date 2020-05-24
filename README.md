@@ -12,7 +12,6 @@ Use maven as a build tool and execute command `mvn clean package` to create jar 
 
 ## How to release game-engine module
  - update your `.m2/settings.xml` to reflect your account settings
- - execute `cd game-engine`
  - execute `mvn release:prepare`
  - decided which version you will be releasing according to [semver](https://semver.org)
  - execute `mvn release:perform`
