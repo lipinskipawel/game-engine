@@ -16,9 +16,20 @@ public final class MiniMaxAlphaBeta implements MoveStrategy {
     private final BoardEvaluator defaultEvaluator;
     private final int depth;
 
+    private volatile Move bestMove;
+    private boolean cancel;
+
     public MiniMaxAlphaBeta(final BoardEvaluator defaultEvaluator) {
         this.defaultEvaluator = defaultEvaluator;
         this.depth = 1;
+        this.bestMove = Move.emptyMove();
+        this.cancel = false;
+    }
+
+    @Override
+    public Move getEarlyMove(final boolean cancel) {
+        this.cancel = cancel;
+        return this.bestMove;
     }
 
     @Override
@@ -39,28 +50,33 @@ public final class MiniMaxAlphaBeta implements MoveStrategy {
 
         for (final Move move : allLegalMoves) {
 
-            BoardInterface afterMove = board.executeMove(move);
+            if (!cancel) {
+                BoardInterface afterMove = board.executeMove(move);
 
-            currentValue = minimax(
-                    afterMove,
-                    actualDepth - 1,
-                    0.0,
-                    0.0,
-                    board.getPlayer() == Player.FIRST,
-                    evaluator
-            );
+                currentValue = minimax(
+                        afterMove,
+                        actualDepth - 1,
+                        0.0,
+                        0.0,
+                        board.getPlayer() == Player.FIRST,
+                        evaluator
+                );
 
-            if (board.getPlayer() == Player.FIRST &&
-                    currentValue >= highestSeenValue) {
+                if (board.getPlayer() == Player.FIRST &&
+                        currentValue >= highestSeenValue) {
 
-                highestSeenValue = currentValue;
-                bestMove = move;
-            } else if (board.getPlayer() == Player.SECOND &&
-                    currentValue <= lowestSeenValue) {
+                    highestSeenValue = currentValue;
+                    bestMove = move;
+                } else if (board.getPlayer() == Player.SECOND &&
+                        currentValue <= lowestSeenValue) {
 
-                lowestSeenValue = currentValue;
-                bestMove = move;
+                    lowestSeenValue = currentValue;
+                    bestMove = move;
+                }
+            } else {
+                return this.bestMove.equals(Move.emptyMove()) ? this.bestMove : bestMove;
             }
+            this.bestMove = bestMove;
         }
         return bestMove;
     }

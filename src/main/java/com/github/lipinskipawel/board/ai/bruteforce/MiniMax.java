@@ -29,6 +29,11 @@ public final class MiniMax implements MoveStrategy {
     }
 
     @Override
+    public Move getEarlyMove(boolean cancel) {
+        return new Move(Collections.emptyList());
+    }
+
+    @Override
     public Move execute(final BoardInterface board,
                         final int depth) {
         return execute(board, depth, this.evaluator);

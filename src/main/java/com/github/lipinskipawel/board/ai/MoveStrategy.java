@@ -24,4 +24,9 @@ public interface MoveStrategy {
      */
     Move execute(BoardInterface board, int depth, BoardEvaluator evaluator);
 
+    /**
+     * @param cancel
+     * @return
+     */
+    Move getEarlyMove(final boolean cancel);
 }

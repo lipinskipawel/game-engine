@@ -2,13 +2,13 @@ package com.github.lipinskipawel.board.engine;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
-final public class Move implements Serializable {
+public final class Move implements Serializable {
 
     private List<Direction> directions;
-
 
     public Move(List<Direction> directions) {
         Direction[] arr = new Direction[directions.size()];
@@ -16,6 +16,14 @@ final public class Move implements Serializable {
             arr[i] = directions.get(i);
         }
         this.directions = List.of(arr);
+    }
+
+    public static Move emptyMove() {
+        return new Move(Collections.emptyList());
+    }
+
+    public List<Direction> getMove() {
+        return new ArrayList<>(this.directions);
     }
 
     @Override
@@ -30,10 +38,4 @@ final public class Move implements Serializable {
     public int hashCode() {
         return Objects.hash(directions);
     }
-
-    public List<Direction> getMove() {
-        return new ArrayList<>(this.directions);
-    }
-
-
 }

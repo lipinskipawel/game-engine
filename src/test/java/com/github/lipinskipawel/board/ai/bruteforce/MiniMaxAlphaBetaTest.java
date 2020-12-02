@@ -11,14 +11,14 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import static com.github.lipinskipawel.board.engine.Direction.N;
-import static com.github.lipinskipawel.board.engine.Direction.NE;
-import static com.github.lipinskipawel.board.engine.Direction.NW;
-import static com.github.lipinskipawel.board.engine.Direction.S;
-import static com.github.lipinskipawel.board.engine.Direction.SE;
-import static com.github.lipinskipawel.board.engine.Direction.W;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeoutException;
+
+import static com.github.lipinskipawel.board.engine.Direction.*;
 import static com.github.lipinskipawel.board.engine.Player.FIRST;
 import static com.github.lipinskipawel.board.engine.Player.SECOND;
+import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 @DisplayName("API -- Minimax alpha-beta")
@@ -31,6 +31,37 @@ class MiniMaxAlphaBetaTest {
     void setUp() {
         this.bruteForce = new MiniMaxAlphaBeta(new DummyBoardEvaluator());
         this.board = Boards.immutableBoard();
+    }
+
+    @Test
+    void shouldReturnGoalMoveWhenGetEarlyMove() {
+        final var pool = Executors.newFixedThreadPool(2);
+        pool.execute(() -> this.bruteForce.execute(getComplicatedBoard(this.board), 3));
+
+        try {
+            final var futureEarlyMove = pool.submit(() -> this.bruteForce.getEarlyMove(true));
+            final var earlyMove = futureEarlyMove.get(5, SECONDS);
+            System.out.println(earlyMove.getMove());
+
+            final var shouldBeGoal = this.board.executeMove(earlyMove);
+
+            Assertions.assertThat(shouldBeGoal.isGoal()).isTrue();
+        } catch (InterruptedException | ExecutionException | TimeoutException e) {
+            Assertions.fail("The early move hasn't been returned.");
+        } finally {
+            pool.shutdown();
+        }
+    }
+
+    private BoardInterface getComplicatedBoard(final BoardInterface board) {
+        return board
+                .executeMove(S)
+                .executeMove(S)
+                .executeMove(S)
+                .executeMove(S)
+                .executeMove(W)
+                .executeMove(N)
+                .executeMove(W);
     }
 
     @Test
