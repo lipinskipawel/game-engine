@@ -4,6 +4,7 @@ import com.github.lipinskipawel.board.ai.BoardEvaluator;
 import com.github.lipinskipawel.board.ai.MoveStrategy;
 import com.github.lipinskipawel.board.engine.BoardInterface;
 import com.github.lipinskipawel.board.engine.Boards;
+import com.github.lipinskipawel.board.engine.Move;
 import com.github.lipinskipawel.board.engine.Player;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -11,12 +12,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import static com.github.lipinskipawel.board.engine.Direction.N;
-import static com.github.lipinskipawel.board.engine.Direction.NE;
-import static com.github.lipinskipawel.board.engine.Direction.NW;
-import static com.github.lipinskipawel.board.engine.Direction.S;
-import static com.github.lipinskipawel.board.engine.Direction.SE;
-import static com.github.lipinskipawel.board.engine.Direction.W;
+import java.time.Duration;
+
+import static com.github.lipinskipawel.board.engine.Direction.*;
 import static com.github.lipinskipawel.board.engine.Player.FIRST;
 import static com.github.lipinskipawel.board.engine.Player.SECOND;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -29,8 +27,83 @@ class MiniMaxAlphaBetaTest {
 
     @BeforeEach
     void setUp() {
-        this.bruteForce = new MiniMaxAlphaBeta(new DummyBoardEvaluator());
+        this.bruteForce = new MiniMaxAlphaBeta(new SmartBoardEvaluator(), 3);
         this.board = Boards.immutableBoard();
+    }
+
+    @Nested
+    @DisplayName("execute with timeout")
+    class TimeoutTest {
+
+        @Test
+        @DisplayName("should score a goal even on timeout")
+        void shouldReturnGoalMoveOnTimeout() {
+            final var closeToGoalBoard = getComplicatedBoardCloseToNorthGoal(board);
+
+            final var move = bruteForce.execute(closeToGoalBoard, Duration.ofSeconds(2));
+            final var shouldBeGoal = closeToGoalBoard.executeMove(move);
+
+            Assertions.assertThat(shouldBeGoal.isGoal()).isTrue();
+            Assertions.assertThat(shouldBeGoal.takeTheWinner().get()).isEqualTo(FIRST);
+        }
+
+        private BoardInterface getComplicatedBoardCloseToNorthGoal(final BoardInterface board) {
+            return board
+                    .executeMove(N)
+                    .executeMove(N)
+                    .executeMove(N)
+                    .executeMove(N)
+                    .executeMove(W)
+                    .executeMove(S);
+        }
+
+        @Test
+        @DisplayName("should not return empty move on complicated board")
+        void shouldFindAnyMoveOnVeryComplicatedBoard() {
+            final var semiComplicatedBoard = getComplicatedBoard(board);
+
+            final var aiMove = bruteForce.execute(semiComplicatedBoard, Duration.ofSeconds(5));
+
+            Assertions.assertThat(aiMove).isNotEqualTo(Move.emptyMove());
+        }
+
+        private BoardInterface getComplicatedBoard(final BoardInterface board) {
+            return board
+                    .executeMove(N)
+                    .executeMove(E)
+                    .executeMove(S)
+                    .executeMove(S)
+                    .executeMove(W)
+                    .executeMove(W)
+                    .executeMove(N)
+                    .executeMove(N)
+                    .executeMove(N)
+                    .executeMove(E)
+                    .executeMove(E)
+                    .executeMove(E);
+        }
+
+        @Test
+        @DisplayName("should not return empty move on semi-complicated board")
+        void shouldNotReturnEmptyMove() {
+            final var semiComplicatedBoard = getSemiComplicatedBoard(board);
+
+            final var aiMove = bruteForce.execute(semiComplicatedBoard, Duration.ofSeconds(5));
+
+            Assertions.assertThat(aiMove).isNotEqualTo(Move.emptyMove());
+        }
+
+        private BoardInterface getSemiComplicatedBoard(final BoardInterface board) {
+            return board
+                    .executeMove(N)
+                    .executeMove(E)
+                    .executeMove(S)
+                    .executeMove(S)
+                    .executeMove(W)
+                    .executeMove(W)
+                    .executeMove(N)
+                    .executeMove(N);
+        }
     }
 
     @Test

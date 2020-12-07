@@ -6,7 +6,12 @@ import com.github.lipinskipawel.board.engine.BoardInterface;
 import com.github.lipinskipawel.board.engine.Move;
 import com.github.lipinskipawel.board.engine.Player;
 
+import java.time.Duration;
 import java.util.Collections;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 public final class MiniMax implements MoveStrategy {
 
@@ -26,6 +31,19 @@ public final class MiniMax implements MoveStrategy {
     public MiniMax(final BoardEvaluator evaluator, final int depth) {
         this.evaluator = evaluator;
         this.depth = depth;
+    }
+
+    @Override
+    public Move execute(final BoardInterface board, final Duration timeout) {
+        final var pool = Executors.newSingleThreadExecutor();
+        final var searchingForMove = pool.submit(() -> execute(board, this.depth, this.evaluator));
+        try {
+            return searchingForMove.get(timeout.getSeconds(), TimeUnit.SECONDS);
+        } catch (InterruptedException | ExecutionException | TimeoutException e) {
+            return board.allLegalMoves().get(0);
+        } finally {
+            pool.shutdown();
+        }
     }
 
     @Override
