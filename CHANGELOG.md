@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Added
 - Ability to provide default depth for supported Board Evaluators
+- Add third method in MoveStrategy with the timeout argument
 
 ## 3.4.0 - 2020-04-29
 
