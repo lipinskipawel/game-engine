@@ -4,7 +4,7 @@
 
     <groupId>com.github.lipinskipawel</groupId>
     <artifactId>game-engine</artifactId>
-    <version>3.5.0</version>
+    <version>3.5.1-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>game-engine</name>
@@ -39,7 +39,7 @@
         <url>git@github.com:lipinskipawel/game-engine</url>
         <connection>scm:git:ssh://git@github.com/lipinskipawel/game-engine.git</connection>
         <developerConnection>scm:git:ssh://git@github.com/lipinskipawel/game-engine.git</developerConnection>
-        <tag>v3.5.0</tag>
+        <tag>v3.4.0</tag>
     </scm>
 
     <distributionManagement>
