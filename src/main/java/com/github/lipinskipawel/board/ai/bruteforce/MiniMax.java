@@ -13,6 +13,10 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
+/**
+ * Use {@link MiniMaxAlphaBeta} instead of this class.
+ */
+@Deprecated(since = "3.5.0", forRemoval = true)
 public final class MiniMax implements MoveStrategy {
 
     private final BoardEvaluator evaluator;
