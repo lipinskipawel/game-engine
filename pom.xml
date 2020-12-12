@@ -125,10 +125,8 @@
                             </execution>
                         </executions>
                         <configuration>
-                            <gpgArguments>
-                                <gpgArgument>--pinentry-mode</gpgArgument>
-                                <gpgArgument>loopback</gpgArgument>
-                            </gpgArguments>
+                            <keyname>${gpg.keyname}</keyname>
+                            <passphraseServerId>${gpg.keyname}</passphraseServerId>
                         </configuration>
                     </plugin>
                 </plugins>
