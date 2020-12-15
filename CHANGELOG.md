@@ -6,6 +6,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## Unreleased
 
+### Removed
+- The MiniMax class is no longer a part of the API
+
 ## 3.5.0 - 2020.12.12
 ### Removed
 - The direction class is no more coupled with [neuristic] library

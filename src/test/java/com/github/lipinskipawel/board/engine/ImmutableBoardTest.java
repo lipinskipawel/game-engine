@@ -2,12 +2,7 @@ package com.github.lipinskipawel.board.engine;
 
 import com.github.lipinskipawel.board.engine.exception.ChangePlayerIsNotAllowed;
 import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -17,23 +12,10 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-import static com.github.lipinskipawel.board.engine.Direction.E;
-import static com.github.lipinskipawel.board.engine.Direction.N;
-import static com.github.lipinskipawel.board.engine.Direction.NE;
-import static com.github.lipinskipawel.board.engine.Direction.NW;
-import static com.github.lipinskipawel.board.engine.Direction.S;
-import static com.github.lipinskipawel.board.engine.Direction.SE;
-import static com.github.lipinskipawel.board.engine.Direction.SW;
-import static com.github.lipinskipawel.board.engine.Direction.W;
+import static com.github.lipinskipawel.board.engine.Direction.*;
 import static com.github.lipinskipawel.board.engine.Player.FIRST;
 import static com.github.lipinskipawel.board.engine.Player.SECOND;
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.*;
 
 @DisplayName("API -- ImmutableBoard")
 class ImmutableBoardTest {
@@ -43,7 +25,6 @@ class ImmutableBoardTest {
     private static int STARTING_BALL_POSITION;
     private static int POSITION_AFTER_N_MOVE;
     private static int POSITION_AFTER_S_MOVE;
-
 
     @BeforeAll
     static void setUpVariable() {
@@ -462,7 +443,6 @@ class ImmutableBoardTest {
         @Test
         @DisplayName("Try to undo move when no move has been done yet")
         void undoMoveWhenGameJustBegun() {
-
             assertThrows(RuntimeException.class,
                     () -> board.undo(),
                     () -> "Can't undo move when no move has been done");
@@ -471,8 +451,8 @@ class ImmutableBoardTest {
         @Test
         @DisplayName("Make a one simple S move and then undo")
         void makeAMoveSAndUndoMove() {
-            BoardInterface afterMove = board.executeMove(S);
-            BoardInterface afterUndo = afterMove.undo();
+            final var afterMove = board.executeMove(S);
+            final var afterUndo = afterMove.undo();
 
             int actualBallPosition = afterUndo.getBallPosition();
             assertEquals(STARTING_BALL_POSITION, actualBallPosition);
@@ -481,8 +461,8 @@ class ImmutableBoardTest {
         @Test
         @DisplayName("Make a one simple S move and then undo")
         void makeAMoveSAndUndoMoveAndCheckSanity() {
-            BoardInterface afterMove = board.executeMove(S);
-            BoardInterface afterUndo = afterMove.undo();
+            final var afterMove = board.executeMove(S);
+            final var afterUndo = afterMove.undo();
 
             final var legalMoves = afterUndo.allLegalMoves();
             Assertions.assertThat(legalMoves.size()).isEqualTo(8);
