@@ -6,6 +6,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## Unreleased
 
+## 3.5.0 - 2020.12.12
 ### Removed
 - The direction class is no more coupled with [neuristic] library
 
@@ -16,9 +17,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Add third method in MoveStrategy with the timeout argument
 
 ## 3.4.0 - 2020-04-29
-
 ### Added
-- Add non binary transformation for BoardInterface
+- Add non-binary transformation for BoardInterface
 - Add alpha-beta version of MiniMax algorithm
 
 ### Fixed
