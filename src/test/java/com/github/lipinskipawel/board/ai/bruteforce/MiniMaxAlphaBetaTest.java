@@ -25,7 +25,11 @@ class MiniMaxAlphaBetaTest {
 
     @BeforeEach
     void setUp() {
-        this.bruteForce = new MiniMaxAlphaBeta(new SmartBoardEvaluator(), 3);
+        this.bruteForce = MoveStrategy
+                .defaultMoveStrategyBuilder()
+                .withBoardEvaluator(new SmartBoardEvaluator())
+                .withDepth(3)
+                .build();
         this.board = Boards.immutableBoard();
     }
 

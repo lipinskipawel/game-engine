@@ -18,29 +18,44 @@ import static java.lang.Math.min;
 
 public final class MiniMaxAlphaBeta implements MoveStrategy {
 
-    private final BoardEvaluator defaultEvaluator;
+    private static final int DEFAULT_TIMEOUT = 2;
+    private final BoardEvaluator evaluator;
     private final int depth;
+    private final int timeout;
     private final AtomicReference<Move> bestMove;
     private volatile boolean cancel;
 
     public MiniMaxAlphaBeta(final BoardEvaluator defaultEvaluator) {
-        this.defaultEvaluator = defaultEvaluator;
+        this.evaluator = defaultEvaluator;
         this.depth = 1;
+        this.timeout = DEFAULT_TIMEOUT;
         this.bestMove = new AtomicReference<>(Move.emptyMove());
         this.cancel = false;
     }
 
     public MiniMaxAlphaBeta(final BoardEvaluator defaultEvaluator,
                             final int depth) {
-        this.defaultEvaluator = defaultEvaluator;
+        this.evaluator = defaultEvaluator;
         this.depth = depth;
+        this.timeout = DEFAULT_TIMEOUT;
+        this.bestMove = new AtomicReference<>(Move.emptyMove());
+        this.cancel = false;
+    }
+
+    public MiniMaxAlphaBeta(final BoardEvaluator defaultEvaluator,
+                            final int depth,
+                            final int timeout) {
+        this.evaluator = defaultEvaluator;
+        this.depth = depth;
+        this.timeout = timeout;
         this.bestMove = new AtomicReference<>(Move.emptyMove());
         this.cancel = false;
     }
 
     MiniMaxAlphaBeta(final MiniMaxAlphaBeta miniMaxAlphaBeta) {
-        this.defaultEvaluator = miniMaxAlphaBeta.defaultEvaluator;
+        this.evaluator = miniMaxAlphaBeta.evaluator;
         this.depth = miniMaxAlphaBeta.depth;
+        this.timeout = miniMaxAlphaBeta.timeout;
         this.bestMove = new AtomicReference<>(Move.emptyMove());
         this.cancel = false;
     }
@@ -50,7 +65,7 @@ public final class MiniMaxAlphaBeta implements MoveStrategy {
         final var pool = Executors.newSingleThreadExecutor();
         final var copy = new MiniMaxAlphaBeta(this);
         final var searchingForMove = pool.submit(
-                () -> copy.execute(board, copy.depth, copy.defaultEvaluator)
+                () -> copy.execute(board, copy.depth, copy.evaluator)
         );
         try {
             return searchingForMove.get(timeout.getSeconds(), TimeUnit.SECONDS);
@@ -64,7 +79,7 @@ public final class MiniMaxAlphaBeta implements MoveStrategy {
 
     @Override
     public Move execute(final BoardInterface board, final int depth) {
-        return execute(board, depth, this.defaultEvaluator);
+        return execute(board, depth, this.evaluator);
     }
 
     @Override

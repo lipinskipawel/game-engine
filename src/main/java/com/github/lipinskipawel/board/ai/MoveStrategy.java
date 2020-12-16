@@ -1,5 +1,6 @@
 package com.github.lipinskipawel.board.ai;
 
+import com.github.lipinskipawel.board.ai.bruteforce.DefaultMoveStrategyBuilder;
 import com.github.lipinskipawel.board.engine.BoardInterface;
 import com.github.lipinskipawel.board.engine.Move;
 
@@ -30,9 +31,18 @@ public interface MoveStrategy {
     /**
      * This method will guarantee that the {@link Move} will be returned within given timeout.
      *
-     * @param board best move will be find on that move
+     * @param board   best move will be find on that move
      * @param timeout in seconds
      * @return best move
      */
     Move execute(BoardInterface board, Duration timeout);
+
+    /**
+     * This method provides default {@link MoveStrategy} builder.
+     *
+     * @return default builder object
+     */
+    static DefaultMoveStrategyBuilder defaultMoveStrategyBuilder() {
+        return DefaultMoveStrategyBuilder.aDefaultMoveStrategyBuilder();
+    }
 }
