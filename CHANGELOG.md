@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Removed
 - The MiniMax class is no longer a part of the API
 - The DummyBoardEvaluator is no longer a part of the API
+- The MiniMaxAlphaBeta is no longer a part of the API
 
 ### Rename
 - BoardInterface into Board

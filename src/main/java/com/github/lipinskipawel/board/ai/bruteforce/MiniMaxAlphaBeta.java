@@ -16,35 +16,17 @@ import java.util.concurrent.atomic.AtomicReference;
 import static java.lang.Math.max;
 import static java.lang.Math.min;
 
-public final class MiniMaxAlphaBeta implements MoveStrategy {
+final class MiniMaxAlphaBeta implements MoveStrategy {
 
-    private static final int DEFAULT_TIMEOUT = 2;
     private final BoardEvaluator evaluator;
     private final int depth;
     private final int timeout;
     private final AtomicReference<Move> bestMove;
     private volatile boolean cancel;
 
-    public MiniMaxAlphaBeta(final BoardEvaluator defaultEvaluator) {
-        this.evaluator = defaultEvaluator;
-        this.depth = 1;
-        this.timeout = DEFAULT_TIMEOUT;
-        this.bestMove = new AtomicReference<>(Move.emptyMove());
-        this.cancel = false;
-    }
-
-    public MiniMaxAlphaBeta(final BoardEvaluator defaultEvaluator,
-                            final int depth) {
-        this.evaluator = defaultEvaluator;
-        this.depth = depth;
-        this.timeout = DEFAULT_TIMEOUT;
-        this.bestMove = new AtomicReference<>(Move.emptyMove());
-        this.cancel = false;
-    }
-
-    public MiniMaxAlphaBeta(final BoardEvaluator defaultEvaluator,
-                            final int depth,
-                            final int timeout) {
+    MiniMaxAlphaBeta(final BoardEvaluator defaultEvaluator,
+                     final int depth,
+                     final int timeout) {
         this.evaluator = defaultEvaluator;
         this.depth = depth;
         this.timeout = timeout;

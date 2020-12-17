@@ -1,6 +1,7 @@
 package com.github.lipinskipawel.board.ai.bruteforce;
 
 import com.github.lipinskipawel.board.ai.BoardEvaluator;
+import com.github.lipinskipawel.board.ai.MoveStrategy;
 
 public final class DefaultMoveStrategyBuilder {
     private BoardEvaluator defaultEvaluator;
@@ -29,7 +30,7 @@ public final class DefaultMoveStrategyBuilder {
         return this;
     }
 
-    public MiniMaxAlphaBeta build() {
+    public MoveStrategy build() {
         return new MiniMaxAlphaBeta(defaultEvaluator, depth, timeout);
     }
 }
