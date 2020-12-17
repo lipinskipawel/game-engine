@@ -12,7 +12,7 @@ import static com.github.lipinskipawel.board.engine.Player.SECOND;
 
 // TODO Ideally this class should be package-private
 // TODO refactor handling player, this 'if' should be replace somehow in the future
-final class ImmutableBoard implements BoardInterface {
+final class ImmutableBoard implements Board {
 
     private final LogicalPoints points;
     private final Player playerToMove;
@@ -61,8 +61,8 @@ final class ImmutableBoard implements BoardInterface {
     }
 
     @Override
-    public BoardInterface executeMove(final Move move) {
-        BoardInterface afterMove = new ImmutableBoard(this.points, this.playerToMove, this.moveLog);
+    public Board executeMove(final Move move) {
+        Board afterMove = new ImmutableBoard(this.points, this.playerToMove, this.moveLog);
         for (var dir : move.getMove()) {
             afterMove = afterMove.executeMove(dir);
         }
@@ -87,7 +87,7 @@ final class ImmutableBoard implements BoardInterface {
     }
 
     @Override
-    public BoardInterface undoPlayerMove() {
+    public Board undoPlayerMove() {
         final var another = new ImmutableBoard(this.points, this.playerToMove, this.moveLog).undo();
         if (this.playerToMove == another.playerToMove) {
             return another;
@@ -106,19 +106,19 @@ final class ImmutableBoard implements BoardInterface {
         return allMoves.get();
     }
 
-    private void findAllMovesRecursively(final BoardInterface boardInterface) {
+    private void findAllMovesRecursively(final Board board) {
 
-        for (var move : boardInterface.getBallAPI().getAllowedDirection()) {
+        for (var move : board.getBallAPI().getAllowedDirection()) {
 
             stack.get().push(move);
-            final var afterMove = boardInterface.executeMove(move);
+            final var afterMove = board.executeMove(move);
 
             if (isItEnd(afterMove.getBallAPI())) {
                 final var moveToSave = new Move(new ArrayList<>(stack.get()));
                 allMoves.get().add(moveToSave);
             } else {
 
-                final var afterMove2 = boardInterface.executeMove(move);
+                final var afterMove2 = board.executeMove(move);
                 findAllMovesRecursively(afterMove2);
             }
 
@@ -160,7 +160,7 @@ final class ImmutableBoard implements BoardInterface {
     }
 
     @Override
-    public BoardInterface nextPlayerToMove(final Player nextPlayerToMove) throws ChangePlayerIsNotAllowed {
+    public Board nextPlayerToMove(final Player nextPlayerToMove) throws ChangePlayerIsNotAllowed {
         if (this.moveLog.isSmallMoveHasBeenMade()) {
             throw new ChangePlayerIsNotAllowed();
         }

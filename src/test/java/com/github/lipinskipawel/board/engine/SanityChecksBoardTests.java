@@ -11,7 +11,7 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 @DisplayName("Sanity checks of board state")
 class SanityChecksBoardTests {
 
-    private BoardInterface board;
+    private Board board;
     private static int STARTING_BALL_POSITION = 58;
 
 
@@ -39,7 +39,7 @@ class SanityChecksBoardTests {
     void afterMoveReturnNewBoard() {
 
         //When:
-        BoardInterface afterMove = board.executeMove(Direction.N);
+        Board afterMove = board.executeMove(Direction.N);
 
         //Then:
         assertNotEquals(afterMove, board);

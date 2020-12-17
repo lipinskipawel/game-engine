@@ -1,13 +1,13 @@
 package com.github.lipinskipawel.board.ai.bruteforce;
 
 import com.github.lipinskipawel.board.ai.BoardEvaluator;
-import com.github.lipinskipawel.board.engine.BoardInterface;
+import com.github.lipinskipawel.board.engine.Board;
 import com.github.lipinskipawel.board.engine.Player;
 
 public final class SmartBoardEvaluator implements BoardEvaluator {
 
     @Override
-    public double evaluate(BoardInterface board) {
+    public double evaluate(Board board) {
         final var numberOfPointsOnBoard = 117;
         if (board.getPlayer() == Player.FIRST) {
             if (!board.isGoal() && board.isGameOver()) {

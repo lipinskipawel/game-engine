@@ -2,7 +2,7 @@ package com.github.lipinskipawel.board.ai.bruteforce;
 
 import com.github.lipinskipawel.board.ai.BoardEvaluator;
 import com.github.lipinskipawel.board.ai.MoveStrategy;
-import com.github.lipinskipawel.board.engine.BoardInterface;
+import com.github.lipinskipawel.board.engine.Board;
 import com.github.lipinskipawel.board.engine.Move;
 import com.github.lipinskipawel.board.engine.Player;
 
@@ -61,7 +61,7 @@ public final class MiniMaxAlphaBeta implements MoveStrategy {
     }
 
     @Override
-    public Move execute(final BoardInterface board, final Duration timeout) {
+    public Move execute(final Board board, final Duration timeout) {
         final var pool = Executors.newSingleThreadExecutor();
         final var copy = new MiniMaxAlphaBeta(this);
         final var searchingForMove = pool.submit(
@@ -78,12 +78,12 @@ public final class MiniMaxAlphaBeta implements MoveStrategy {
     }
 
     @Override
-    public Move execute(final BoardInterface board, final int depth) {
+    public Move execute(final Board board, final int depth) {
         return execute(board, depth, this.evaluator);
     }
 
     @Override
-    public Move execute(final BoardInterface board, final int depth, final BoardEvaluator evaluator) {
+    public Move execute(final Board board, final int depth, final BoardEvaluator evaluator) {
         final var actualDepth = this.depth == 1 ? depth : this.depth;
         Move bestMove = Move.emptyMove();
 
@@ -138,7 +138,7 @@ public final class MiniMaxAlphaBeta implements MoveStrategy {
         }
     }
 
-    private double minimaxWithCancel(final BoardInterface board,
+    private double minimaxWithCancel(final Board board,
                                      final int depth,
                                      double alpha,
                                      double beta,
@@ -151,7 +151,7 @@ public final class MiniMaxAlphaBeta implements MoveStrategy {
         }
     }
 
-    private double minimax(final BoardInterface board,
+    private double minimax(final Board board,
                            final int depth,
                            double alpha,
                            double beta,

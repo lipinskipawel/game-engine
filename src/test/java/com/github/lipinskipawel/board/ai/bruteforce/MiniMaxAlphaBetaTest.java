@@ -1,7 +1,7 @@
 package com.github.lipinskipawel.board.ai.bruteforce;
 
 import com.github.lipinskipawel.board.ai.MoveStrategy;
-import com.github.lipinskipawel.board.engine.BoardInterface;
+import com.github.lipinskipawel.board.engine.Board;
 import com.github.lipinskipawel.board.engine.Boards;
 import com.github.lipinskipawel.board.engine.Move;
 import com.github.lipinskipawel.board.engine.Player;
@@ -21,7 +21,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 class MiniMaxAlphaBetaTest {
 
     private MoveStrategy bruteForce;
-    private BoardInterface board;
+    private Board board;
 
     @BeforeEach
     void setUp() {
@@ -49,7 +49,7 @@ class MiniMaxAlphaBetaTest {
             Assertions.assertThat(shouldBeGoal.takeTheWinner().get()).isEqualTo(FIRST);
         }
 
-        private BoardInterface getComplicatedBoardCloseToNorthGoal(final BoardInterface board) {
+        private Board getComplicatedBoardCloseToNorthGoal(final Board board) {
             return board
                     .executeMove(N)
                     .executeMove(N)
@@ -69,7 +69,7 @@ class MiniMaxAlphaBetaTest {
             Assertions.assertThat(aiMove).isNotEqualTo(Move.emptyMove());
         }
 
-        private BoardInterface getComplicatedBoard(final BoardInterface board) {
+        private Board getComplicatedBoard(final Board board) {
             return board
                     .executeMove(N)
                     .executeMove(E)
@@ -95,7 +95,7 @@ class MiniMaxAlphaBetaTest {
             Assertions.assertThat(aiMove).isNotEqualTo(Move.emptyMove());
         }
 
-        private BoardInterface getSemiComplicatedBoard(final BoardInterface board) {
+        private Board getSemiComplicatedBoard(final Board board) {
             return board
                     .executeMove(N)
                     .executeMove(E)

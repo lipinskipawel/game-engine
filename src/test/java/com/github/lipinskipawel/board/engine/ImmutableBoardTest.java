@@ -20,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @DisplayName("API -- ImmutableBoard")
 class ImmutableBoardTest {
 
-    private BoardInterface board;
+    private Board board;
     private ExecutorService executor;
     private static int STARTING_BALL_POSITION;
     private static int POSITION_AFTER_N_MOVE;
@@ -373,7 +373,7 @@ class ImmutableBoardTest {
         @DisplayName("Make a one full move and don't allow to move backwards")
         void notAllowToMakeAMove() {
             final var afterFirstMove = board.executeMove(N);
-            BoardInterface afterSecondMove = null;
+            Board afterSecondMove = null;
             if (afterFirstMove.isMoveAllowed(S)) {
                 afterSecondMove = board.executeMove(S);
             }

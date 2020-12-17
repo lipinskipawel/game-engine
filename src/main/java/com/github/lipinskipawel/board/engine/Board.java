@@ -5,7 +5,7 @@ import com.github.lipinskipawel.board.engine.exception.ChangePlayerIsNotAllowed;
 import java.util.List;
 import java.util.Optional;
 
-public interface BoardInterface extends Transformation {
+public interface Board extends Transformation {
 
     /**
      * This method will move the ball in the given direction.
@@ -14,7 +14,7 @@ public interface BoardInterface extends Transformation {
      * @return a new BoardInterface object with a ball position
      * @throws RuntimeException when the move can not be made
      */
-    BoardInterface executeMove(final Direction direction);
+    Board executeMove(final Direction direction);
 
     /**
      * This method will move the ball by the given move.
@@ -24,7 +24,7 @@ public interface BoardInterface extends Transformation {
      * @return a new BoardInterface object with a new move
      * @throws RuntimeException when the move can not be made
      */
-    BoardInterface executeMove(final Move move);
+    Board executeMove(final Move move);
 
     /**
      * This method will undo only current player small moves.
@@ -32,7 +32,7 @@ public interface BoardInterface extends Transformation {
      *
      * @return a new BoardInterface object with a undo Player move
      */
-    BoardInterface undoPlayerMove();
+    Board undoPlayerMove();
 
     /**
      * This method will undo small move and hasn't any restrictions. It means
@@ -42,7 +42,7 @@ public interface BoardInterface extends Transformation {
      * @return a new BoardInterface object with a undo move
      * @throws RuntimeException when the move can not be undo at the beggining of the game
      */
-    BoardInterface undo();
+    Board undo();
 
     /**
      * Returns all possible moves whenever this move ends up hitting the corner or not.
@@ -125,13 +125,13 @@ public interface BoardInterface extends Transformation {
      * @return a new instance of BoardInterface with the same logical state <strong>except</strong> next player to move
      * @throws ChangePlayerIsNotAllowed whenever small move has been made and wasn't undo
      */
-    BoardInterface nextPlayerToMove(final Player nextPlayerToMove) throws ChangePlayerIsNotAllowed;
+    Board nextPlayerToMove(final Player nextPlayerToMove) throws ChangePlayerIsNotAllowed;
 
     /**
      * This method will return the winner of the game. If game ends with the ball inside of the goal area the method
      * will calculate the winner. If one of the player hits the corner the method will calculate the winner properly.
-     * The result of this method can and will differ from {@link BoardInterface#getPlayer()} after the returning the
-     * true from {@link BoardInterface#isGameOver()}.
+     * The result of this method can and will differ from {@link Board#getPlayer()} after the returning the
+     * true from {@link Board#isGameOver()}.
      *
      * @return the winner of the game or {@link Optional#empty()} if the game is not decided yet
      */

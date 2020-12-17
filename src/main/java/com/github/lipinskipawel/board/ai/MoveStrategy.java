@@ -1,7 +1,7 @@
 package com.github.lipinskipawel.board.ai;
 
 import com.github.lipinskipawel.board.ai.bruteforce.DefaultMoveStrategyBuilder;
-import com.github.lipinskipawel.board.engine.BoardInterface;
+import com.github.lipinskipawel.board.engine.Board;
 import com.github.lipinskipawel.board.engine.Move;
 
 import java.time.Duration;
@@ -19,14 +19,14 @@ public interface MoveStrategy {
      * @param depth of the search
      * @return the best move that can be find using {@link BoardEvaluator}
      */
-    Move execute(BoardInterface board, int depth);
+    Move execute(Board board, int depth);
 
     /**
      * @param board best move will be find on that board
      * @param depth of the search
      * @return the best move that can be find using {@link BoardEvaluator}
      */
-    Move execute(BoardInterface board, int depth, BoardEvaluator evaluator);
+    Move execute(Board board, int depth, BoardEvaluator evaluator);
 
     /**
      * This method will guarantee that the {@link Move} will be returned within given timeout.
@@ -35,7 +35,7 @@ public interface MoveStrategy {
      * @param timeout in seconds
      * @return best move
      */
-    Move execute(BoardInterface board, Duration timeout);
+    Move execute(Board board, Duration timeout);
 
     /**
      * This method provides default {@link MoveStrategy} builder.
