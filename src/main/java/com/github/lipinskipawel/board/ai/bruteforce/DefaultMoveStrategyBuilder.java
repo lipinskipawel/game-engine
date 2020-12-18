@@ -5,10 +5,13 @@ import com.github.lipinskipawel.board.ai.MoveStrategy;
 
 public final class DefaultMoveStrategyBuilder {
     private BoardEvaluator defaultEvaluator;
-    private int depth;
     private int timeout;
+    private int depth;
 
     private DefaultMoveStrategyBuilder() {
+        this.defaultEvaluator = new SmartBoardEvaluator();
+        this.timeout = 5;
+        this.depth = 3;
     }
 
     public static DefaultMoveStrategyBuilder aDefaultMoveStrategyBuilder() {

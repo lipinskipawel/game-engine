@@ -11,8 +11,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import java.time.Duration;
-
 import static com.github.lipinskipawel.board.engine.Direction.*;
 import static com.github.lipinskipawel.board.engine.Player.FIRST;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -28,6 +26,7 @@ class MiniMaxAlphaBetaTest {
         this.bruteForce = MoveStrategy
                 .defaultMoveStrategyBuilder()
                 .withBoardEvaluator(new SmartBoardEvaluator())
+                .withTimeoutInSeconds(5)
                 .withDepth(3)
                 .build();
         this.board = Boards.immutableBoard();
@@ -42,7 +41,7 @@ class MiniMaxAlphaBetaTest {
         void shouldReturnGoalMoveOnTimeout() {
             final var closeToGoalBoard = getComplicatedBoardCloseToNorthGoal(board);
 
-            final var move = bruteForce.execute(closeToGoalBoard, Duration.ofSeconds(2));
+            final var move = bruteForce.searchForTheBestMove(closeToGoalBoard);
             final var shouldBeGoal = closeToGoalBoard.executeMove(move);
 
             Assertions.assertThat(shouldBeGoal.isGoal()).isTrue();
@@ -64,7 +63,7 @@ class MiniMaxAlphaBetaTest {
         void shouldFindAnyMoveOnVeryComplicatedBoard() {
             final var semiComplicatedBoard = getComplicatedBoard(board);
 
-            final var aiMove = bruteForce.execute(semiComplicatedBoard, Duration.ofSeconds(5));
+            final var aiMove = bruteForce.searchForTheBestMove(semiComplicatedBoard);
 
             Assertions.assertThat(aiMove).isNotEqualTo(Move.emptyMove());
         }
@@ -90,7 +89,7 @@ class MiniMaxAlphaBetaTest {
         void shouldNotReturnEmptyMove() {
             final var semiComplicatedBoard = getSemiComplicatedBoard(board);
 
-            final var aiMove = bruteForce.execute(semiComplicatedBoard, Duration.ofSeconds(5));
+            final var aiMove = bruteForce.searchForTheBestMove(semiComplicatedBoard);
 
             Assertions.assertThat(aiMove).isNotEqualTo(Move.emptyMove());
         }
@@ -125,7 +124,7 @@ class MiniMaxAlphaBetaTest {
                         .executeMove(N)
                         .executeMove(N);
 
-                final var bestMove = bruteForce.execute(after4Moves, 1, new SmartBoardEvaluator());
+                final var bestMove = bruteForce.searchForTheBestMove(after4Moves);
                 final var afterAiMove = after4Moves.executeMove(bestMove);
 
                 assertAll(
@@ -144,7 +143,7 @@ class MiniMaxAlphaBetaTest {
                         .executeMove(N)
                         .executeMove(N);
 
-                final var bestMove = bruteForce.execute(after4Moves, 1, new SmartBoardEvaluator());
+                final var bestMove = bruteForce.searchForTheBestMove(after4Moves);
                 final var afterAiMove = after4Moves.executeMove(bestMove);
 
                 assertAll(
@@ -162,7 +161,7 @@ class MiniMaxAlphaBetaTest {
                         .executeMove(N)
                         .executeMove(N);
 
-                final var bestMove = bruteForce.execute(after4Moves, 2, new SmartBoardEvaluator());
+                final var bestMove = bruteForce.searchForTheBestMove(after4Moves);
                 final var afterAiMove = after4Moves.executeMove(bestMove);
 
                 assertAll(
@@ -181,7 +180,7 @@ class MiniMaxAlphaBetaTest {
                         .executeMove(N)
                         .executeMove(N);
 
-                final var bestMove = bruteForce.execute(after4Moves, 2, new SmartBoardEvaluator());
+                final var bestMove = bruteForce.searchForTheBestMove(after4Moves);
                 final var afterAiMove = after4Moves.executeMove(bestMove);
 
                 assertAll(
@@ -199,7 +198,7 @@ class MiniMaxAlphaBetaTest {
                         .executeMove(N)
                         .executeMove(N);
 
-                final var bestMove = bruteForce.execute(after4Moves, 3, new SmartBoardEvaluator());
+                final var bestMove = bruteForce.searchForTheBestMove(after4Moves);
                 final var afterAiMove = after4Moves.executeMove(bestMove);
 
                 assertAll(
@@ -218,7 +217,7 @@ class MiniMaxAlphaBetaTest {
                         .executeMove(N)
                         .executeMove(N);
 
-                final var bestMove = bruteForce.execute(after4Moves, 3, new SmartBoardEvaluator());
+                final var bestMove = bruteForce.searchForTheBestMove(after4Moves);
                 final var afterAiMove = after4Moves.executeMove(bestMove);
 
                 assertAll(
@@ -242,7 +241,7 @@ class MiniMaxAlphaBetaTest {
                         .executeMove(S)
                         .executeMove(S);
 
-                final var bestMove = bruteForce.execute(after4Moves, 1, new SmartBoardEvaluator());
+                final var bestMove = bruteForce.searchForTheBestMove(after4Moves);
                 final var afterAiMove = after4Moves.executeMove(bestMove);
 
                 assertAll(
@@ -260,7 +259,7 @@ class MiniMaxAlphaBetaTest {
                         .executeMove(S)
                         .executeMove(S);
 
-                final var bestMove = bruteForce.execute(after4Moves, 1, new SmartBoardEvaluator());
+                final var bestMove = bruteForce.searchForTheBestMove(after4Moves);
                 final var afterAiMove = after4Moves.executeMove(bestMove);
 
                 assertAll(
@@ -279,7 +278,7 @@ class MiniMaxAlphaBetaTest {
                         .executeMove(S)
                         .executeMove(S);
 
-                final var bestMove = bruteForce.execute(after4Moves, 2, new SmartBoardEvaluator());
+                final var bestMove = bruteForce.searchForTheBestMove(after4Moves);
                 final var afterAiMove = after4Moves.executeMove(bestMove);
 
                 assertAll(
@@ -297,7 +296,7 @@ class MiniMaxAlphaBetaTest {
                         .executeMove(S)
                         .executeMove(S);
 
-                final var bestMove = bruteForce.execute(after4Moves, 2, new SmartBoardEvaluator());
+                final var bestMove = bruteForce.searchForTheBestMove(after4Moves);
                 final var afterAiMove = after4Moves.executeMove(bestMove);
 
                 assertAll(
@@ -316,7 +315,7 @@ class MiniMaxAlphaBetaTest {
                         .executeMove(S)
                         .executeMove(S);
 
-                final var bestMove = bruteForce.execute(after4Moves, 3, new SmartBoardEvaluator());
+                final var bestMove = bruteForce.searchForTheBestMove(after4Moves);
                 final var afterAiMove = after4Moves.executeMove(bestMove);
 
                 assertAll(
@@ -334,7 +333,7 @@ class MiniMaxAlphaBetaTest {
                         .executeMove(S)
                         .executeMove(S);
 
-                final var bestMove = bruteForce.execute(after4Moves, 3, new SmartBoardEvaluator());
+                final var bestMove = bruteForce.searchForTheBestMove(after4Moves);
                 final var afterAiMove = after4Moves.executeMove(bestMove);
 
                 assertAll(
@@ -363,7 +362,7 @@ class MiniMaxAlphaBetaTest {
                         .executeMove(W)
                         .executeMove(W);
 
-                final var best = bruteForce.execute(afterMoves, 1, new SmartBoardEvaluator());
+                final var best = bruteForce.searchForTheBestMove(afterMoves);
                 final var afterAi = afterMoves.executeMove(best);
 
                 Assertions.assertThat(afterAi.isGameOver()).isFalse();
@@ -384,7 +383,7 @@ class MiniMaxAlphaBetaTest {
                         .executeMove(W)
                         .executeMove(W);
 
-                final var best = bruteForce.execute(afterMoves, 2, new SmartBoardEvaluator());
+                final var best = bruteForce.searchForTheBestMove(afterMoves);
                 final var afterAi = afterMoves.executeMove(best);
 
                 Assertions.assertThat(afterAi.isGameOver()).isFalse();

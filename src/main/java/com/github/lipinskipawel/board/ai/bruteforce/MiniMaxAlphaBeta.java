@@ -6,7 +6,6 @@ import com.github.lipinskipawel.board.engine.Board;
 import com.github.lipinskipawel.board.engine.Move;
 import com.github.lipinskipawel.board.engine.Player;
 
-import java.time.Duration;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -34,7 +33,7 @@ final class MiniMaxAlphaBeta implements MoveStrategy {
         this.cancel = false;
     }
 
-    MiniMaxAlphaBeta(final MiniMaxAlphaBeta miniMaxAlphaBeta) {
+    private MiniMaxAlphaBeta(final MiniMaxAlphaBeta miniMaxAlphaBeta) {
         this.evaluator = miniMaxAlphaBeta.evaluator;
         this.depth = miniMaxAlphaBeta.depth;
         this.timeout = miniMaxAlphaBeta.timeout;
@@ -43,14 +42,14 @@ final class MiniMaxAlphaBeta implements MoveStrategy {
     }
 
     @Override
-    public Move execute(final Board board, final Duration timeout) {
+    public Move searchForTheBestMove(Board board) {
         final var pool = Executors.newSingleThreadExecutor();
         final var copy = new MiniMaxAlphaBeta(this);
         final var searchingForMove = pool.submit(
                 () -> copy.execute(board, copy.depth, copy.evaluator)
         );
         try {
-            return searchingForMove.get(timeout.getSeconds(), TimeUnit.SECONDS);
+            return searchingForMove.get(timeout, TimeUnit.SECONDS);
         } catch (InterruptedException | ExecutionException | TimeoutException e) {
             copy.cancel = true;
             return copy.bestMove.get();
@@ -59,12 +58,6 @@ final class MiniMaxAlphaBeta implements MoveStrategy {
         }
     }
 
-    @Override
-    public Move execute(final Board board, final int depth) {
-        return execute(board, depth, this.evaluator);
-    }
-
-    @Override
     public Move execute(final Board board, final int depth, final BoardEvaluator evaluator) {
         final var actualDepth = this.depth == 1 ? depth : this.depth;
         Move bestMove = Move.emptyMove();

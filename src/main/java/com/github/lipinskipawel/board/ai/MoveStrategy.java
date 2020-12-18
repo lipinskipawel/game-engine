@@ -4,41 +4,23 @@ import com.github.lipinskipawel.board.ai.bruteforce.DefaultMoveStrategyBuilder;
 import com.github.lipinskipawel.board.engine.Board;
 import com.github.lipinskipawel.board.engine.Move;
 
-import java.time.Duration;
-
 /**
- * The underlying implementations does NOT guarantee thread safety.
- * Abstraction layer for different implementations of artificial intelligence.
+ * The underlying implementations MUST guarantee thread safety.
+ * This is the abstraction layer for different implementations of artificial intelligence.
  */
 public interface MoveStrategy {
 
     /**
-     * Provides default {@link BoardEvaluator}
+     * This method searches for the best move in a given {@link Board}.
      *
-     * @param board best move will be find on that board
-     * @param depth of the search
-     * @return the best move that can be find using {@link BoardEvaluator}
-     */
-    Move execute(Board board, int depth);
-
-    /**
-     * @param board best move will be find on that board
-     * @param depth of the search
-     * @return the best move that can be find using {@link BoardEvaluator}
-     */
-    Move execute(Board board, int depth, BoardEvaluator evaluator);
-
-    /**
-     * This method will guarantee that the {@link Move} will be returned within given timeout.
-     *
-     * @param board   best move will be find on that move
-     * @param timeout in seconds
+     * @param board to search best move on
      * @return best move
      */
-    Move execute(Board board, Duration timeout);
+    Move searchForTheBestMove(Board board);
 
     /**
-     * This method provides default {@link MoveStrategy} builder.
+     * This method provides default {@link MoveStrategy} builder. Builder already
+     * provides default parameters.
      *
      * @return default builder object
      */
