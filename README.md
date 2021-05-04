@@ -16,18 +16,18 @@ Use Gradle as a build tool and execute command `gradle build` to create jar file
 Using Maven
  - update your `.m2/settings.xml` to reflect your account settings
  - execute `mvn release:prepare`
- - decided which version you will be releasing according to [semver](https://semver.org)
+ - decided which version you will be releasing according to [semver]
  - execute `mvn release:perform`
  - enter your passphrase
 
 Using Gradle
  - update your `gradle.properties` files to reflect gpg settings
- - decide which version you will be releasing according to [semver](https://semver.org) and update [build.gradle.kts]
+ - decide which version you will be releasing according to [semver] and update [build.gradle.kts]
  - execute `gradle publish`
  - update [changelog] about new version
 
-[build.gradle.kts](build.gradle.kts)
-[changelog](CHANGELOG.md)
+[semver]: https://semver.org
+[changelog]: CHANGELOG.md
 
 
 ### Example gradle.properties file
