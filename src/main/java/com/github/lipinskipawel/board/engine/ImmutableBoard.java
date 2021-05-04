@@ -10,8 +10,6 @@ import java.util.Stack;
 import static com.github.lipinskipawel.board.engine.Player.FIRST;
 import static com.github.lipinskipawel.board.engine.Player.SECOND;
 
-// TODO Ideally this class should be package-private
-// TODO refactor handling player, this 'if' should be replace somehow in the future
 final class ImmutableBoard implements Board {
 
     private final LogicalPoints points;

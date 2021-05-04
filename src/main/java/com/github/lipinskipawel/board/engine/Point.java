@@ -102,10 +102,6 @@ final public class Point {
         );
     }
 
-    boolean isOnStartingPoint() {
-        return this.position == 58;
-    }
-
     /**
      * @param direction
      * @return
@@ -119,7 +115,6 @@ final public class Point {
         return new Point(position, collect);
     }
 
-    // TODO this should be private
     void notAvailableDirections(Direction... directions) {
         for (Direction direction : directions) {
             this.availableDirections.put(direction, false);
