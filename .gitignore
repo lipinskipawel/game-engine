@@ -1,3 +1,8 @@
+*.jar
+
+# Gradle
+!gradle-wrapper.jar
+
 # Maven
 target/
 
@@ -14,7 +19,6 @@ target/
 .mtj.tmp/
 
 # Package Files #
-*.jar
 *.war
 *.nar
 *.ear
