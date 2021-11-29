@@ -111,8 +111,8 @@ final class MoveHistory {
         return new MoveHistory(new ArrayDeque<>(this.moves), copySmall);
     }
 
-    Player currentPlayer() {
-        return this.moves.size() % 2 == 0 ? Player.FIRST : Player.SECOND;
+    boolean currentPlayer() {
+        return this.moves.size() % 2 == 0;
     }
 
     /**

@@ -286,7 +286,7 @@ class MoveHistoryTest {
         void oneMove() {
             final var afterMove = moveLog.addMove(new Move(List.of(Direction.NE)));
 
-            Assertions.assertThat(afterMove.currentPlayer()).isEqualByComparingTo(Player.SECOND);
+            Assertions.assertThat(afterMove.currentPlayer()).isFalse();
         }
 
         @Test
@@ -294,7 +294,7 @@ class MoveHistoryTest {
         void oneDirection() {
             final var afterMove = moveLog.add(Direction.N);
 
-            Assertions.assertThat(afterMove.currentPlayer()).isEqualByComparingTo(Player.FIRST);
+            Assertions.assertThat(afterMove.currentPlayer()).isTrue();
         }
 
         @Test
@@ -304,7 +304,7 @@ class MoveHistoryTest {
                     .addMove(new Move(List.of(Direction.NE)))
                     .addMove(new Move(List.of(Direction.N)));
 
-            Assertions.assertThat(afterMoves.currentPlayer()).isEqualByComparingTo(Player.FIRST);
+            Assertions.assertThat(afterMoves.currentPlayer()).isTrue();
         }
 
         @Test
@@ -315,7 +315,7 @@ class MoveHistoryTest {
                     .addMove(new Move(List.of(Direction.N)))
                     .add(Direction.W);
 
-            Assertions.assertThat(afterMoves.currentPlayer()).isEqualByComparingTo(Player.FIRST);
+            Assertions.assertThat(afterMoves.currentPlayer()).isTrue();
         }
 
         @Test
@@ -326,7 +326,7 @@ class MoveHistoryTest {
                     .add(Direction.W)
                     .addMove(new Move(List.of(Direction.N)));
 
-            Assertions.assertThat(afterMoves.currentPlayer()).isEqualByComparingTo(Player.FIRST);
+            Assertions.assertThat(afterMoves.currentPlayer()).isTrue();
         }
 
         @Test
@@ -337,7 +337,7 @@ class MoveHistoryTest {
                     .addMove(new Move(List.of(Direction.W)))
                     .addMove(new Move(List.of(Direction.N)));
 
-            Assertions.assertThat(afterMoves.currentPlayer()).isEqualByComparingTo(Player.SECOND);
+            Assertions.assertThat(afterMoves.currentPlayer()).isFalse();
         }
 
         @Test
@@ -347,7 +347,7 @@ class MoveHistoryTest {
                     .addMove(new Move(List.of(Direction.S)))
                     .undoMove();
 
-            Assertions.assertThat(afterMoves.currentPlayer()).isEqualByComparingTo(Player.FIRST);
+            Assertions.assertThat(afterMoves.currentPlayer()).isTrue();
         }
 
         @Test
@@ -357,7 +357,7 @@ class MoveHistoryTest {
                     .add(Direction.N)
                     .undoMove();
 
-            Assertions.assertThat(afterMoves.currentPlayer()).isEqualByComparingTo(Player.FIRST);
+            Assertions.assertThat(afterMoves.currentPlayer()).isTrue();
         }
 
         @Test
@@ -368,7 +368,7 @@ class MoveHistoryTest {
                     .add(Direction.N)
                     .undoMove();
 
-            Assertions.assertThat(afterMoves.currentPlayer()).isEqualByComparingTo(Player.FIRST);
+            Assertions.assertThat(afterMoves.currentPlayer()).isTrue();
         }
 
         @Test
@@ -379,7 +379,7 @@ class MoveHistoryTest {
                     .addMove(new Move(List.of(Direction.S)))
                     .undoMove();
 
-            Assertions.assertThat(afterMoves.currentPlayer()).isEqualByComparingTo(Player.SECOND);
+            Assertions.assertThat(afterMoves.currentPlayer()).isFalse();
         }
     }
 }

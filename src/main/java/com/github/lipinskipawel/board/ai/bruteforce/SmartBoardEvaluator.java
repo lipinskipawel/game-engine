@@ -7,9 +7,9 @@ import com.github.lipinskipawel.board.engine.Player;
 public final class SmartBoardEvaluator implements BoardEvaluator {
 
     @Override
-    public double evaluate(Board board) {
+    public double evaluate(Board<Player> board) {
         final var numberOfPointsOnBoard = 117;
-        if (board.getPlayer() == Player.FIRST) {
+        if (board.getPlayer().equals(board.getPlayerProvider().first())) {
             if (!board.isGoal() && board.isGameOver()) {
                 return 1000;
             }

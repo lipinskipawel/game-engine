@@ -11,7 +11,7 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 @DisplayName("Sanity checks of board state")
 class SanityChecksBoardTests {
 
-    private Board board;
+    private Board<Player> board;
     private static int STARTING_BALL_POSITION = 58;
 
 
@@ -22,7 +22,7 @@ class SanityChecksBoardTests {
 
     @BeforeEach
     void setUp() throws Exception {
-        this.board = new ImmutableBoard();
+        this.board = new ImmutableBoard<>(new PlayerProvider<>(Player.FIRST, Player.SECOND));
     }
 
 

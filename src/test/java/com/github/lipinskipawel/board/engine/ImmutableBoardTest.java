@@ -2,7 +2,12 @@ package com.github.lipinskipawel.board.engine;
 
 import com.github.lipinskipawel.board.engine.exception.ChangePlayerIsNotAllowed;
 import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -12,15 +17,28 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-import static com.github.lipinskipawel.board.engine.Direction.*;
+import static com.github.lipinskipawel.board.engine.Direction.E;
+import static com.github.lipinskipawel.board.engine.Direction.N;
+import static com.github.lipinskipawel.board.engine.Direction.NE;
+import static com.github.lipinskipawel.board.engine.Direction.NW;
+import static com.github.lipinskipawel.board.engine.Direction.S;
+import static com.github.lipinskipawel.board.engine.Direction.SE;
+import static com.github.lipinskipawel.board.engine.Direction.SW;
+import static com.github.lipinskipawel.board.engine.Direction.W;
 import static com.github.lipinskipawel.board.engine.Player.FIRST;
 import static com.github.lipinskipawel.board.engine.Player.SECOND;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 @DisplayName("API -- ImmutableBoard")
 class ImmutableBoardTest {
 
-    private Board board;
+    private Board<Player> board;
     private ExecutorService executor;
     private static int STARTING_BALL_POSITION;
     private static int POSITION_AFTER_N_MOVE;
@@ -35,7 +53,7 @@ class ImmutableBoardTest {
 
     @BeforeEach
     void setUp() {
-        this.board = new ImmutableBoard();
+        this.board = new ImmutableBoard<>(new PlayerProvider<>(FIRST, SECOND));
         this.executor = Executors.newFixedThreadPool(5);
     }
 
@@ -64,7 +82,7 @@ class ImmutableBoardTest {
         @Test
         @DisplayName("three moves with undo inside")
         void shouldBeThreeMoves() {
-            final ImmutableBoard afterMoves = (ImmutableBoard) board
+            final ImmutableBoard<Player> afterMoves = (ImmutableBoard<Player>) board
                     .executeMove(Direction.SE)
                     .executeMove(W)
                     .executeMove(N)
@@ -72,9 +90,26 @@ class ImmutableBoardTest {
                     .executeMove(N)
                     .executeMove(W);
 
-            final ImmutableBoard undo = (ImmutableBoard) afterMoves.undoPlayerMove();
+            final ImmutableBoard<Player> undo = (ImmutableBoard<Player>) afterMoves.undoPlayerMove();
 
-            Assertions.assertThat(afterMoves).isEqualToComparingFieldByFieldRecursively(undo);
+            Assertions.assertThat(afterMoves)
+                    .usingRecursiveComparison()
+                    .isEqualTo(undo);
+        }
+
+        @Test
+        void shouldNotMutateBoardState() {
+            final var firstEmptyBoard = new ImmutableBoard<>(new PlayerProvider<>(FIRST, SECOND));
+            final var secondEmptyBoard = new ImmutableBoard<>(new PlayerProvider<>(FIRST, SECOND));
+            Assertions.assertThat(firstEmptyBoard)
+                    .usingRecursiveComparison()
+                    .isEqualTo(secondEmptyBoard);
+
+            secondEmptyBoard.executeMove(E);
+
+            Assertions.assertThat(firstEmptyBoard)
+                    .usingRecursiveComparison()
+                    .isEqualTo(secondEmptyBoard);
         }
     }
 
@@ -320,6 +355,23 @@ class ImmutableBoardTest {
     @Nested
     @DisplayName("executeMove")
     class MakeAMove {
+
+        @Test
+        void shouldSwitchPlayerAfterMove() {
+            final var afterOne = board.executeMove(N);
+
+            Assertions.assertThat(afterOne.getPlayer()).isEqualTo(SECOND);
+        }
+
+        @Test
+        void shouldNotSwitchPlayerWhenMakingSmallMove() {
+            final var afterTwo = board.executeMove(new Move(List.of(N, W)));
+            Assertions.assertThat(afterTwo.getPlayer()).isEqualTo(FIRST);
+
+            final var afterSmallMove = afterTwo.executeMove(new Move(List.of(SE)));
+
+            Assertions.assertThat(afterSmallMove.getPlayer()).isEqualTo(FIRST);
+        }
 
         @Test
         @DisplayName("one move, one move in opposite direction to first one")
@@ -581,7 +633,9 @@ class ImmutableBoardTest {
                     .executeMove(Direction.SE)
                     .undoPlayerMove();
 
-            Assertions.assertThat(smallMoveAndUndo).isEqualToComparingFieldByFieldRecursively(afterTwoMoves);
+            Assertions.assertThat(smallMoveAndUndo)
+                    .usingRecursiveComparison()
+                    .isEqualTo(afterTwoMoves);
         }
 
         @Test
@@ -597,7 +651,9 @@ class ImmutableBoardTest {
 
             final var boardInterface = smallMoveAndUndo.undoPlayerMove();
 
-            Assertions.assertThat(boardInterface).isEqualToComparingFieldByFieldRecursively(smallMoveAndUndo);
+            Assertions.assertThat(boardInterface)
+                    .usingRecursiveComparison()
+                    .isEqualTo(smallMoveAndUndo);
         }
     }
 
@@ -736,7 +792,7 @@ class ImmutableBoardTest {
         @Test
         @DisplayName("5 moves to north goal")
         void fiveMovesToNorthGoal() {
-            final var thisIsGoal = board
+            final Board<Player> thisIsGoal = board
                     .executeMove(N)
                     .executeMove(N)
                     .executeMove(N)

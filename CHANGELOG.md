@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## 4.0.0 - 2021.03.01
 
+- Add possibility to define custom Player type. Board interface will use it in its API's.
+
 ### Removed
 
 - The MiniMax class is no longer a part of the API
@@ -127,4 +129,5 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Import engine from the [LAN-Game] project
 
 [circleci]: https://circleci.com/gh/lipinskipawel/game-engine
+
 [lan-game]: https://github.com/lipinskipawel/LAN-game

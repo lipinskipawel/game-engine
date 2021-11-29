@@ -11,15 +11,22 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import static com.github.lipinskipawel.board.engine.Direction.*;
+import static com.github.lipinskipawel.board.engine.Direction.E;
+import static com.github.lipinskipawel.board.engine.Direction.N;
+import static com.github.lipinskipawel.board.engine.Direction.NE;
+import static com.github.lipinskipawel.board.engine.Direction.NW;
+import static com.github.lipinskipawel.board.engine.Direction.S;
+import static com.github.lipinskipawel.board.engine.Direction.SE;
+import static com.github.lipinskipawel.board.engine.Direction.W;
 import static com.github.lipinskipawel.board.engine.Player.FIRST;
+import static com.github.lipinskipawel.board.engine.Player.SECOND;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 @DisplayName("API -- Minimax alpha-beta")
 class MiniMaxAlphaBetaTest {
 
     private MoveStrategy bruteForce;
-    private Board board;
+    private Board<Player> board;
 
     @BeforeEach
     void setUp() {
@@ -48,7 +55,7 @@ class MiniMaxAlphaBetaTest {
             Assertions.assertThat(shouldBeGoal.takeTheWinner().get()).isEqualTo(FIRST);
         }
 
-        private Board getComplicatedBoardCloseToNorthGoal(final Board board) {
+        private Board<Player> getComplicatedBoardCloseToNorthGoal(final Board<Player> board) {
             return board
                     .executeMove(N)
                     .executeMove(N)
@@ -68,7 +75,7 @@ class MiniMaxAlphaBetaTest {
             Assertions.assertThat(aiMove).isNotEqualTo(Move.emptyMove());
         }
 
-        private Board getComplicatedBoard(final Board board) {
+        private Board<Player> getComplicatedBoard(final Board<Player> board) {
             return board
                     .executeMove(N)
                     .executeMove(E)
@@ -94,7 +101,7 @@ class MiniMaxAlphaBetaTest {
             Assertions.assertThat(aiMove).isNotEqualTo(Move.emptyMove());
         }
 
-        private Board getSemiComplicatedBoard(final Board board) {
+        private Board<Player> getSemiComplicatedBoard(final Board<Player> board) {
             return board
                     .executeMove(N)
                     .executeMove(E)
@@ -264,26 +271,26 @@ class MiniMaxAlphaBetaTest {
 
                 assertAll(
                         () -> Assertions.assertThat(afterAiMove.isGoal()).isFalse(),
-                        () -> Assertions.assertThat(afterAiMove.getPlayer()).isEqualByComparingTo(Player.SECOND)
+                        () -> Assertions.assertThat(afterAiMove.getPlayer()).isEqualByComparingTo(SECOND)
                 );
             }
 
             @Test
             @DisplayName("Should score a goal when player SECOND, depth 2")
             void scoreAGoalInSecondDayDepth2() {
-                final var after4Moves = board
+                final var after5Moves = board
                         .executeMove(S)
                         .executeMove(S)
                         .executeMove(S)
                         .executeMove(S)
                         .executeMove(S);
 
-                final var bestMove = bruteForce.searchForTheBestMove(after4Moves);
-                final var afterAiMove = after4Moves.executeMove(bestMove);
+                final var bestMove = bruteForce.searchForTheBestMove(after5Moves);
+                final var afterAiMove = after5Moves.executeMove(bestMove);
 
                 assertAll(
                         () -> Assertions.assertThat(afterAiMove.isGoal()).isTrue(),
-                        () -> Assertions.assertThat(afterAiMove.getPlayer()).isEqualByComparingTo(FIRST)
+                        () -> Assertions.assertThat(afterAiMove.takeTheWinner().get()).isEqualByComparingTo(SECOND)
                 );
             }
 

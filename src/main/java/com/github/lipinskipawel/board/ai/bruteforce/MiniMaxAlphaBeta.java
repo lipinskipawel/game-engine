@@ -42,7 +42,7 @@ final class MiniMaxAlphaBeta implements MoveStrategy {
     }
 
     @Override
-    public Move searchForTheBestMove(Board board) {
+    public Move searchForTheBestMove(Board<Player> board) {
         final var pool = Executors.newSingleThreadExecutor();
         final var copy = new MiniMaxAlphaBeta(this);
         final var searchingForMove = pool.submit(
@@ -58,7 +58,7 @@ final class MiniMaxAlphaBeta implements MoveStrategy {
         }
     }
 
-    public Move execute(final Board board, final int depth, final BoardEvaluator evaluator) {
+    public Move execute(final Board<Player> board, final int depth, final BoardEvaluator evaluator) {
         final var actualDepth = this.depth == 1 ? depth : this.depth;
         Move bestMove = Move.emptyMove();
 
@@ -80,17 +80,17 @@ final class MiniMaxAlphaBeta implements MoveStrategy {
                     actualDepth - 1,
                     0.0,
                     0.0,
-                    board.getPlayer() == Player.FIRST,
+                    board.getPlayer().equals(board.getPlayerProvider().first()),
                     evaluator
             );
 
-            if (board.getPlayer() == Player.FIRST &&
+            if (board.getPlayer().equals(board.getPlayerProvider().first()) &&
                     currentValue >= highestSeenValue) {
 
                 highestSeenValue = currentValue;
                 bestMove = move;
                 updateGlobalBestMove(bestMove);
-            } else if (board.getPlayer() == Player.SECOND &&
+            } else if (board.getPlayer().equals(board.getPlayerProvider().second()) &&
                     currentValue <= lowestSeenValue) {
 
                 lowestSeenValue = currentValue;
@@ -113,7 +113,7 @@ final class MiniMaxAlphaBeta implements MoveStrategy {
         }
     }
 
-    private double minimaxWithCancel(final Board board,
+    private double minimaxWithCancel(final Board<Player> board,
                                      final int depth,
                                      double alpha,
                                      double beta,
@@ -126,7 +126,7 @@ final class MiniMaxAlphaBeta implements MoveStrategy {
         }
     }
 
-    private double minimax(final Board board,
+    private double minimax(final Board<Player> board,
                            final int depth,
                            double alpha,
                            double beta,

@@ -5,7 +5,10 @@ import com.github.lipinskipawel.board.engine.exception.ChangePlayerIsNotAllowed;
 import java.util.List;
 import java.util.Optional;
 
-public interface Board extends Transformation {
+/**
+ * @param <T> player
+ */
+public interface Board<T> extends Transformation {
 
     /**
      * This method will move the ball in the given direction.
@@ -14,7 +17,7 @@ public interface Board extends Transformation {
      * @return a new BoardInterface object with a ball position
      * @throws RuntimeException when the move can not be made
      */
-    Board executeMove(final Direction direction);
+    Board<T> executeMove(final Direction direction);
 
     /**
      * This method will move the ball by the given move.
@@ -24,7 +27,7 @@ public interface Board extends Transformation {
      * @return a new BoardInterface object with a new move
      * @throws RuntimeException when the move can not be made
      */
-    Board executeMove(final Move move);
+    Board<T> executeMove(final Move move);
 
     /**
      * This method will undo only current player small moves.
@@ -32,7 +35,7 @@ public interface Board extends Transformation {
      *
      * @return a new BoardInterface object with a undo Player move
      */
-    Board undoPlayerMove();
+    Board<T> undoPlayerMove();
 
     /**
      * This method will undo small move and hasn't any restrictions. It means
@@ -42,7 +45,7 @@ public interface Board extends Transformation {
      * @return a new BoardInterface object with a undo move
      * @throws RuntimeException when the move can not be undo at the beggining of the game
      */
-    Board undo();
+    Board<T> undo();
 
     /**
      * Returns all possible moves whenever this move ends up hitting the corner or not.
@@ -97,7 +100,7 @@ public interface Board extends Transformation {
     boolean isGoal();
 
     /**
-     * Returns current {@link Player} to move. When new board is created
+     * <p>Returns current {@link Player} to move. When new board is created
      * then this method will return {@link Player#FIRST}. Whenever new move
      * has been made then opposite Player will be returned. <p>A new move is made
      * only when</p>:
@@ -108,9 +111,9 @@ public interface Board extends Transformation {
      * <p>This method will not return opposite player when</p>:
      * - ball has been kicked to the wall or to already drawn move
      *
-     * @return {@link Player#FIRST} or {@link Player#SECOND}
+     * @return T the player which is the current player
      */
-    Player getPlayer();
+    T getPlayer();
 
     /**
      * @return true if any of player score a goal or there are no possible moves to make. Otherwise false.
@@ -125,7 +128,7 @@ public interface Board extends Transformation {
      * @return a new instance of BoardInterface with the same logical state <strong>except</strong> next player to move
      * @throws ChangePlayerIsNotAllowed whenever small move has been made and wasn't undo
      */
-    Board nextPlayerToMove(final Player nextPlayerToMove) throws ChangePlayerIsNotAllowed;
+    Board<T> nextPlayerToMove(final T nextPlayerToMove) throws ChangePlayerIsNotAllowed;
 
     /**
      * This method will return the winner of the game. If game ends with the ball inside of the goal area the method
@@ -135,5 +138,14 @@ public interface Board extends Transformation {
      *
      * @return the winner of the game or {@link Optional#empty()} if the game is not decided yet
      */
-    Optional<Player> takeTheWinner();
+    Optional<T> takeTheWinner();
+
+    /**
+     * This method is used to obtain a reference to an object whose is able to provide extensive details about player.
+     * {@code PlayerProvider} is able to tell the current player which is able to move as well as the first and second
+     * player object that were registered in the {@link Board}.
+     *
+     * @return player provider object
+     */
+    PlayerProvider<T> getPlayerProvider();
 }

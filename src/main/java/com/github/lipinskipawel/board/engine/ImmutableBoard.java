@@ -7,29 +7,26 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Stack;
 
-import static com.github.lipinskipawel.board.engine.Player.FIRST;
-import static com.github.lipinskipawel.board.engine.Player.SECOND;
-
-final class ImmutableBoard implements Board {
+final class ImmutableBoard<T> implements Board<T> {
 
     private final LogicalPoints points;
-    private final Player playerToMove;
+    private final PlayerProvider<T> playerProvider;
     private final MoveHistory moveLog;
 
     private final static ThreadLocal<Stack<Direction>> stack = new ThreadLocal<>();
     private final static ThreadLocal<List<Move>> allMoves = new ThreadLocal<>();
 
-    ImmutableBoard() {
+    ImmutableBoard(final PlayerProvider<T> provider) {
         this.points = new LogicalPoints();
-        this.playerToMove = FIRST;
+        this.playerProvider = provider.copy();
         this.moveLog = new MoveHistory();
     }
 
     private ImmutableBoard(final LogicalPoints points,
-                           final Player currentPlayer,
+                           final PlayerProvider<T> provider,
                            final MoveHistory moveHistory) {
         this.points = points;
-        this.playerToMove = currentPlayer;
+        this.playerProvider = provider;
         this.moveLog = moveHistory;
     }
 
@@ -49,18 +46,26 @@ final class ImmutableBoard implements Board {
     }
 
     @Override
-    public ImmutableBoard executeMove(final Direction destination) {
+    public ImmutableBoard<T> executeMove(final Direction destination) {
 
         final var logicalPoints = this.points.makeAMove(destination);
         final var player = computePlayerToMove(logicalPoints);
-        final var moveLogg = this.playerToMove == player ? this.moveLog.add(destination) : this.moveLog.addMove(new Move(List.of(destination)));
+        final var moveLogg = this.playerProvider.current().equals(player) ? this.moveLog.add(destination) : this.moveLog.addMove(new Move(List.of(destination)));
+        final var providedPlayer = computePlayerProvider(player);
 
-        return new ImmutableBoard(logicalPoints, player, moveLogg);
+        return new ImmutableBoard<>(logicalPoints, providedPlayer, moveLogg);
+    }
+
+    private PlayerProvider<T> computePlayerProvider(final T player) {
+        if (!this.playerProvider.current().equals(player)) {
+            return this.playerProvider.copy().swap();
+        }
+        return this.playerProvider.copy();
     }
 
     @Override
-    public Board executeMove(final Move move) {
-        Board afterMove = new ImmutableBoard(this.points, this.playerToMove, this.moveLog);
+    public Board<T> executeMove(final Move move) {
+        var afterMove = new ImmutableBoard<>(this.points, this.playerProvider, this.moveLog);
         for (var dir : move.getMove()) {
             afterMove = afterMove.executeMove(dir);
         }
@@ -73,21 +78,35 @@ final class ImmutableBoard implements Board {
     }
 
     @Override
-    public ImmutableBoard undo() {
+    public ImmutableBoard<T> undo() {
         final var lastDirection = this.moveLog
                 .getLastDirection()
                 .orElseThrow(() -> new RuntimeException("There is no move to undo"));
         final var logicalPoints = this.points.undoMove(lastDirection);
         final var moveLogg = this.moveLog.forceUndo();
-        final var player = moveLogg.currentPlayer();
+        final var isFirst = moveLogg.currentPlayer();
+        final var providedPlayer = computePlayer(isFirst);
 
-        return new ImmutableBoard(logicalPoints, player, moveLogg);
+        return new ImmutableBoard<>(logicalPoints, providedPlayer, moveLogg);
+    }
+
+    private PlayerProvider<T> computePlayer(final boolean isFirst) {
+        if (isFirst) {
+            if (this.playerProvider.current().equals(this.playerProvider.second())) {
+                return this.playerProvider.copy().swap();
+            }
+        } else {
+            if (this.playerProvider.current().equals(this.playerProvider.first())) {
+                return this.playerProvider.copy().swap();
+            }
+        }
+        return this.playerProvider;
     }
 
     @Override
-    public Board undoPlayerMove() {
-        final var another = new ImmutableBoard(this.points, this.playerToMove, this.moveLog).undo();
-        if (this.playerToMove == another.playerToMove) {
+    public Board<T> undoPlayerMove() {
+        final var another = new ImmutableBoard<>(this.points, this.playerProvider.copy(), this.moveLog).undo();
+        if (this.playerProvider.current().equals(another.playerProvider.current())) {
             return another;
         } else {
             return this;
@@ -104,7 +123,7 @@ final class ImmutableBoard implements Board {
         return allMoves.get();
     }
 
-    private void findAllMovesRecursively(final Board board) {
+    private void findAllMovesRecursively(final Board<T> board) {
 
         for (var move : board.getBallAPI().getAllowedDirection()) {
 
@@ -145,33 +164,41 @@ final class ImmutableBoard implements Board {
     }
 
     @Override
-    public Optional<Player> takeTheWinner() {
+    public Optional<T> takeTheWinner() {
         if (!isGameOver())
             return Optional.empty();
         if (isGoal() && getBallPosition() < 20) {
-            return Optional.of(FIRST);
+            return Optional.of(this.playerProvider.first());
         }
         if (!isGoal() && isGameOver()) {
             return Optional.of(getPlayer());
         }
-        return Optional.of(SECOND);
+        return Optional.of(this.playerProvider.second());
     }
 
     @Override
-    public Board nextPlayerToMove(final Player nextPlayerToMove) throws ChangePlayerIsNotAllowed {
+    public Board<T> nextPlayerToMove(final T nextPlayerToMove) throws ChangePlayerIsNotAllowed {
         if (this.moveLog.isSmallMoveHasBeenMade()) {
             throw new ChangePlayerIsNotAllowed();
         }
-        if (nextPlayerToMove == this.playerToMove) {
+        if (nextPlayerToMove.equals(this.playerProvider.current())) {
             return this;
         }
         final var newPlayer = computePlayerToMove(this.points);
-        return new ImmutableBoard(this.points, newPlayer, this.moveLog);
+        final var providedPlayer = this.playerProvider.current().equals(newPlayer)
+                ? this.playerProvider
+                : this.playerProvider.copy().swap();
+        return new ImmutableBoard<>(this.points, providedPlayer, this.moveLog);
     }
 
     @Override
-    public Player getPlayer() {
-        return this.playerToMove;
+    public T getPlayer() {
+        return this.playerProvider.current();
+    }
+
+    @Override
+    public PlayerProvider<T> getPlayerProvider() {
+        return this.playerProvider.copy();
     }
 
     @Override
@@ -184,11 +211,12 @@ final class ImmutableBoard implements Board {
         return this.points.nonBinaryTransformation();
     }
 
-    private Player computePlayerToMove(final LogicalPoints logicalPoints) {
-        var player = this.playerToMove;
+    private T computePlayerToMove(final LogicalPoints logicalPoints) {
+        var player = this.playerProvider.current();
 
-        if (logicalPoints.isOtherPlayerToMove())
-            player = this.playerToMove.opposite();
+        if (logicalPoints.isOtherPlayerToMove()) {
+            return player.equals(this.playerProvider.first()) ? this.playerProvider.second() : this.playerProvider.first();
+        }
 
         return player;
     }
