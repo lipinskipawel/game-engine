@@ -4,7 +4,6 @@ import com.github.lipinskipawel.board.ai.BoardEvaluator;
 import com.github.lipinskipawel.board.ai.MoveStrategy;
 import com.github.lipinskipawel.board.engine.Board;
 import com.github.lipinskipawel.board.engine.Move;
-import com.github.lipinskipawel.board.engine.Player;
 
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
@@ -42,7 +41,7 @@ final class MiniMaxAlphaBeta implements MoveStrategy {
     }
 
     @Override
-    public Move searchForTheBestMove(Board<Player> board) {
+    public Move searchForTheBestMove(Board<?> board) {
         final var pool = Executors.newSingleThreadExecutor();
         final var copy = new MiniMaxAlphaBeta(this);
         final var searchingForMove = pool.submit(
@@ -58,7 +57,7 @@ final class MiniMaxAlphaBeta implements MoveStrategy {
         }
     }
 
-    public Move execute(final Board<Player> board, final int depth, final BoardEvaluator evaluator) {
+    public Move execute(final Board<?> board, final int depth, final BoardEvaluator evaluator) {
         final var actualDepth = this.depth == 1 ? depth : this.depth;
         Move bestMove = Move.emptyMove();
 
@@ -113,7 +112,7 @@ final class MiniMaxAlphaBeta implements MoveStrategy {
         }
     }
 
-    private double minimaxWithCancel(final Board<Player> board,
+    private double minimaxWithCancel(final Board<?> board,
                                      final int depth,
                                      double alpha,
                                      double beta,
@@ -126,7 +125,7 @@ final class MiniMaxAlphaBeta implements MoveStrategy {
         }
     }
 
-    private double minimax(final Board<Player> board,
+    private double minimax(final Board<?> board,
                            final int depth,
                            double alpha,
                            double beta,

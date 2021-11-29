@@ -3,7 +3,6 @@ package com.github.lipinskipawel.board.ai;
 import com.github.lipinskipawel.board.ai.bruteforce.DefaultMoveStrategyBuilder;
 import com.github.lipinskipawel.board.engine.Board;
 import com.github.lipinskipawel.board.engine.Move;
-import com.github.lipinskipawel.board.engine.Player;
 
 /**
  * The underlying implementations MUST guarantee thread safety.
@@ -17,7 +16,7 @@ public interface MoveStrategy {
      * @param board to search best move on
      * @return best move
      */
-    Move searchForTheBestMove(Board<Player> board);
+    Move searchForTheBestMove(Board<?> board);
 
     /**
      * This method provides default {@link MoveStrategy} builder. Builder already
