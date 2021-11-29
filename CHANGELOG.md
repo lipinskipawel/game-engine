@@ -7,9 +7,18 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## Unreleased
 
-## 4.0.0 - 2021.03.01
+### Added
 
-- Add possibility to define custom Player type. Board interface will use it in its API's.
+- Add possibility to define custom Player types. Board interface will now use it in its API's
+- Extends the MoveStrategy and BoardEvaluator API's to accept Board parametrized by the wildcard
+- Add PlayerProvider<T> class to this API which will hold new provided types to Board<T>
+
+### Changed
+
+- takeTheWinner() method will now return T instead of Player enum
+- Board now is a parametrized class
+
+## 4.0.0 - 2021.03.01
 
 ### Removed
 
@@ -129,5 +138,4 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Import engine from the [LAN-Game] project
 
 [circleci]: https://circleci.com/gh/lipinskipawel/game-engine
-
 [lan-game]: https://github.com/lipinskipawel/LAN-game
