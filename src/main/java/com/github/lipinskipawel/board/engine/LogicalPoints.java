@@ -40,7 +40,6 @@ final class LogicalPoints implements Transformation {
     }
 
     LogicalPoints makeAMove(final Direction destination) {
-
         if (isAvailable(destination)) {
 
             final var newPosition = computeBallPosition(destination);
@@ -52,7 +51,7 @@ final class LogicalPoints implements Transformation {
             afterMove.set(newPosition, afterMove.get(newPosition).notAvailableDirection(destination.opposite()));
             return new LogicalPoints(afterMove, afterMove.get(newPosition));
         }
-        throw new RuntimeException("Can't make a move " + destination.toString());
+        return this;
     }
 
     private int computeBallPosition(final Direction destination) {

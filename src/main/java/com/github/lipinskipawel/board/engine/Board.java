@@ -15,7 +15,6 @@ public interface Board<T> extends Transformation {
      *
      * @param direction this is the direction to move a ball
      * @return a new BoardInterface object with a ball position
-     * @throws RuntimeException when the move can not be made
      */
     Board<T> executeMove(final Direction direction);
 
@@ -25,7 +24,6 @@ public interface Board<T> extends Transformation {
      *
      * @param move this move will be made
      * @return a new BoardInterface object with a new move
-     * @throws RuntimeException when the move can not be made
      */
     Board<T> executeMove(final Move move);
 

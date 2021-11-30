@@ -47,13 +47,16 @@ final class ImmutableBoard<T> implements Board<T> {
 
     @Override
     public ImmutableBoard<T> executeMove(final Direction destination) {
+        if (isMoveAllowed(destination)) {
+            final var logicalPoints = this.points.makeAMove(destination);
+            final var player = computePlayerToMove(logicalPoints);
+            final var moveLogg = this.playerProvider.current().equals(player) ? this.moveLog.add(destination) : this.moveLog.addMove(new Move(List.of(destination)));
+            final var providedPlayer = computePlayerProvider(player);
 
-        final var logicalPoints = this.points.makeAMove(destination);
-        final var player = computePlayerToMove(logicalPoints);
-        final var moveLogg = this.playerProvider.current().equals(player) ? this.moveLog.add(destination) : this.moveLog.addMove(new Move(List.of(destination)));
-        final var providedPlayer = computePlayerProvider(player);
-
-        return new ImmutableBoard<>(logicalPoints, providedPlayer, moveLogg);
+            return new ImmutableBoard<>(logicalPoints, providedPlayer, moveLogg);
+        } else {
+            return this;
+        }
     }
 
     private PlayerProvider<T> computePlayerProvider(final T player) {

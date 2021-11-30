@@ -17,6 +17,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 - takeTheWinner() method will now return T instead of Player enum
 - Board now is a parametrized class
+- Board executeMove will not throw RuntimeException when move can not be made
 
 ## 4.0.0 - 2021.03.01
 
