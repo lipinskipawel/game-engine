@@ -3,14 +3,13 @@ package com.github.lipinskipawel.board.engine;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 import static java.util.Comparator.comparingInt;
 
 final class LogicalPoints implements Transformation {
-
     private final List<Point> points;
     private final Point ballPosition;
-
 
     LogicalPoints() {
         this.points = PointUtils.initialPoints();
@@ -24,7 +23,6 @@ final class LogicalPoints implements Transformation {
     }
 
     LogicalPoints undoMove(final Direction direction) {
-
         final var newBallPosition = computeBallPosition(direction.opposite());
         final var fakeNewMovePoints = new ArrayList<>(points);
 
@@ -139,5 +137,26 @@ final class LogicalPoints implements Transformation {
         doubles[6] = directions.get(6) ? 0.7 : 0.9;
         doubles[7] = directions.get(7) ? 0.8 : 0.9;
         return doubles;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        LogicalPoints that = (LogicalPoints) o;
+        return Objects.equals(points, that.points) && Objects.equals(ballPosition, that.ballPosition);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(points, ballPosition);
+    }
+
+    @Override
+    public String toString() {
+        return "LogicalPoints{" +
+                "points=" + points +
+                ", ballPosition=" + ballPosition +
+                '}';
     }
 }

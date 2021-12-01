@@ -1,9 +1,9 @@
 package com.github.lipinskipawel.board.engine;
 
-import java.util.ArrayDeque;
 import java.util.ArrayList;
-import java.util.EmptyStackException;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Queue;
 
@@ -16,17 +16,15 @@ import static java.util.stream.Collectors.toList;
  * 'Small' move is when the ball is bouncing off the wall or different type of obstacle.
  */
 final class MoveHistory {
-
     private final Queue<Move> moves;
     private final List<Direction> smallMove;
 
-
     MoveHistory() {
-        this.moves = new ArrayDeque<>();
+        this.moves = new LinkedList<>();
         this.smallMove = new ArrayList<>();
     }
 
-    private MoveHistory(final Queue<Move> moves,
+    private MoveHistory(final LinkedList<Move> moves,
                         final List<Direction> smallMove) {
         this.moves = moves;
         this.smallMove = smallMove;
@@ -48,13 +46,13 @@ final class MoveHistory {
 
     MoveHistory addMove(final Move move) {
         if (this.smallMove.size() > 0) {
-            final var copyMoves = new ArrayDeque<>(this.moves);
+            final var copyMoves = new LinkedList<>(this.moves);
             final var copySmallMoves = new ArrayList<>(this.smallMove);
             copySmallMoves.addAll(move.getMove());
             copyMoves.add(new Move(copySmallMoves));
             return new MoveHistory(copyMoves, new ArrayList<>());
         } else {
-            final var copyMoves = new ArrayDeque<>(this.moves);
+            final var copyMoves = new LinkedList<>(this.moves);
             copyMoves.add(move);
             return new MoveHistory(copyMoves, new ArrayList<>());
         }
@@ -63,7 +61,7 @@ final class MoveHistory {
     MoveHistory add(final Direction direction) {
         final var copySmall = new ArrayList<>(this.smallMove);
         copySmall.add(direction);
-        return new MoveHistory(new ArrayDeque<>(this.moves), copySmall);
+        return new MoveHistory(new LinkedList<>(this.moves), copySmall);
     }
 
     /**
@@ -74,14 +72,14 @@ final class MoveHistory {
      */
     MoveHistory forceUndo() {
         if (this.smallMove.size() == 0) {
-            final var copyMoves = new ArrayDeque<>(this.moves);
+            final var copyMoves = new LinkedList<>(this.moves);
             final var directions = copyMoves.removeLast().getMove();
             directions.remove(directions.size() - 1);
             return new MoveHistory(copyMoves, directions);
         }
         final var copySmall = new ArrayList<>(this.smallMove);
         copySmall.remove(copySmall.size() - 1);
-        return new MoveHistory(new ArrayDeque<>(this.moves), copySmall);
+        return new MoveHistory(new LinkedList<>(this.moves), copySmall);
     }
 
     /**
@@ -93,7 +91,7 @@ final class MoveHistory {
     MoveHistory undoMove() {
         if (this.moves.size() <= 0)
             return this;
-        final var copyMoves = new ArrayDeque<>(this.moves);
+        final var copyMoves = new LinkedList<>(this.moves);
         copyMoves.removeLast();
         return new MoveHistory(copyMoves, new ArrayList<>());
     }
@@ -105,10 +103,10 @@ final class MoveHistory {
      */
     MoveHistory undo() {
         if (this.smallMove.size() == 0)
-            return new MoveHistory(new ArrayDeque<>(this.moves), new ArrayList<>(this.smallMove));
+            return new MoveHistory(new LinkedList<>(this.moves), new ArrayList<>(this.smallMove));
         final var copySmall = new ArrayList<>(this.smallMove);
         copySmall.remove(copySmall.size() - 1);
-        return new MoveHistory(new ArrayDeque<>(this.moves), copySmall);
+        return new MoveHistory(new LinkedList<>(this.moves), copySmall);
     }
 
     boolean currentPlayer() {
@@ -124,7 +122,7 @@ final class MoveHistory {
                 return Optional.empty();
             } else {
                 // should be remove last item
-                final var copyMoves = new ArrayDeque<>(this.moves);
+                final var copyMoves = new LinkedList<>(this.moves);
                 final var last = copyMoves.removeLast().getMove();
                 return Optional.of(last.get(last.size() - 1));
             }
@@ -138,10 +136,27 @@ final class MoveHistory {
     }
 
     Optional<Move> getLastMove() {
-        try {
-            return Optional.of(this.moves.peek());
-        } catch (EmptyStackException exception) {
-            return Optional.empty();
-        }
+        return Optional.ofNullable(this.moves.peek());
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        MoveHistory that = (MoveHistory) o;
+        return Objects.equals(moves, that.moves) && Objects.equals(smallMove, that.smallMove);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(moves, smallMove);
+    }
+
+    @Override
+    public String toString() {
+        return "MoveHistory{" +
+                "moves=" + moves +
+                ", smallMove=" + smallMove +
+                '}';
     }
 }

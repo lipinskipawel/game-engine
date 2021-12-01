@@ -74,6 +74,17 @@ class ImmutableBoardTest {
     class SanityTest {
 
         @Test
+        @DisplayName("equality test")
+        void shouldBeEqual() {
+            final var first = new ImmutableBoard<>(new PlayerProvider<>(1, 2));
+            final var second = new ImmutableBoard<>(new PlayerProvider<>(1, 2));
+
+            Assertions.assertThat(first)
+                    .isEqualTo(second)
+                    .isNotSameAs(second);
+        }
+
+        @Test
         @DisplayName("0 moves, FIRST player to move")
         void noMovesFirstPlayerToMove() {
             Assertions.assertThat(board.getPlayer()).isEqualTo(FIRST);
@@ -371,18 +382,6 @@ class ImmutableBoardTest {
             final var afterSmallMove = afterTwo.executeMove(new Move(List.of(SE)));
 
             Assertions.assertThat(afterSmallMove.getPlayer()).isEqualTo(FIRST);
-        }
-
-        @Test
-        @DisplayName("one move, one move in opposite direction to first one")
-        void shouldThrowRuntimeException() {
-            final var throwable = Assertions.catchThrowable(
-                    () -> board
-                            .executeMove(NW)
-                            .executeMove(Direction.SE)
-            );
-
-            Assertions.assertThat(throwable).isInstanceOf(RuntimeException.class);
         }
 
         @Test

@@ -3,6 +3,7 @@ package com.github.lipinskipawel.board.engine;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toMap;
@@ -12,10 +13,8 @@ import static java.util.stream.Collectors.toUnmodifiableList;
  * This class represents point on the board.
  */
 final public class Point {
-
-    private int position;
-    private Map<Direction, Boolean> availableDirections;
-
+    private final int position;
+    private final Map<Direction, Boolean> availableDirections;
 
     Point(int position) {
         this.position = position;
@@ -132,5 +131,26 @@ final public class Point {
         res.put(Direction.W, Boolean.TRUE);
         res.put(Direction.NW, Boolean.TRUE);
         return res;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Point point = (Point) o;
+        return position == point.position && Objects.equals(availableDirections, point.availableDirections);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(position, availableDirections);
+    }
+
+    @Override
+    public String toString() {
+        return "Point{" +
+                "position=" + position +
+                ", availableDirections=" + availableDirections +
+                '}';
     }
 }

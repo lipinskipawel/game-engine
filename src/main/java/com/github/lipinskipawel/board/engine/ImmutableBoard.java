@@ -4,11 +4,11 @@ import com.github.lipinskipawel.board.engine.exception.ChangePlayerIsNotAllowed;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Stack;
 
 final class ImmutableBoard<T> implements Board<T> {
-
     private final LogicalPoints points;
     private final PlayerProvider<T> playerProvider;
     private final MoveHistory moveLog;
@@ -222,5 +222,29 @@ final class ImmutableBoard<T> implements Board<T> {
         }
 
         return player;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ImmutableBoard<?> that = (ImmutableBoard<?>) o;
+        return Objects.equals(points, that.points) &&
+                Objects.equals(playerProvider, that.playerProvider) &&
+                Objects.equals(moveLog, that.moveLog);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(points, playerProvider, moveLog);
+    }
+
+    @Override
+    public String toString() {
+        return "ImmutableBoard{" +
+                "points=" + points +
+                ", playerProvider=" + playerProvider +
+                ", moveLog=" + moveLog +
+                '}';
     }
 }

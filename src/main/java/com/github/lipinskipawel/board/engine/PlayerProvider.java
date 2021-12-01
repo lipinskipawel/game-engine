@@ -1,5 +1,6 @@
 package com.github.lipinskipawel.board.engine;
 
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
@@ -79,5 +80,29 @@ public final class PlayerProvider<T> {
      */
     PlayerProvider<T> copy() {
         return new PlayerProvider<>(this.first, this.second, this.current.get());
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        PlayerProvider<?> that = (PlayerProvider<?>) o;
+        return Objects.equals(first, that.first) &&
+                Objects.equals(second, that.second) &&
+                Objects.equals(current.get(), that.current.get());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(first, second, current.get());
+    }
+
+    @Override
+    public String toString() {
+        return "PlayerProvider{" +
+                "first=" + first +
+                ", second=" + second +
+                ", current=" + current +
+                '}';
     }
 }

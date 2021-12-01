@@ -7,8 +7,7 @@ import java.util.List;
 import java.util.Objects;
 
 final public class Move implements Serializable {
-
-    private List<Direction> directions;
+    private final List<Direction> directions;
 
     public Move(List<Direction> directions) {
         Direction[] arr = new Direction[directions.size()];
@@ -22,11 +21,15 @@ final public class Move implements Serializable {
         return new Move(Collections.emptyList());
     }
 
+    public List<Direction> getMove() {
+        return new ArrayList<>(this.directions);
+    }
+
     @Override
-    public boolean equals(final Object o) {
+    public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        final Move move = (Move) o;
+        Move move = (Move) o;
         return Objects.equals(directions, move.directions);
     }
 
@@ -35,9 +38,10 @@ final public class Move implements Serializable {
         return Objects.hash(directions);
     }
 
-    public List<Direction> getMove() {
-        return new ArrayList<>(this.directions);
+    @Override
+    public String toString() {
+        return "Move{" +
+                "directions=" + directions +
+                '}';
     }
-
-
 }
