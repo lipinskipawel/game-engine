@@ -20,7 +20,8 @@ dependencies {
 group = "com.github.lipinskipawel"
 version = "4.0.1"
 description = "game-engine"
-java.sourceCompatibility = JavaVersion.VERSION_12
+java.sourceCompatibility = JavaVersion.VERSION_11
+java.targetCompatibility = JavaVersion.VERSION_11
 
 publishing {
     publications.create<MavenPublication>("main") {
