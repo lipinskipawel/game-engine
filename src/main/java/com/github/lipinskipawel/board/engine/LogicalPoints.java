@@ -1,5 +1,8 @@
 package com.github.lipinskipawel.board.engine;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -8,6 +11,7 @@ import java.util.Objects;
 import static java.util.Comparator.comparingInt;
 
 final class LogicalPoints implements Transformation {
+    private static final Logger LOGGER = LoggerFactory.getLogger(LogicalPoints.class);
     private final List<Point> points;
     private final Point ballPosition;
 
@@ -34,6 +38,7 @@ final class LogicalPoints implements Transformation {
         originalPositionPoint.setAvailableDirections(direction);
         fakeNewMovePoints.set(newBallPosition, originalPositionPoint);
 
+        LOGGER.trace("undoMove has been made");
         return new LogicalPoints(fakeNewMovePoints, originalPositionPoint);
     }
 
@@ -47,8 +52,10 @@ final class LogicalPoints implements Transformation {
             afterMove.set(getBallPosition(), currentBall);
 
             afterMove.set(newPosition, afterMove.get(newPosition).notAvailableDirection(destination.opposite()));
+            LOGGER.trace("makeAMove has been made");
             return new LogicalPoints(afterMove, afterMove.get(newPosition));
         }
+        LOGGER.trace("makeAMove has NOT been made. Returning this reference.");
         return this;
     }
 

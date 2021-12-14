@@ -1,6 +1,8 @@
 package com.github.lipinskipawel.board.engine;
 
 import com.github.lipinskipawel.board.engine.exception.ChangePlayerIsNotAllowed;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,6 +11,7 @@ import java.util.Optional;
 import java.util.Stack;
 
 final class ImmutableBoard<T> implements Board<T> {
+    private static final Logger LOGGER = LoggerFactory.getLogger(ImmutableBoard.class);
     private final LogicalPoints points;
     private final PlayerProvider<T> playerProvider;
     private final MoveHistory moveLog;
@@ -48,13 +51,16 @@ final class ImmutableBoard<T> implements Board<T> {
     @Override
     public ImmutableBoard<T> executeMove(final Direction destination) {
         if (isMoveAllowed(destination)) {
+            LOGGER.trace("executeMove: {}", destination);
             final var logicalPoints = this.points.makeAMove(destination);
             final var player = computePlayerToMove(logicalPoints);
             final var moveLogg = this.playerProvider.current().equals(player) ? this.moveLog.add(destination) : this.moveLog.addMove(new Move(List.of(destination)));
             final var providedPlayer = computePlayerProvider(player);
 
+            LOGGER.debug("Move has been made: {}", destination);
             return new ImmutableBoard<>(logicalPoints, providedPlayer, moveLogg);
         } else {
+            LOGGER.debug("Move has NOT been made: {}", destination);
             return this;
         }
     }
@@ -82,6 +88,7 @@ final class ImmutableBoard<T> implements Board<T> {
 
     @Override
     public ImmutableBoard<T> undo() {
+        LOGGER.trace("undo executes");
         final var lastDirection = this.moveLog
                 .getLastDirection()
                 .orElseThrow(() -> new RuntimeException("There is no move to undo"));
@@ -90,7 +97,11 @@ final class ImmutableBoard<T> implements Board<T> {
         final var isFirst = moveLogg.currentPlayer();
         final var providedPlayer = computePlayer(isFirst);
 
-        return new ImmutableBoard<>(logicalPoints, providedPlayer, moveLogg);
+        final var newImmutableBoard = new ImmutableBoard<T>(logicalPoints, providedPlayer, moveLogg);
+        if (this.equals(newImmutableBoard)) {
+            LOGGER.debug("undo returned THIS reference.");
+        }
+        return newImmutableBoard;
     }
 
     private PlayerProvider<T> computePlayer(final boolean isFirst) {
@@ -110,26 +121,29 @@ final class ImmutableBoard<T> implements Board<T> {
     public Board<T> undoPlayerMove() {
         final var another = new ImmutableBoard<>(this.points, this.playerProvider.copy(), this.moveLog).undo();
         if (this.playerProvider.current().equals(another.playerProvider.current())) {
+            LOGGER.debug("undoPlayerMove has been made.");
             return another;
         } else {
+            LOGGER.debug("undoPlayerMove has returned THIS reference.");
             return this;
         }
     }
 
     @Override
     public List<Move> allLegalMoves() {
-
+        LOGGER.debug("allLegalMoves executes.");
         stack.set(new Stack<>());
         allMoves.set(new ArrayList<>());
         findAllMovesRecursively(this);
 
-        return allMoves.get();
+        final var moves = allMoves.get();
+        LOGGER.trace("allLegalMoves finds: {} moves.", moves.size());
+        return moves;
     }
 
     private void findAllMovesRecursively(final Board<T> board) {
-
+        LOGGER.trace("executing findAllMovesRecursively with: {} board.", board);
         for (var move : board.getBallAPI().getAllowedDirection()) {
-
             stack.get().push(move);
             final var afterMove = board.executeMove(move);
 
@@ -137,9 +151,7 @@ final class ImmutableBoard<T> implements Board<T> {
                 final var moveToSave = new Move(new ArrayList<>(stack.get()));
                 allMoves.get().add(moveToSave);
             } else {
-
-                final var afterMove2 = board.executeMove(move);
-                findAllMovesRecursively(afterMove2);
+                findAllMovesRecursively(afterMove);
             }
 
             stack.get().pop();
@@ -185,12 +197,15 @@ final class ImmutableBoard<T> implements Board<T> {
             throw new ChangePlayerIsNotAllowed();
         }
         if (nextPlayerToMove.equals(this.playerProvider.current())) {
+            LOGGER.debug("{} is the same as current player to move {}. Returning THIS reference.",
+                    nextPlayerToMove, this.playerProvider.current());
             return this;
         }
         final var newPlayer = computePlayerToMove(this.points);
         final var providedPlayer = this.playerProvider.current().equals(newPlayer)
                 ? this.playerProvider
                 : this.playerProvider.copy().swap();
+        LOGGER.debug("nextPlayerToMove returns board with player to move {}.", providedPlayer.current());
         return new ImmutableBoard<>(this.points, providedPlayer, this.moveLog);
     }
 
