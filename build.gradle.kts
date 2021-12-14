@@ -12,9 +12,12 @@ repositories {
 }
 
 dependencies {
+    compileOnly("org.slf4j:slf4j-api:2.0.0-alpha5")
+
     testImplementation("org.junit.jupiter:junit-jupiter-engine:5.5.2")
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.5.2")
     testImplementation("org.assertj:assertj-core:3.15.0")
+    testImplementation("org.slf4j:slf4j-simple:2.0.0-alpha5")
 }
 
 group = "com.github.lipinskipawel"
