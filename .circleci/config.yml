@@ -7,8 +7,7 @@ jobs:
   build:
     docker:
       # specify the version you desire here
-      # - image: circleci/openjdk:12-jdk
-      - image: openjdk:12-jdk
+      - image: circleci/openjdk:11.0.6-jdk-stretch
 
       # Specify service dependencies here if necessary
       # CircleCI maintains a library of pre-built images
@@ -19,27 +18,30 @@ jobs:
 
     environment:
       # Customize the JVM maximum heap limit
-      MAVEN_OPTS: -Xmx3200m
+      GRADLE_OPTS: "-Dorg.gradle.daemon=false -Dorg.gradle.workers.max=2"
 
     steps:
       - checkout
+      - run:
+          name: Run tests # See: https://circleci.com/docs/2.0/parallelism-faster-jobs/
+          command: ./gradlew test
 
-      # Download and cache dependencies
-      - restore_cache:
-          keys:
-            - v1-dependencies-{{ checksum "pom.xml" }}
-            # fallback to using the latest cache if no exact match is found
-            - v1-dependencies-
+      - store_test_results:
+          # Upload test results for display in Test Summary: https://circleci.com/docs/2.0/collect-test-data/
+          path: build/test-results/test
+      - store_artifacts: # Upload test results for display in Artifacts: https://circleci.com/docs/2.0/artifacts/
+          path: build/test-results/test
 
-      - run: yum -y install wget
-      - run: wget http://repos.fedorapeople.org/repos/dchen/apache-maven/epel-apache-maven.repo -O /etc/yum.repos.d/epel-apache-maven.repo
-      - run: yum -y install apache-maven
-      # - run: mvn dependency:go-offline
+      - run:
+          name: Assemble JAR
+          command: ./gradlew assemble
+      # As the JAR was only assembled in the first build container, build/libs will be empty in all the other build containers.
+      - store_artifacts:
+          path: build/libs
 
-      - save_cache:
-          paths:
-            - ~/.m2
-          key: v1-dependencies-{{ checksum "pom.xml" }}
-
-      # run tests!
-      - run: mvn package
+      # See https://circleci.com/docs/2.0/deployment-integrations/ for deploy examples
+workflows:
+  version: 2
+  workflow:
+    jobs:
+      - build
