@@ -21,6 +21,8 @@ Using Gradle
 - decide which version you will be releasing according to [semver] and update [build.gradle.kts]
 - execute `gradle publish`
 - update [changelog] about new version
+- update version in [build.gradle.kts]
+- tag current commit with a tag "v`released-version`"
 
 [semver]: https://semver.org
 [changelog]: CHANGELOG.md

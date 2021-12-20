@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## Unreleased
 
+## 5.0.0 - 2021.12.17
+
 ### Added
 
 - Add possibility to define custom Player types. Board interface will now use it in its API's

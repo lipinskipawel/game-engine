@@ -21,7 +21,7 @@ dependencies {
 }
 
 group = "com.github.lipinskipawel"
-version = "4.0.1"
+version = "5.0.0"
 description = "game-engine"
 
 publishing {
