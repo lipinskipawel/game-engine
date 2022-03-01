@@ -49,10 +49,25 @@ public interface Board<T> extends Transformation {
      * Returns all possible moves whenever this move ends up hitting the corner or not.
      * This method could be time consuming based on the board state. There can be many
      * moves already played on the board and the complexity could be high.
+     * <p>
+     * This method is deprecated.
+     * The replacement is {@link #allLegalMovesFuture()} method. It provides the same functionality while adding more on
+     * top of that like:
+     * - ability of cancel the computation
+     * - obtaining partial results, during computation
      *
      * @return Returns all possible moves for current {@link Player}
      */
+    @Deprecated
     List<Move> allLegalMoves();
+
+    /**
+     * This method is non-blocking version of {@link #allLegalMoves()}.
+     * This method returns {@link LegalMovesFuture} object that is capable of computing all legal moves.
+     *
+     * @return legalMoveFuture which should be used to compute all legal moves
+     */
+    LegalMovesFuture allLegalMovesFuture();
 
     /**
      * @return all Moves made by each {@link Player}

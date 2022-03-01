@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## Unreleased
 
+### Added
+
+- allLegalMovesFuture method in Board interface with promise of more flexible API through the new type LegalMovesFuture
+  which exposes more convenient ways for clients to deal with expensive computation
+
+### Deprecated
+
+- Deprecated allLegalMoves from Board interface in favour of allLegalMovesFuture
+
 ## 5.0.0 - 2021.12.17
 
 ### Added
@@ -143,4 +152,5 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Import engine from the [LAN-Game] project
 
 [circleci]: https://circleci.com/gh/lipinskipawel/game-engine
+
 [lan-game]: https://github.com/lipinskipawel/LAN-game

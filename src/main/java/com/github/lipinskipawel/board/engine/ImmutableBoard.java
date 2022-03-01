@@ -4,20 +4,17 @@ import com.github.lipinskipawel.board.engine.exception.ChangePlayerIsNotAllowed;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.Stack;
 
 final class ImmutableBoard<T> implements Board<T> {
     private static final Logger LOGGER = LoggerFactory.getLogger(ImmutableBoard.class);
     private final LogicalPoints points;
     private final PlayerProvider<T> playerProvider;
     private final MoveHistory moveLog;
-
-    private final static ThreadLocal<Stack<Direction>> stack = new ThreadLocal<>();
-    private final static ThreadLocal<List<Move>> allMoves = new ThreadLocal<>();
 
     ImmutableBoard(final PlayerProvider<T> provider) {
         this.points = new LogicalPoints();
@@ -131,31 +128,21 @@ final class ImmutableBoard<T> implements Board<T> {
 
     @Override
     public List<Move> allLegalMoves() {
-        LOGGER.debug("allLegalMoves executes.");
-        stack.set(new Stack<>());
-        allMoves.set(new ArrayList<>());
-        findAllMovesRecursively(this);
-
-        final var moves = allMoves.get();
-        LOGGER.trace("allLegalMoves finds: {} moves.", moves.size());
-        return moves;
+        LOGGER.debug("allLegalMoves executed.");
+        final var legalMovesFuture = new LegalMovesFuture(this);
+        legalMovesFuture.start(Duration.ofSeconds(Integer.MAX_VALUE));
+        final List<Move> result = new ArrayList<>();
+        while (legalMovesFuture.isRunning()) {
+            result.addAll(legalMovesFuture.partialResult());
+        }
+        result.addAll(legalMovesFuture.partialResult());
+        LOGGER.debug("allLegalMoves finds: {} moves", result.size());
+        return result;
     }
 
-    private void findAllMovesRecursively(final Board<T> board) {
-        LOGGER.trace("executing findAllMovesRecursively with: {} board.", board);
-        for (var move : board.getBallAPI().getAllowedDirection()) {
-            stack.get().push(move);
-            final var afterMove = board.executeMove(move);
-
-            if (isItEnd(afterMove.getBallAPI())) {
-                final var moveToSave = new Move(new ArrayList<>(stack.get()));
-                allMoves.get().add(moveToSave);
-            } else {
-                findAllMovesRecursively(afterMove);
-            }
-
-            stack.get().pop();
-        }
+    @Override
+    public LegalMovesFuture allLegalMovesFuture() {
+        return new LegalMovesFuture(this);
     }
 
     @Override
@@ -166,11 +153,6 @@ final class ImmutableBoard<T> implements Board<T> {
     @Override
     public boolean isGoal() {
         return this.points.getBall().isOnTop() || this.points.getBall().isOnBottom();
-    }
-
-    private boolean isItEnd(final Point ball) {
-        return ball.getAllowedDirection().size() == 7 ||
-                ball.getAllowedDirection().size() == 0;
     }
 
     @Override

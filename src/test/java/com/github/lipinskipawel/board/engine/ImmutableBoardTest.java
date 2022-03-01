@@ -2,20 +2,14 @@ package com.github.lipinskipawel.board.engine;
 
 import com.github.lipinskipawel.board.engine.exception.ChangePlayerIsNotAllowed;
 import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 
 import static com.github.lipinskipawel.board.engine.Direction.E;
 import static com.github.lipinskipawel.board.engine.Direction.N;
@@ -33,13 +27,11 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
 
 @DisplayName("API -- ImmutableBoard")
 class ImmutableBoardTest {
 
     private Board<Player> board;
-    private ExecutorService executor;
     private static int STARTING_BALL_POSITION;
     private static int POSITION_AFTER_N_MOVE;
     private static int POSITION_AFTER_S_MOVE;
@@ -54,19 +46,6 @@ class ImmutableBoardTest {
     @BeforeEach
     void setUp() {
         this.board = new ImmutableBoard<>(new PlayerProvider<>(FIRST, SECOND));
-        this.executor = Executors.newFixedThreadPool(5);
-    }
-
-    @AfterEach
-    void cleanUp() {
-        executor.shutdown();
-        try {
-            if (!executor.awaitTermination(50, TimeUnit.MILLISECONDS)) {
-                executor.shutdownNow();
-            }
-        } catch (InterruptedException e) {
-            executor.shutdownNow();
-        }
     }
 
     @Nested
@@ -121,245 +100,6 @@ class ImmutableBoardTest {
             Assertions.assertThat(firstEmptyBoard)
                     .usingRecursiveComparison()
                     .isEqualTo(secondEmptyBoard);
-        }
-    }
-
-    @Nested
-    @DisplayName("allLegalMoves")
-    class LegalMoves {
-
-        @Test
-        @DisplayName("zero moves")
-        void allLegalMoves() {
-            final var preparedMoves = List.of(
-                    new Move(Collections.singletonList(N)),
-                    new Move(Collections.singletonList(Direction.NE)),
-                    new Move(Collections.singletonList(E)),
-                    new Move(Collections.singletonList(Direction.SE)),
-                    new Move(Collections.singletonList(S)),
-                    new Move(Collections.singletonList(Direction.SW)),
-                    new Move(Collections.singletonList(W)),
-                    new Move(Collections.singletonList(NW))
-            );
-
-            final var allMoves = board.allLegalMoves();
-
-            Assertions.assertThat(allMoves)
-                    .containsExactlyInAnyOrderElementsOf(preparedMoves);
-        }
-
-        @Test
-        @DisplayName("two moves, one undo")
-        void shouldReturnTheSameMoveAsOnlyOneMoveHadBeenMade() {
-            final var preparedMoves = List.of(
-                    new Move(Collections.singletonList(Direction.SW)),
-                    new Move(Collections.singletonList(N)),
-                    new Move(Collections.singletonList(Direction.NE)),
-                    new Move(Collections.singletonList(S)),
-                    new Move(Collections.singletonList(W)),
-                    new Move(Collections.singletonList(NW)),
-                    new Move(Collections.singletonList(E))
-            );
-            final var afterMoves = board
-                    .executeMove(NW)
-                    .executeMove(N)
-                    .undo();
-
-            final var allMoves = afterMoves.allLegalMoves();
-
-            Assertions.assertThat(allMoves).containsExactlyInAnyOrderElementsOf(preparedMoves);
-        }
-
-        @Test
-        @DisplayName("two moves, one point of contact")
-        void allLegalMovesAfterSomeMoves() {
-            final var preparedMoves = List.of(
-                    new Move(Collections.singletonList(NW)),
-                    new Move(Collections.singletonList(N)),
-                    new Move(Collections.singletonList(Direction.NE)),
-                    new Move(Collections.singletonList(E)),
-                    new Move(Collections.singletonList(Direction.SE)),
-                    new Move(Collections.singletonList(S)),
-                    new Move(Arrays.asList(Direction.SW, E)),
-                    new Move(Arrays.asList(Direction.SW, Direction.SE)),
-                    new Move(Arrays.asList(Direction.SW, S)),
-                    new Move(Arrays.asList(Direction.SW, Direction.SW)),
-                    new Move(Arrays.asList(Direction.SW, W)),
-                    new Move(Arrays.asList(Direction.SW, NW))
-            );
-
-            final var allMoves = board
-                    .executeMove(N)
-                    .executeMove(E)
-                    .allLegalMoves();
-
-            Assertions.assertThat(allMoves)
-                    .containsExactlyInAnyOrderElementsOf(preparedMoves);
-        }
-
-        @Test
-        @DisplayName("four moves, close to corner")
-        void allLegalMoveCloseToCorner() {
-            final var preparedMoves = List.of(
-                    new Move(Collections.singletonList(W)),
-                    new Move(Arrays.asList(NW, Direction.SW)),
-                    new Move(Arrays.asList(NW, S)),
-                    new Move(Arrays.asList(N, Direction.SW)),
-                    new Move(Arrays.asList(N, Direction.SE, Direction.SW)),
-                    new Move(Arrays.asList(N, Direction.SE, W, Direction.NE)),
-                    new Move(Arrays.asList(N, Direction.SE, W, S)),
-                    new Move(Arrays.asList(N, Direction.SE, W, Direction.SE, W)),
-                    new Move(Arrays.asList(N, Direction.SE, W, Direction.SE, Direction.SW)),
-                    new Move(Arrays.asList(N, Direction.SE, W, NW, Direction.SW)),
-                    new Move(Arrays.asList(N, Direction.SE, W, NW, S)),
-                    new Move(Arrays.asList(N, Direction.SE, W, W)),
-                    new Move(Collections.singletonList(Direction.NE)),
-                    new Move(Arrays.asList(E, Direction.SW)),
-                    new Move(Arrays.asList(E, NW, Direction.SW)),
-                    new Move(Arrays.asList(E, NW, S, W)),
-                    new Move(Arrays.asList(E, NW, S, NW, Direction.SW)),
-                    new Move(Arrays.asList(E, NW, S, NW, S)),
-                    new Move(Arrays.asList(E, NW, S, Direction.NE)),
-                    new Move(Arrays.asList(E, NW, S, Direction.SE, W)),
-                    new Move(Arrays.asList(E, NW, S, Direction.SE, Direction.SW)),
-                    new Move(Arrays.asList(E, NW, S, S)),
-                    new Move(Arrays.asList(Direction.SE, W)),
-                    new Move(Arrays.asList(Direction.SE, Direction.SW)),
-                    new Move(Collections.singletonList(S))
-            );
-
-            final var allMoves = board
-                    .executeMove(Direction.NE)
-                    .executeMove(Direction.NE)
-                    .executeMove(N)
-                    .executeMove(Direction.NE)
-                    .allLegalMoves();
-
-            Assertions.assertThat(allMoves)
-                    .containsExactlyInAnyOrderElementsOf(preparedMoves);
-        }
-
-        @Test
-        @DisplayName("two moves, 5 threads")
-        void allLegalMovesAfterSomeMovesMultiThread() {
-            final var preparedMoves = List.of(
-                    new Move(Collections.singletonList(NW)),
-                    new Move(Collections.singletonList(N)),
-                    new Move(Collections.singletonList(Direction.NE)),
-                    new Move(Collections.singletonList(E)),
-                    new Move(Collections.singletonList(Direction.SE)),
-                    new Move(Collections.singletonList(S)),
-                    new Move(Arrays.asList(Direction.SW, E)),
-                    new Move(Arrays.asList(Direction.SW, Direction.SE)),
-                    new Move(Arrays.asList(Direction.SW, S)),
-                    new Move(Arrays.asList(Direction.SW, Direction.SW)),
-                    new Move(Arrays.asList(Direction.SW, W)),
-                    new Move(Arrays.asList(Direction.SW, NW))
-            );
-
-            final var afterTwoMoves = board
-                    .executeMove(N)
-                    .executeMove(E);
-
-            final var legalMoves1 = executor.submit(afterTwoMoves::allLegalMoves);
-            final var legalMoves2 = executor.submit(afterTwoMoves::allLegalMoves);
-            final var legalMoves3 = executor.submit(afterTwoMoves::allLegalMoves);
-            final var legalMoves4 = executor.submit(afterTwoMoves::allLegalMoves);
-            final var legalMoves5 = executor.submit(afterTwoMoves::allLegalMoves);
-
-            try {
-                final var results = List.of(
-                        legalMoves1.get(),
-                        legalMoves2.get(),
-                        legalMoves3.get(),
-                        legalMoves4.get(),
-                        legalMoves5.get()
-                );
-
-                assertAll(
-                        () -> Assertions.assertThat(results.get(0))
-                                .containsExactlyInAnyOrderElementsOf(preparedMoves),
-                        () -> Assertions.assertThat(results.get(1))
-                                .containsExactlyInAnyOrderElementsOf(preparedMoves),
-                        () -> Assertions.assertThat(results.get(2))
-                                .containsExactlyInAnyOrderElementsOf(preparedMoves),
-                        () -> Assertions.assertThat(results.get(3))
-                                .containsExactlyInAnyOrderElementsOf(preparedMoves),
-                        () -> Assertions.assertThat(results.get(4))
-                                .containsExactlyInAnyOrderElementsOf(preparedMoves)
-                );
-            } catch (Exception e) {
-                fail("Can't get result from all 5 threads");
-            }
-        }
-
-        @Test
-        @DisplayName("four moves, 5 threads")
-        void allLegalMoveCloseToCornerMultiThread() {
-            final var preparedMoves = List.of(
-                    new Move(Collections.singletonList(W)),
-                    new Move(Arrays.asList(NW, Direction.SW)),
-                    new Move(Arrays.asList(NW, S)),
-                    new Move(Arrays.asList(N, Direction.SW)),
-                    new Move(Arrays.asList(N, Direction.SE, Direction.SW)),
-                    new Move(Arrays.asList(N, Direction.SE, W, Direction.NE)),
-                    new Move(Arrays.asList(N, Direction.SE, W, S)),
-                    new Move(Arrays.asList(N, Direction.SE, W, Direction.SE, W)),
-                    new Move(Arrays.asList(N, Direction.SE, W, Direction.SE, Direction.SW)),
-                    new Move(Arrays.asList(N, Direction.SE, W, NW, Direction.SW)),
-                    new Move(Arrays.asList(N, Direction.SE, W, NW, S)),
-                    new Move(Arrays.asList(N, Direction.SE, W, W)),
-                    new Move(Collections.singletonList(Direction.NE)),
-                    new Move(Arrays.asList(E, Direction.SW)),
-                    new Move(Arrays.asList(E, NW, Direction.SW)),
-                    new Move(Arrays.asList(E, NW, S, W)),
-                    new Move(Arrays.asList(E, NW, S, NW, Direction.SW)),
-                    new Move(Arrays.asList(E, NW, S, NW, S)),
-                    new Move(Arrays.asList(E, NW, S, Direction.NE)),
-                    new Move(Arrays.asList(E, NW, S, Direction.SE, W)),
-                    new Move(Arrays.asList(E, NW, S, Direction.SE, Direction.SW)),
-                    new Move(Arrays.asList(E, NW, S, S)),
-                    new Move(Arrays.asList(Direction.SE, W)),
-                    new Move(Arrays.asList(Direction.SE, Direction.SW)),
-                    new Move(Collections.singletonList(S))
-            );
-
-            final var afterMoves = board
-                    .executeMove(Direction.NE)
-                    .executeMove(Direction.NE)
-                    .executeMove(N)
-                    .executeMove(Direction.NE);
-
-            final var legalMoves1 = executor.submit(afterMoves::allLegalMoves);
-            final var legalMoves2 = executor.submit(afterMoves::allLegalMoves);
-            final var legalMoves3 = executor.submit(afterMoves::allLegalMoves);
-            final var legalMoves4 = executor.submit(afterMoves::allLegalMoves);
-            final var legalMoves5 = executor.submit(afterMoves::allLegalMoves);
-
-            try {
-                final var results = List.of(
-                        legalMoves1.get(),
-                        legalMoves2.get(),
-                        legalMoves3.get(),
-                        legalMoves4.get(),
-                        legalMoves5.get()
-                );
-
-                assertAll(
-                        () -> Assertions.assertThat(results.get(0))
-                                .containsExactlyInAnyOrderElementsOf(preparedMoves),
-                        () -> Assertions.assertThat(results.get(1))
-                                .containsExactlyInAnyOrderElementsOf(preparedMoves),
-                        () -> Assertions.assertThat(results.get(2))
-                                .containsExactlyInAnyOrderElementsOf(preparedMoves),
-                        () -> Assertions.assertThat(results.get(3))
-                                .containsExactlyInAnyOrderElementsOf(preparedMoves),
-                        () -> Assertions.assertThat(results.get(4))
-                                .containsExactlyInAnyOrderElementsOf(preparedMoves)
-                );
-            } catch (Exception e) {
-                fail("Can't get result from all 5 threads");
-            }
         }
     }
 
