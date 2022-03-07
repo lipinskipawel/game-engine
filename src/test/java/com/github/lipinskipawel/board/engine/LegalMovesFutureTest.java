@@ -53,11 +53,6 @@ final class LegalMovesFutureTest implements WithAssertions {
                 .executeMove(N);
     }
 
-    /**
-     * This test make sure that tasks does not leave any state in the queue after cancellation.
-     * This test can suffer from unlucky timing between ...., but in reality shouldNotComplete often computes only 1
-     * move.
-     */
     @Test
     void shouldCancelTask() {
         final var shouldNotComplete = complicatedBoard.allLegalMovesFuture();

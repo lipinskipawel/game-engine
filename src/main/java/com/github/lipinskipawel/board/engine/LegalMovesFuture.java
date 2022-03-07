@@ -19,7 +19,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * This class is designed to be returned by the {@link Board#allLegalMovesFuture()} method. Clients are not permitted to
  * create instances of this class by themselves.
  * <p>
- * This class is capable of find all possible moves for a given {@link Board<> board}. This class will find even those
+ * This class is capable of find all possible moves for a given {@link Board board}. This class will find even those
  * moves that result in ending the game instantaneously when played (for example by placing ball inside the corner).
  * Searching for all possible moves is described as computation in the javadoc of this class.
  * <p>
@@ -120,7 +120,7 @@ public final class LegalMovesFuture {
      * <p>
      * This method guarantees to not lose any found moves after the computation has been finished in either way (for
      * documentation about finishing computation check the section about cancellation policy in the
-     * {@link LegalMovesFuture)} javadoc class).
+     * {@link LegalMovesFuture} javadoc class).
      *
      * @return list of moves that was found so far
      */
