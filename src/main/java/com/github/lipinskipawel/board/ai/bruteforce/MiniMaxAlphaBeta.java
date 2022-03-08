@@ -3,8 +3,10 @@ package com.github.lipinskipawel.board.ai.bruteforce;
 import com.github.lipinskipawel.board.ai.BoardEvaluator;
 import com.github.lipinskipawel.board.ai.MoveStrategy;
 import com.github.lipinskipawel.board.engine.Board;
+import com.github.lipinskipawel.board.engine.LegalMovesFuture;
 import com.github.lipinskipawel.board.engine.Move;
 
+import java.time.Duration;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -45,10 +47,11 @@ final class MiniMaxAlphaBeta implements MoveStrategy {
         final var pool = Executors.newSingleThreadExecutor();
         final var copy = new MiniMaxAlphaBeta(this);
         final var searchingForMove = pool.submit(
-                () -> copy.execute(board, copy.depth, copy.evaluator)
+                () -> copy.execute(board, copy.depth)
         );
         try {
-            return searchingForMove.get(timeout, TimeUnit.SECONDS);
+            searchingForMove.get(timeout, TimeUnit.SECONDS);
+            return copy.bestMove.get();
         } catch (InterruptedException | ExecutionException | TimeoutException e) {
             copy.cancel = true;
             return copy.bestMove.get();
@@ -57,47 +60,56 @@ final class MiniMaxAlphaBeta implements MoveStrategy {
         }
     }
 
-    public Move execute(final Board<?> board, final int depth, final BoardEvaluator evaluator) {
+    void execute(final Board<?> board, final int depth) {
         final var actualDepth = this.depth == 1 ? depth : this.depth;
-        Move bestMove = Move.emptyMove();
+        final var holder = new Holder();
 
-        var highestSeenValue = -Double.MAX_VALUE;
-        var lowestSeenValue = Double.MAX_VALUE;
-        double currentValue;
-        final var allLegalMoves = board.allLegalMoves();
+        final var computation = board.allLegalMovesFuture();
+        computation.start(Duration.ofSeconds(this.timeout));
 
-        for (final Move move : allLegalMoves) {
+        while (computation.isRunning()) {
+            processFoundMoves(computation, board, actualDepth, holder);
+        }
+        processFoundMoves(computation, board, actualDepth, holder);
+    }
+
+    private void processFoundMoves(final LegalMovesFuture legalMovesFuture,
+                                   final Board<?> board,
+                                   int actualDepth,
+                                   final Holder holder) {
+        for (final Move move : legalMovesFuture.partialResult()) {
             setFirstMoveAsBestOnlyIfGlobalBestMoveIsEmpty(move);
             if (this.cancel) {
-                return this.bestMove.get();
+                legalMovesFuture.cancel();
+                break;
             }
 
             final var afterMove = board.executeMove(move);
 
-            currentValue = minimaxWithCancel(
+            holder.current = minimax(
                     afterMove,
                     actualDepth - 1,
                     0.0,
                     0.0,
-                    board.getPlayer().equals(board.getPlayerProvider().first()),
-                    evaluator
+                    board.getPlayer().equals(board.getPlayerProvider().first())
             );
 
-            if (board.getPlayer().equals(board.getPlayerProvider().first()) &&
-                    currentValue >= highestSeenValue) {
-
-                highestSeenValue = currentValue;
-                bestMove = move;
-                updateGlobalBestMove(bestMove);
-            } else if (board.getPlayer().equals(board.getPlayerProvider().second()) &&
-                    currentValue <= lowestSeenValue) {
-
-                lowestSeenValue = currentValue;
-                bestMove = move;
-                updateGlobalBestMove(bestMove);
+            if (isFirstPlayer(board) && holder.isCurrentGE(holder.highest)) {
+                holder.highest = holder.current;
+                this.bestMove.set(move);
+            } else if (isSecondPlayer(board) && holder.isCurrentLE(holder.lowest)) {
+                holder.lowest = holder.current;
+                this.bestMove.set(move);
             }
         }
-        return bestMove;
+    }
+
+    private boolean isFirstPlayer(Board<?> board) {
+        return board.getPlayer().equals(board.getPlayerProvider().first());
+    }
+
+    private boolean isSecondPlayer(Board<?> board) {
+        return board.getPlayer().equals(board.getPlayerProvider().second());
     }
 
     private void setFirstMoveAsBestOnlyIfGlobalBestMoveIsEmpty(final Move move) {
@@ -106,40 +118,20 @@ final class MiniMaxAlphaBeta implements MoveStrategy {
         }
     }
 
-    private void updateGlobalBestMove(final Move bestMove) {
-        if (!this.cancel) {
-            this.bestMove.set(bestMove);
-        }
-    }
-
-    private double minimaxWithCancel(final Board<?> board,
-                                     final int depth,
-                                     double alpha,
-                                     double beta,
-                                     final boolean maximizingPlayer,
-                                     final BoardEvaluator evaluator) {
-        if (this.cancel) {
-            return evaluator.evaluate(board);
-        } else {
-            return minimax(board, depth, alpha, beta, maximizingPlayer, evaluator);
-        }
-    }
-
     private double minimax(final Board<?> board,
                            final int depth,
                            double alpha,
                            double beta,
-                           final boolean maximizingPlayer,
-                           final BoardEvaluator evaluator) {
-        if (depth <= 0 || board.isGameOver())
+                           final boolean maximizingPlayer) {
+        if (this.cancel || depth <= 0 || board.isGameOver())
             return evaluator.evaluate(board);
 
         if (!maximizingPlayer) {
             var maxEval = -Double.MAX_VALUE;
             final var allMoves = board.allLegalMoves();
             for (final var move : allMoves) {
-                final var eval = minimaxWithCancel(
-                        board.executeMove(move), depth - 1, alpha, beta, true, evaluator);
+                final var eval = minimax(
+                        board.executeMove(move), depth - 1, alpha, beta, true);
                 maxEval = max(maxEval, eval);
                 beta = min(beta, eval);
                 if (beta >= alpha) {
@@ -151,8 +143,8 @@ final class MiniMaxAlphaBeta implements MoveStrategy {
             var minEval = Double.MAX_VALUE;
             final var allMoves = board.allLegalMoves();
             for (final var move : allMoves) {
-                final var eval = minimaxWithCancel(
-                        board.executeMove(move), depth - 1, alpha, beta, false, evaluator);
+                final var eval = minimax(
+                        board.executeMove(move), depth - 1, alpha, beta, false);
                 minEval = min(minEval, eval);
                 alpha = max(alpha, eval);
                 if (beta >= alpha) {
@@ -160,6 +152,21 @@ final class MiniMaxAlphaBeta implements MoveStrategy {
                 }
             }
             return minEval;
+        }
+    }
+
+
+    private static class Holder {
+        double highest = -Double.MAX_VALUE;
+        double lowest = Double.MAX_VALUE;
+        double current;
+
+        boolean isCurrentGE(double comparisonValue) {
+            return current >= comparisonValue;
+        }
+
+        boolean isCurrentLE(double comparisonValue) {
+            return current <= comparisonValue;
         }
     }
 }

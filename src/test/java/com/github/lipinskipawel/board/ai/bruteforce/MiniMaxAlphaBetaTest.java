@@ -6,6 +6,7 @@ import com.github.lipinskipawel.board.engine.Boards;
 import com.github.lipinskipawel.board.engine.Move;
 import com.github.lipinskipawel.board.engine.Player;
 import org.assertj.core.api.Assertions;
+import org.assertj.core.api.WithAssertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -23,7 +24,7 @@ import static com.github.lipinskipawel.board.engine.Player.SECOND;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 @DisplayName("API -- Minimax alpha-beta")
-class MiniMaxAlphaBetaTest {
+class MiniMaxAlphaBetaTest implements WithAssertions {
 
     private MoveStrategy bruteForce;
     private Board<Player> board;
@@ -37,6 +38,45 @@ class MiniMaxAlphaBetaTest {
                 .withDepth(3)
                 .build();
         this.board = Boards.immutableBoard();
+    }
+
+    @Test
+    void shouldReturnNonEmptyMove() {
+        final var move = bruteForce.searchForTheBestMove(complicatedBoard());
+
+        assertThat(move).isNotEqualTo(Move.emptyMove());
+    }
+
+    private Board<?> complicatedBoard() {
+        return board
+                .executeMove(N)
+                .executeMove(N)
+                .executeMove(N)
+                .executeMove(N)
+                .executeMove(W)
+                .executeMove(S)
+                .executeMove(S)
+                .executeMove(S)
+                .executeMove(S)
+                .executeMove(S)
+                .executeMove(S)
+                .executeMove(S)
+                .executeMove(S)
+                .executeMove(W)
+                .executeMove(N)
+                .executeMove(N)
+                .executeMove(N)
+                .executeMove(N)
+                .executeMove(N)
+                .executeMove(N)
+                .executeMove(N)
+                .executeMove(N)
+                .executeMove(W)
+                .executeMove(S)
+                .executeMove(S)
+                .executeMove(S)
+                .executeMove(S)
+                .executeMove(S);
     }
 
     @Nested
