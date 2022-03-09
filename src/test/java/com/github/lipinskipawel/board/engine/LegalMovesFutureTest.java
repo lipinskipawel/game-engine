@@ -77,7 +77,6 @@ final class LegalMovesFutureTest implements WithAssertions {
             Thread.onSpinWait();
         }
         final var completed = shouldComplete.partialResult().size();
-        assertThat(completed).isEqualTo(212376);
         assertThat(globalForNotComplete.size()).isLessThan(completed);
     }
 
