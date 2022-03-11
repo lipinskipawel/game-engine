@@ -103,7 +103,7 @@ public final class LegalMovesFuture {
     /**
      * This method pulls already computed results to the client code. When the computation has been finished this method
      * will return all found moves. Otherwise, will return partial results for computation.
-     * When using this method with the conjuration with the {@link #isRunning()} be aware of race condition. Those two
+     * When using this method with the conjunction with the {@link #isRunning()} be aware of race condition. Those two
      * methods are not synchronized with each other. To prevent losing moves clients usually write code like this:
      * <pre> {@code
      * class App {
@@ -156,41 +156,65 @@ public final class LegalMovesFuture {
     }
 
     private void startComputation() {
-        findAllMovesRecursively(this.board, new Stack<>());
+        findAllMovesIteratively(this.board);
         synchronized (this.lock) {
             this.isCancel = true;
         }
     }
 
-    private void findAllMovesRecursively(final Board<?> board, final Stack<Direction> stack) {
-        synchronized (this.lock) {
-            if (canStopComputation()) {
-                return;
+    /**
+     * The iterative implementation of depth-first search. It uses inner class for tracking prior found directions with
+     * regard to board that contains those executed directions.
+     *
+     * @param board to start looking for a moves
+     */
+    private void findAllMovesIteratively(final Board<?> board) {
+        final class Level {
+            private final Board<?> board;
+            private final Stack<Direction> stackOfPriorMoves;
+
+            Level(Board<?> board) {
+                this.board = board;
+                this.stackOfPriorMoves = new Stack<>();
+            }
+
+            Level(Board<?> board, Stack<Direction> stack) {
+                this.board = board;
+                this.stackOfPriorMoves = stack;
+            }
+
+            Stack<Direction> push(Direction direction) {
+                final var newStack = new Stack<Direction>();
+                newStack.addAll(stackOfPriorMoves);
+                newStack.push(direction);
+                return newStack;
             }
         }
-        for (var move : board.getBallAPI().getAllowedDirection()) {
-            stack.push(move);
-            final var afterMove = board.executeMove(move);
+        var currentLevels = new Stack<Level>();
+        currentLevels.push(new Level(board));
 
-            if (isItEnd(afterMove.getBallAPI())) {
-                synchronized (this.lock) {
-                    if (!canStopComputation()) {
-                        final var moveToSave = new Move(new ArrayList<>(stack));
-                        this.allMoves.add(moveToSave);
-                    } else {
+        while (!canStopComputation() && !currentLevels.isEmpty()) {
+            var level = currentLevels.pop();
+            for (var move : level.board.getBallAPI().getAllowedDirection()) {
+                final var afterMove = level.board.executeMove(move);
+
+                if (isItEnd(afterMove.getBallAPI())) {
+                    this.allMoves.add(new Move(level.push(move)));
+                    if (canStopComputation()) {
                         break;
                     }
+                } else {
+                    final var item = new Level(afterMove, level.push(move));
+                    currentLevels.push(item);
                 }
-            } else {
-                findAllMovesRecursively(afterMove, stack);
             }
-
-            stack.pop();
         }
     }
 
     private boolean canStopComputation() {
-        return this.isCancel;
+        synchronized (this.lock) {
+            return this.isCancel;
+        }
     }
 
     private boolean isItEnd(final Point ball) {
