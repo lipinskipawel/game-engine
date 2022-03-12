@@ -84,28 +84,6 @@ class MiniMaxAlphaBetaTest implements WithAssertions {
     class TimeoutTest {
 
         @Test
-        @DisplayName("should score a goal even on timeout")
-        void shouldReturnGoalMoveOnTimeout() {
-            final var closeToGoalBoard = getComplicatedBoardCloseToNorthGoal(board);
-
-            final var move = bruteForce.searchForTheBestMove(closeToGoalBoard);
-            final var shouldBeGoal = closeToGoalBoard.executeMove(move);
-
-            Assertions.assertThat(shouldBeGoal.isGoal()).isTrue();
-            Assertions.assertThat(shouldBeGoal.takeTheWinner().get()).isEqualTo(FIRST);
-        }
-
-        private Board<Player> getComplicatedBoardCloseToNorthGoal(final Board<Player> board) {
-            return board
-                    .executeMove(N)
-                    .executeMove(N)
-                    .executeMove(N)
-                    .executeMove(N)
-                    .executeMove(W)
-                    .executeMove(S);
-        }
-
-        @Test
         @DisplayName("should not return empty move on complicated board")
         void shouldFindAnyMoveOnVeryComplicatedBoard() {
             final var semiComplicatedBoard = getComplicatedBoard(board);
