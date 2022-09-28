@@ -1,7 +1,7 @@
 package com.github.lipinskipawel.board.engine;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.github.lipinskipawel.board.internal.NoOpLogger;
+import com.github.lipinskipawel.board.spi.Logger;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -19,7 +19,7 @@ import static java.util.stream.Collectors.toList;
  * 'Small' move is when the ball is bouncing off the wall or different type of obstacle.
  */
 final class MoveHistory {
-    private static final Logger LOGGER = LoggerFactory.getLogger(MoveHistory.class);
+    private static final Logger LOGGER = new NoOpLogger();
     private final Queue<Move> moves;
     private final List<Direction> smallMove;
 
@@ -45,7 +45,7 @@ final class MoveHistory {
                 .flatMap(List::stream)
                 .collect(toList());
         directions.addAll(new ArrayList<>(this.smallMove));
-        LOGGER.trace("allDirections return {} directions.", directions);
+        LOGGER.trace("allDirections return " + directions + " directions");
         return directions;
     }
 

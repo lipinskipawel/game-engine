@@ -1,8 +1,8 @@
 package com.github.lipinskipawel.board.engine;
 
 import com.github.lipinskipawel.board.engine.exception.ChangePlayerIsNotAllowed;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.github.lipinskipawel.board.internal.NoOpLogger;
+import com.github.lipinskipawel.board.spi.Logger;
 
 import java.time.Duration;
 import java.util.ArrayList;
@@ -11,7 +11,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 final class ImmutableBoard<T> implements Board<T> {
-    private static final Logger LOGGER = LoggerFactory.getLogger(ImmutableBoard.class);
+    private static final Logger LOGGER = new NoOpLogger();
     private final LogicalPoints points;
     private final PlayerProvider<T> playerProvider;
     private final MoveHistory moveLog;
@@ -48,16 +48,16 @@ final class ImmutableBoard<T> implements Board<T> {
     @Override
     public ImmutableBoard<T> executeMove(final Direction destination) {
         if (isMoveAllowed(destination)) {
-            LOGGER.trace("executeMove: {}", destination);
+            LOGGER.trace("executeMove: " + destination);
             final var logicalPoints = this.points.makeAMove(destination);
             final var player = computePlayerToMove(logicalPoints);
             final var moveLogg = this.playerProvider.current().equals(player) ? this.moveLog.add(destination) : this.moveLog.addMove(new Move(List.of(destination)));
             final var providedPlayer = computePlayerProvider(player);
 
-            LOGGER.debug("Move has been made: {}", destination);
+            LOGGER.debug("Move has been made: " + destination);
             return new ImmutableBoard<>(logicalPoints, providedPlayer, moveLogg);
         } else {
-            LOGGER.debug("Move has NOT been made: {}", destination);
+            LOGGER.debug("Move has NOT been made: " + destination);
             return this;
         }
     }
@@ -136,7 +136,7 @@ final class ImmutableBoard<T> implements Board<T> {
             result.addAll(legalMovesFuture.partialResult());
         }
         result.addAll(legalMovesFuture.partialResult());
-        LOGGER.debug("allLegalMoves finds: {} moves", result.size());
+        LOGGER.debug("allLegalMoves finds: " + result.size() + " moves");
         return result;
     }
 
@@ -179,15 +179,16 @@ final class ImmutableBoard<T> implements Board<T> {
             throw new ChangePlayerIsNotAllowed();
         }
         if (nextPlayerToMove.equals(this.playerProvider.current())) {
-            LOGGER.debug("{} is the same as current player to move {}. Returning THIS reference.",
-                    nextPlayerToMove, this.playerProvider.current());
+            LOGGER.debug(nextPlayerToMove + " is the same as current player to move " +
+                    this.playerProvider.current() +
+                    ". Returning THIS reference.");
             return this;
         }
         final var newPlayer = computePlayerToMove(this.points);
         final var providedPlayer = this.playerProvider.current().equals(newPlayer)
                 ? this.playerProvider
                 : this.playerProvider.copy().swap();
-        LOGGER.debug("nextPlayerToMove returns board with player to move {}.", providedPlayer.current());
+        LOGGER.debug("nextPlayerToMove returns board with player to move " + providedPlayer.current());
         return new ImmutableBoard<>(this.points, providedPlayer, this.moveLog);
     }
 

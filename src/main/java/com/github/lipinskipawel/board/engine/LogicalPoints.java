@@ -1,7 +1,7 @@
 package com.github.lipinskipawel.board.engine;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.github.lipinskipawel.board.internal.NoOpLogger;
+import com.github.lipinskipawel.board.spi.Logger;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -11,7 +11,7 @@ import java.util.Objects;
 import static java.util.Comparator.comparingInt;
 
 final class LogicalPoints implements Transformation {
-    private static final Logger LOGGER = LoggerFactory.getLogger(LogicalPoints.class);
+    private static final Logger LOGGER = new NoOpLogger();
     private final List<Point> points;
     private final Point ballPosition;
 

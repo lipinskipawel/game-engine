@@ -3,7 +3,7 @@
 
 # Game engine
 
-Engine for 2D football game
+It is lightweight zero-dependency engine for 2D football game.
 
 ## Requirements
 
