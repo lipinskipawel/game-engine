@@ -1,3 +1,4 @@
+![build workflow](https://github.com/lipinskipawel/game-engine/actions/workflows/build.yml/badge.svg)
 [![CircleCI Status](https://circleci.com/gh/lipinskipawel/game-engine.svg?style=shield&circle-token=:circle-token)](https://circleci.com/gh/lipinskipawel/game-engine)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.lipinskipawel/game-engine/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.github.lipinskipawel/game-engine)
 
