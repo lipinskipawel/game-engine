@@ -147,10 +147,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Added
 
-- Add integration with [CircleCi]
 - Add license, README
 - Import engine from the [LAN-Game] project
-
-[circleci]: https://circleci.com/gh/lipinskipawel/game-engine
 
 [lan-game]: https://github.com/lipinskipawel/LAN-game
