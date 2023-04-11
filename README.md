@@ -1,4 +1,4 @@
-![build master](https://github.com/lipinskipawel/game-engine/actions/workflows/build.yml/badge.svg)
+![build master](https://github.com/lipinskipawel/game-engine/actions/workflows/build.yml/badge.svg?branch=master)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.lipinskipawel/game-engine/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.github.lipinskipawel/game-engine)
 
 # Game engine
