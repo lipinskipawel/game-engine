@@ -6,9 +6,6 @@ on:
   pull_request:
     branches: [ master ]
 
-permissions:
-  contents: read
-
 jobs:
   validation:
     name: Validation
@@ -19,6 +16,7 @@ jobs:
 
   build:
     name: Building project
+    needs: validation
     runs-on: ubuntu-latest
 
     steps:
