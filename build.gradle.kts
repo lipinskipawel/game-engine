@@ -2,7 +2,12 @@ plugins {
     java
     `maven-publish`
     signing
+    id("io.github.gradle-nexus.publish-plugin") version ("1.3.0")
 }
+
+group = "com.github.lipinskipawel"
+version = "5.0.0"
+description = "game-engine"
 
 repositories {
     mavenLocal()
@@ -17,12 +22,21 @@ dependencies {
     testImplementation("org.assertj:assertj-core:3.15.0")
 }
 
-group = "com.github.lipinskipawel"
-version = "5.0.0"
-description = "game-engine"
+java {
+    withJavadocJar()
+    withSourcesJar()
+    sourceCompatibility = JavaVersion.VERSION_11
+    targetCompatibility = JavaVersion.VERSION_11
+}
+
+nexusPublishing {
+    repositories {
+        sonatype()
+    }
+}
 
 publishing {
-    publications.create<MavenPublication>("main") {
+    publications.create<MavenPublication>("mavenJava") {
         pom {
             name.set("game-engine")
             description.set("This is engine for 2D football game")
@@ -46,30 +60,17 @@ publishing {
         }
         from(components["java"])
     }
-    repositories {
-        maven {
-            url = uri("https://oss.sonatype.org/service/local/staging/deploy/maven2")
-            credentials {
-                username = findProperty("OSSRH_USERNAME").toString()
-                password = findProperty("OSSRH_PASSWORD").toString()
-            }
-        }
-    }
-}
-
-java {
-    withJavadocJar()
-    withSourcesJar()
-    sourceCompatibility = JavaVersion.VERSION_11
-    targetCompatibility = JavaVersion.VERSION_11
 }
 
 signing {
-    useGpgCmd()
-    sign(publishing.publications["main"])
+    val signingKeyId: String? by project
+    val signingKey: String? by project
+    val signingPassword: String? by project
+    useInMemoryPgpKeys(signingKeyId, signingKey, signingPassword)
+    sign(publishing.publications["mavenJava"])
 }
 
-tasks.withType<JavaCompile>() {
+tasks.withType<JavaCompile> {
     options.encoding = "UTF-8"
 }
 
