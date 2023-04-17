@@ -7,10 +7,23 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## Unreleased
 
+### Removed
+
+- remove slf4j dependency. It is still possible to have access to library logs just by using SPI [Logger] interface
+
+[Logger](src/main/java/com/github/lipinskipawel/board/spi/Logger.java)
+
 ### Added
 
 - allLegalMovesFuture method in Board interface with promise of more flexible API through the new type LegalMovesFuture
   which exposes more convenient ways for clients to deal with expensive computation
+
+### Fixed
+
+- returning empty move from [MoveStrategy] is much less likely to happen. It is possible only when given too little time
+- stop consuming resources after cancellation of searching for best move
+
+[MoveStrategy](src/main/java/com/github/lipinskipawel/board/ai/MoveStrategy.java)
 
 ### Deprecated
 

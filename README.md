@@ -11,30 +11,17 @@ It is lightweight zero-dependency engine for 2D football game.
 
 ## Build from source
 
-Use Gradle as a build tool and execute command `gradle build` to create jar file.
+Use Gradle as a build tool and execute command `./gradlew build` to create jar file.
 
 ## How to release game-engine module
 
-Using Gradle
+Release process is semi-manual. It begins by adding a tag version (e.g. `v5.0.0`) to a specific commit and assigning
+version to `version` in `build.gradle.kts`. Tagged commit will be release as a new version of library. Versioning is
+made according to [semver]. Every change has to be described in the [changelog] file.
 
-- update your `gradle.properties` files to reflect gpg settings
-- decide which version you will be releasing according to [semver] and update [build.gradle.kts]
-- execute `gradle publish`
-- update [changelog] about new version
-- update version in [build.gradle.kts]
-- tag current commit with a tag "v`released-version`"
+Next release have to be triggered manually by Github action release.
+
+After that Github workflow will react on the release and publish library to Maven Central Repository.
 
 [semver]: https://semver.org
 [changelog]: CHANGELOG.md
-
-### Example gradle.properties file
-
-```
-signing.gnupg.executable=gpg
-signing.gnupg.keyName=abc
-signing.gnupg.passphrase=abc
-OSSRH_USERNAME=abc
-OSSRH_PASSWORD=abc
-```
-
-signing.gnupg.keyName - last 8 characters of public key
