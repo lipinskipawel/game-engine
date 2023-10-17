@@ -70,10 +70,17 @@ signing {
     sign(publishing.publications["mavenJava"])
 }
 
-tasks.withType<JavaCompile> {
-    options.encoding = "UTF-8"
-}
+tasks {
+    withType<JavaCompile> {
+        options.encoding = "UTF-8"
+    }
 
-tasks.test {
-    useJUnitPlatform()
+    test {
+        useJUnitPlatform()
+    }
+
+    wrapper {
+        gradleVersion = "7.4.2"
+        distributionType = Wrapper.DistributionType.ALL
+    }
 }
