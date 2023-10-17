@@ -11,23 +11,30 @@ import java.util.Objects;
 import java.util.Optional;
 
 final class ImmutableBoard<T> implements Board<T> {
-    private static final Logger LOGGER = new NoOpLogger();
+    private final Logger logger;
     private final LogicalPoints points;
     private final PlayerProvider<T> playerProvider;
     private final MoveHistory moveLog;
 
-    ImmutableBoard(final PlayerProvider<T> provider) {
+    ImmutableBoard(PlayerProvider<T> provider) {
+        this(provider, new NoOpLogger());
+    }
+
+    ImmutableBoard(final PlayerProvider<T> provider, Logger logger) {
         this.points = new LogicalPoints();
         this.playerProvider = provider.copy();
         this.moveLog = new MoveHistory();
+        this.logger = logger;
     }
 
     private ImmutableBoard(final LogicalPoints points,
                            final PlayerProvider<T> provider,
-                           final MoveHistory moveHistory) {
+                           final MoveHistory moveHistory,
+                           final Logger logger) {
         this.points = points;
         this.playerProvider = provider;
         this.moveLog = moveHistory;
+        this.logger = logger;
     }
 
     @Override
@@ -48,16 +55,16 @@ final class ImmutableBoard<T> implements Board<T> {
     @Override
     public ImmutableBoard<T> executeMove(final Direction destination) {
         if (isMoveAllowed(destination)) {
-            LOGGER.trace("executeMove: " + destination);
+            logger.trace("executeMove: " + destination);
             final var logicalPoints = this.points.makeAMove(destination);
             final var player = computePlayerToMove(logicalPoints);
             final var moveLogg = this.playerProvider.current().equals(player) ? this.moveLog.add(destination) : this.moveLog.addMove(new Move(List.of(destination)));
             final var providedPlayer = computePlayerProvider(player);
 
-            LOGGER.debug("Move has been made: " + destination);
-            return new ImmutableBoard<>(logicalPoints, providedPlayer, moveLogg);
+            logger.debug("Move has been made: " + destination);
+            return new ImmutableBoard<>(logicalPoints, providedPlayer, moveLogg, logger);
         } else {
-            LOGGER.debug("Move has NOT been made: " + destination);
+            logger.debug("Move has NOT been made: " + destination);
             return this;
         }
     }
@@ -71,7 +78,7 @@ final class ImmutableBoard<T> implements Board<T> {
 
     @Override
     public Board<T> executeMove(final Move move) {
-        var afterMove = new ImmutableBoard<>(this.points, this.playerProvider, this.moveLog);
+        var afterMove = new ImmutableBoard<>(this.points, this.playerProvider, this.moveLog, this.logger);
         for (var dir : move.getMove()) {
             afterMove = afterMove.executeMove(dir);
         }
@@ -85,7 +92,7 @@ final class ImmutableBoard<T> implements Board<T> {
 
     @Override
     public ImmutableBoard<T> undo() {
-        LOGGER.trace("undo executes");
+        logger.trace("undo executes");
         final var lastDirection = this.moveLog
                 .getLastDirection()
                 .orElseThrow(() -> new RuntimeException("There is no move to undo"));
@@ -94,9 +101,9 @@ final class ImmutableBoard<T> implements Board<T> {
         final var isFirst = moveLogg.currentPlayer();
         final var providedPlayer = computePlayer(isFirst);
 
-        final var newImmutableBoard = new ImmutableBoard<T>(logicalPoints, providedPlayer, moveLogg);
+        final var newImmutableBoard = new ImmutableBoard<T>(logicalPoints, providedPlayer, moveLogg, logger);
         if (this.equals(newImmutableBoard)) {
-            LOGGER.debug("undo returned THIS reference.");
+            logger.debug("undo returned THIS reference.");
         }
         return newImmutableBoard;
     }
@@ -116,19 +123,19 @@ final class ImmutableBoard<T> implements Board<T> {
 
     @Override
     public Board<T> undoPlayerMove() {
-        final var another = new ImmutableBoard<>(this.points, this.playerProvider.copy(), this.moveLog).undo();
+        final var another = new ImmutableBoard<>(this.points, this.playerProvider.copy(), this.moveLog, this.logger).undo();
         if (this.playerProvider.current().equals(another.playerProvider.current())) {
-            LOGGER.debug("undoPlayerMove has been made.");
+            logger.debug("undoPlayerMove has been made.");
             return another;
         } else {
-            LOGGER.debug("undoPlayerMove has returned THIS reference.");
+            logger.debug("undoPlayerMove has returned THIS reference.");
             return this;
         }
     }
 
     @Override
     public List<Move> allLegalMoves() {
-        LOGGER.debug("allLegalMoves executed.");
+        logger.debug("allLegalMoves executed.");
         final var legalMovesFuture = new LegalMovesFuture(this);
         legalMovesFuture.start(Duration.ofSeconds(Integer.MAX_VALUE));
         final List<Move> result = new ArrayList<>();
@@ -136,7 +143,7 @@ final class ImmutableBoard<T> implements Board<T> {
             result.addAll(legalMovesFuture.partialResult());
         }
         result.addAll(legalMovesFuture.partialResult());
-        LOGGER.debug("allLegalMoves finds: " + result.size() + " moves");
+        logger.debug("allLegalMoves finds: " + result.size() + " moves");
         return result;
     }
 
@@ -179,7 +186,7 @@ final class ImmutableBoard<T> implements Board<T> {
             throw new ChangePlayerIsNotAllowed();
         }
         if (nextPlayerToMove.equals(this.playerProvider.current())) {
-            LOGGER.debug(nextPlayerToMove + " is the same as current player to move " +
+            logger.debug(nextPlayerToMove + " is the same as current player to move " +
                     this.playerProvider.current() +
                     ". Returning THIS reference.");
             return this;
@@ -188,8 +195,8 @@ final class ImmutableBoard<T> implements Board<T> {
         final var providedPlayer = this.playerProvider.current().equals(newPlayer)
                 ? this.playerProvider
                 : this.playerProvider.copy().swap();
-        LOGGER.debug("nextPlayerToMove returns board with player to move " + providedPlayer.current());
-        return new ImmutableBoard<>(this.points, providedPlayer, this.moveLog);
+        logger.debug("nextPlayerToMove returns board with player to move " + providedPlayer.current());
+        return new ImmutableBoard<>(this.points, providedPlayer, this.moveLog, logger);
     }
 
     @Override
