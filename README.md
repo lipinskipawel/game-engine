@@ -15,7 +15,7 @@ Use Gradle as a build tool and execute command `./gradlew build` to create jar f
 
 ## How to release game-engine module
 
-Release process is semi-manual. It begins by adding a tag version (e.g. `v5.0.0`) to a specific commit and assigning
+Release process is semi-automated. It begins by adding a tag version (e.g. `v6.1.0`) to a specific commit and assigning
 version to `version` in `build.gradle.kts`. Tagged commit will be release as a new version of library. Versioning is
 made according to [semver]. Every change has to be described in the [changelog] file.
 
