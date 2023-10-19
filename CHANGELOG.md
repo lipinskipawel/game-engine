@@ -7,11 +7,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## Unreleased
 
+## 6.0.0 - 2023.10.19
+
 ### Removed
 
 - remove slf4j dependency. It is still possible to have access to library logs just by using SPI [Logger] interface
 
-[Logger](src/main/java/com/github/lipinskipawel/board/spi/Logger.java)
+[Logger]: src/main/java/com/github/lipinskipawel/board/spi/Logger.java
 
 ### Added
 
@@ -23,7 +25,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - returning empty move from [MoveStrategy] is much less likely to happen. It is possible only when given too little time
 - stop consuming resources after cancellation of searching for best move
 
-[MoveStrategy](src/main/java/com/github/lipinskipawel/board/ai/MoveStrategy.java)
+[MoveStrategy]: src/main/java/com/github/lipinskipawel/board/ai/MoveStrategy.java
 
 ### Deprecated
 
