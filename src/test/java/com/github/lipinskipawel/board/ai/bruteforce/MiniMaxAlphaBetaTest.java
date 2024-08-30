@@ -32,11 +32,11 @@ class MiniMaxAlphaBetaTest implements WithAssertions {
     @BeforeEach
     void setUp() {
         this.bruteForce = MoveStrategy
-                .defaultMoveStrategyBuilder()
-                .withBoardEvaluator(new SmartBoardEvaluator())
-                .withTimeoutInSeconds(5)
-                .withDepth(3)
-                .build();
+            .defaultMoveStrategyBuilder()
+            .withBoardEvaluator(new SmartBoardEvaluator())
+            .withTimeoutInSeconds(5)
+            .withDepth(3)
+            .build();
         this.board = Boards.immutableBoard();
     }
 
@@ -49,34 +49,34 @@ class MiniMaxAlphaBetaTest implements WithAssertions {
 
     private Board<?> complicatedBoard() {
         return board
-                .executeMove(N)
-                .executeMove(N)
-                .executeMove(N)
-                .executeMove(N)
-                .executeMove(W)
-                .executeMove(S)
-                .executeMove(S)
-                .executeMove(S)
-                .executeMove(S)
-                .executeMove(S)
-                .executeMove(S)
-                .executeMove(S)
-                .executeMove(S)
-                .executeMove(W)
-                .executeMove(N)
-                .executeMove(N)
-                .executeMove(N)
-                .executeMove(N)
-                .executeMove(N)
-                .executeMove(N)
-                .executeMove(N)
-                .executeMove(N)
-                .executeMove(W)
-                .executeMove(S)
-                .executeMove(S)
-                .executeMove(S)
-                .executeMove(S)
-                .executeMove(S);
+            .executeMove(N)
+            .executeMove(N)
+            .executeMove(N)
+            .executeMove(N)
+            .executeMove(W)
+            .executeMove(S)
+            .executeMove(S)
+            .executeMove(S)
+            .executeMove(S)
+            .executeMove(S)
+            .executeMove(S)
+            .executeMove(S)
+            .executeMove(S)
+            .executeMove(W)
+            .executeMove(N)
+            .executeMove(N)
+            .executeMove(N)
+            .executeMove(N)
+            .executeMove(N)
+            .executeMove(N)
+            .executeMove(N)
+            .executeMove(N)
+            .executeMove(W)
+            .executeMove(S)
+            .executeMove(S)
+            .executeMove(S)
+            .executeMove(S)
+            .executeMove(S);
     }
 
     @Nested
@@ -95,18 +95,18 @@ class MiniMaxAlphaBetaTest implements WithAssertions {
 
         private Board<Player> getComplicatedBoard(final Board<Player> board) {
             return board
-                    .executeMove(N)
-                    .executeMove(E)
-                    .executeMove(S)
-                    .executeMove(S)
-                    .executeMove(W)
-                    .executeMove(W)
-                    .executeMove(N)
-                    .executeMove(N)
-                    .executeMove(N)
-                    .executeMove(E)
-                    .executeMove(E)
-                    .executeMove(E);
+                .executeMove(N)
+                .executeMove(E)
+                .executeMove(S)
+                .executeMove(S)
+                .executeMove(W)
+                .executeMove(W)
+                .executeMove(N)
+                .executeMove(N)
+                .executeMove(N)
+                .executeMove(E)
+                .executeMove(E)
+                .executeMove(E);
         }
 
         @Test
@@ -121,14 +121,14 @@ class MiniMaxAlphaBetaTest implements WithAssertions {
 
         private Board<Player> getSemiComplicatedBoard(final Board<Player> board) {
             return board
-                    .executeMove(N)
-                    .executeMove(E)
-                    .executeMove(S)
-                    .executeMove(S)
-                    .executeMove(W)
-                    .executeMove(W)
-                    .executeMove(N)
-                    .executeMove(N);
+                .executeMove(N)
+                .executeMove(E)
+                .executeMove(S)
+                .executeMove(S)
+                .executeMove(W)
+                .executeMove(W)
+                .executeMove(N)
+                .executeMove(N);
         }
     }
 
@@ -144,17 +144,17 @@ class MiniMaxAlphaBetaTest implements WithAssertions {
             @DisplayName("Should score the goal when player FIRST")
             void scoreAGoal() {
                 final var after4Moves = board
-                        .executeMove(N)
-                        .executeMove(N)
-                        .executeMove(N)
-                        .executeMove(N);
+                    .executeMove(N)
+                    .executeMove(N)
+                    .executeMove(N)
+                    .executeMove(N);
 
                 final var bestMove = bruteForce.searchForTheBestMove(after4Moves);
                 final var afterAiMove = after4Moves.executeMove(bestMove);
 
                 assertAll(
-                        () -> Assertions.assertThat(afterAiMove.isGoal()).isTrue(),
-                        () -> Assertions.assertThat(afterAiMove.getPlayer()).isEqualByComparingTo(Player.SECOND)
+                    () -> Assertions.assertThat(afterAiMove.isGoal()).isTrue(),
+                    () -> Assertions.assertThat(afterAiMove.getPlayer()).isEqualByComparingTo(Player.SECOND)
                 );
             }
 
@@ -162,18 +162,18 @@ class MiniMaxAlphaBetaTest implements WithAssertions {
             @DisplayName("Should NOT score the goal when player FIRST")
             void shouldNotMakeSuicideMove() {
                 final var after4Moves = board
-                        .executeMove(N)
-                        .executeMove(N)
-                        .executeMove(N)
-                        .executeMove(N)
-                        .executeMove(N);
+                    .executeMove(N)
+                    .executeMove(N)
+                    .executeMove(N)
+                    .executeMove(N)
+                    .executeMove(N);
 
                 final var bestMove = bruteForce.searchForTheBestMove(after4Moves);
                 final var afterAiMove = after4Moves.executeMove(bestMove);
 
                 assertAll(
-                        () -> Assertions.assertThat(afterAiMove.isGoal()).isFalse(),
-                        () -> Assertions.assertThat(afterAiMove.getPlayer()).isEqualByComparingTo(FIRST)
+                    () -> Assertions.assertThat(afterAiMove.isGoal()).isFalse(),
+                    () -> Assertions.assertThat(afterAiMove.getPlayer()).isEqualByComparingTo(FIRST)
                 );
             }
 
@@ -181,17 +181,17 @@ class MiniMaxAlphaBetaTest implements WithAssertions {
             @DisplayName("Should score the goal when player FIRST, depth 2")
             void scoreAGoalDepth2() {
                 final var after4Moves = board
-                        .executeMove(N)
-                        .executeMove(N)
-                        .executeMove(N)
-                        .executeMove(N);
+                    .executeMove(N)
+                    .executeMove(N)
+                    .executeMove(N)
+                    .executeMove(N);
 
                 final var bestMove = bruteForce.searchForTheBestMove(after4Moves);
                 final var afterAiMove = after4Moves.executeMove(bestMove);
 
                 assertAll(
-                        () -> Assertions.assertThat(afterAiMove.isGoal()).isTrue(),
-                        () -> Assertions.assertThat(afterAiMove.getPlayer()).isEqualByComparingTo(Player.SECOND)
+                    () -> Assertions.assertThat(afterAiMove.isGoal()).isTrue(),
+                    () -> Assertions.assertThat(afterAiMove.getPlayer()).isEqualByComparingTo(Player.SECOND)
                 );
             }
 
@@ -199,18 +199,18 @@ class MiniMaxAlphaBetaTest implements WithAssertions {
             @DisplayName("Should NOT score the goal when player FIRST, depth 2")
             void shouldNotMakeSuicideMoveDepth2() {
                 final var after4Moves = board
-                        .executeMove(N)
-                        .executeMove(N)
-                        .executeMove(N)
-                        .executeMove(N)
-                        .executeMove(N);
+                    .executeMove(N)
+                    .executeMove(N)
+                    .executeMove(N)
+                    .executeMove(N)
+                    .executeMove(N);
 
                 final var bestMove = bruteForce.searchForTheBestMove(after4Moves);
                 final var afterAiMove = after4Moves.executeMove(bestMove);
 
                 assertAll(
-                        () -> Assertions.assertThat(afterAiMove.isGoal()).isFalse(),
-                        () -> Assertions.assertThat(afterAiMove.getPlayer()).isEqualByComparingTo(FIRST)
+                    () -> Assertions.assertThat(afterAiMove.isGoal()).isFalse(),
+                    () -> Assertions.assertThat(afterAiMove.getPlayer()).isEqualByComparingTo(FIRST)
                 );
             }
 
@@ -218,17 +218,17 @@ class MiniMaxAlphaBetaTest implements WithAssertions {
             @DisplayName("Should score the goal when player FIRST, depth 3")
             void scoreAGoalDepth3() {
                 final var after4Moves = board
-                        .executeMove(N)
-                        .executeMove(N)
-                        .executeMove(N)
-                        .executeMove(N);
+                    .executeMove(N)
+                    .executeMove(N)
+                    .executeMove(N)
+                    .executeMove(N);
 
                 final var bestMove = bruteForce.searchForTheBestMove(after4Moves);
                 final var afterAiMove = after4Moves.executeMove(bestMove);
 
                 assertAll(
-                        () -> Assertions.assertThat(afterAiMove.isGoal()).isTrue(),
-                        () -> Assertions.assertThat(afterAiMove.getPlayer()).isEqualByComparingTo(Player.SECOND)
+                    () -> Assertions.assertThat(afterAiMove.isGoal()).isTrue(),
+                    () -> Assertions.assertThat(afterAiMove.getPlayer()).isEqualByComparingTo(Player.SECOND)
                 );
             }
 
@@ -236,18 +236,18 @@ class MiniMaxAlphaBetaTest implements WithAssertions {
             @DisplayName("Should NOT score the goal when player FIRST, depth 3")
             void shouldNotMakeSuicideMoveDepth3() {
                 final var after4Moves = board
-                        .executeMove(N)
-                        .executeMove(N)
-                        .executeMove(N)
-                        .executeMove(N)
-                        .executeMove(N);
+                    .executeMove(N)
+                    .executeMove(N)
+                    .executeMove(N)
+                    .executeMove(N)
+                    .executeMove(N);
 
                 final var bestMove = bruteForce.searchForTheBestMove(after4Moves);
                 final var afterAiMove = after4Moves.executeMove(bestMove);
 
                 assertAll(
-                        () -> Assertions.assertThat(afterAiMove.isGoal()).isFalse(),
-                        () -> Assertions.assertThat(afterAiMove.getPlayer()).isEqualByComparingTo(FIRST)
+                    () -> Assertions.assertThat(afterAiMove.isGoal()).isFalse(),
+                    () -> Assertions.assertThat(afterAiMove.getPlayer()).isEqualByComparingTo(FIRST)
                 );
             }
         }
@@ -260,18 +260,18 @@ class MiniMaxAlphaBetaTest implements WithAssertions {
             @DisplayName("Should score a goal when player SECOND")
             void scoreAGoalInSecondDay() {
                 final var after4Moves = board
-                        .executeMove(S)
-                        .executeMove(S)
-                        .executeMove(S)
-                        .executeMove(S)
-                        .executeMove(S);
+                    .executeMove(S)
+                    .executeMove(S)
+                    .executeMove(S)
+                    .executeMove(S)
+                    .executeMove(S);
 
                 final var bestMove = bruteForce.searchForTheBestMove(after4Moves);
                 final var afterAiMove = after4Moves.executeMove(bestMove);
 
                 assertAll(
-                        () -> Assertions.assertThat(afterAiMove.isGoal()).isTrue(),
-                        () -> Assertions.assertThat(afterAiMove.getPlayer()).isEqualByComparingTo(FIRST)
+                    () -> Assertions.assertThat(afterAiMove.isGoal()).isTrue(),
+                    () -> Assertions.assertThat(afterAiMove.getPlayer()).isEqualByComparingTo(FIRST)
                 );
             }
 
@@ -279,17 +279,17 @@ class MiniMaxAlphaBetaTest implements WithAssertions {
             @DisplayName("Should NOT score a goal when player FIRST")
             void shouldNotMakeSuicideMove() {
                 final var after4Moves = board
-                        .executeMove(S)
-                        .executeMove(S)
-                        .executeMove(S)
-                        .executeMove(S);
+                    .executeMove(S)
+                    .executeMove(S)
+                    .executeMove(S)
+                    .executeMove(S);
 
                 final var bestMove = bruteForce.searchForTheBestMove(after4Moves);
                 final var afterAiMove = after4Moves.executeMove(bestMove);
 
                 assertAll(
-                        () -> Assertions.assertThat(afterAiMove.isGoal()).isFalse(),
-                        () -> Assertions.assertThat(afterAiMove.getPlayer()).isEqualByComparingTo(SECOND)
+                    () -> Assertions.assertThat(afterAiMove.isGoal()).isFalse(),
+                    () -> Assertions.assertThat(afterAiMove.getPlayer()).isEqualByComparingTo(SECOND)
                 );
             }
 
@@ -297,18 +297,18 @@ class MiniMaxAlphaBetaTest implements WithAssertions {
             @DisplayName("Should score a goal when player SECOND, depth 2")
             void scoreAGoalInSecondDayDepth2() {
                 final var after5Moves = board
-                        .executeMove(S)
-                        .executeMove(S)
-                        .executeMove(S)
-                        .executeMove(S)
-                        .executeMove(S);
+                    .executeMove(S)
+                    .executeMove(S)
+                    .executeMove(S)
+                    .executeMove(S)
+                    .executeMove(S);
 
                 final var bestMove = bruteForce.searchForTheBestMove(after5Moves);
                 final var afterAiMove = after5Moves.executeMove(bestMove);
 
                 assertAll(
-                        () -> Assertions.assertThat(afterAiMove.isGoal()).isTrue(),
-                        () -> Assertions.assertThat(afterAiMove.takeTheWinner().get()).isEqualByComparingTo(SECOND)
+                    () -> Assertions.assertThat(afterAiMove.isGoal()).isTrue(),
+                    () -> Assertions.assertThat(afterAiMove.takeTheWinner().get()).isEqualByComparingTo(SECOND)
                 );
             }
 
@@ -316,17 +316,17 @@ class MiniMaxAlphaBetaTest implements WithAssertions {
             @DisplayName("Should NOT score a goal when player FIRST, depth 2")
             void shouldNotMakeSuicideMoveDepth2() {
                 final var after4Moves = board
-                        .executeMove(S)
-                        .executeMove(S)
-                        .executeMove(S)
-                        .executeMove(S);
+                    .executeMove(S)
+                    .executeMove(S)
+                    .executeMove(S)
+                    .executeMove(S);
 
                 final var bestMove = bruteForce.searchForTheBestMove(after4Moves);
                 final var afterAiMove = after4Moves.executeMove(bestMove);
 
                 assertAll(
-                        () -> Assertions.assertThat(afterAiMove.isGoal()).isFalse(),
-                        () -> Assertions.assertThat(afterAiMove.getPlayer()).isEqualByComparingTo(Player.SECOND)
+                    () -> Assertions.assertThat(afterAiMove.isGoal()).isFalse(),
+                    () -> Assertions.assertThat(afterAiMove.getPlayer()).isEqualByComparingTo(Player.SECOND)
                 );
             }
 
@@ -334,18 +334,18 @@ class MiniMaxAlphaBetaTest implements WithAssertions {
             @DisplayName("Should score a goal when player SECOND, depth 3")
             void scoreAGoalInSecondDayDepth3() {
                 final var after4Moves = board
-                        .executeMove(S)
-                        .executeMove(S)
-                        .executeMove(S)
-                        .executeMove(S)
-                        .executeMove(S);
+                    .executeMove(S)
+                    .executeMove(S)
+                    .executeMove(S)
+                    .executeMove(S)
+                    .executeMove(S);
 
                 final var bestMove = bruteForce.searchForTheBestMove(after4Moves);
                 final var afterAiMove = after4Moves.executeMove(bestMove);
 
                 assertAll(
-                        () -> Assertions.assertThat(afterAiMove.isGoal()).isTrue(),
-                        () -> Assertions.assertThat(afterAiMove.getPlayer()).isEqualByComparingTo(FIRST)
+                    () -> Assertions.assertThat(afterAiMove.isGoal()).isTrue(),
+                    () -> Assertions.assertThat(afterAiMove.getPlayer()).isEqualByComparingTo(FIRST)
                 );
             }
 
@@ -353,17 +353,17 @@ class MiniMaxAlphaBetaTest implements WithAssertions {
             @DisplayName("Should NOT score a goal when player FIRST, depth 3")
             void shouldNotMakeSuicideMoveDepth3() {
                 final var after4Moves = board
-                        .executeMove(S)
-                        .executeMove(S)
-                        .executeMove(S)
-                        .executeMove(S);
+                    .executeMove(S)
+                    .executeMove(S)
+                    .executeMove(S)
+                    .executeMove(S);
 
                 final var bestMove = bruteForce.searchForTheBestMove(after4Moves);
                 final var afterAiMove = after4Moves.executeMove(bestMove);
 
                 assertAll(
-                        () -> Assertions.assertThat(afterAiMove.isGoal()).isFalse(),
-                        () -> Assertions.assertThat(afterAiMove.getPlayer()).isEqualByComparingTo(Player.SECOND)
+                    () -> Assertions.assertThat(afterAiMove.isGoal()).isFalse(),
+                    () -> Assertions.assertThat(afterAiMove.getPlayer()).isEqualByComparingTo(Player.SECOND)
                 );
             }
         }
@@ -376,16 +376,16 @@ class MiniMaxAlphaBetaTest implements WithAssertions {
             @DisplayName("should not hit the corner, depth 1")
             void rightUpperCorner() {
                 final var afterMoves = board
-                        .executeMove(NE)
-                        .executeMove(S)
-                        .executeMove(NE)
-                        .executeMove(NE)
-                        .executeMove(NW)
-                        .executeMove(NE)
-                        .executeMove(N)
-                        .executeMove(SE)
-                        .executeMove(W)
-                        .executeMove(W);
+                    .executeMove(NE)
+                    .executeMove(S)
+                    .executeMove(NE)
+                    .executeMove(NE)
+                    .executeMove(NW)
+                    .executeMove(NE)
+                    .executeMove(N)
+                    .executeMove(SE)
+                    .executeMove(W)
+                    .executeMove(W);
 
                 final var best = bruteForce.searchForTheBestMove(afterMoves);
                 final var afterAi = afterMoves.executeMove(best);
@@ -397,16 +397,16 @@ class MiniMaxAlphaBetaTest implements WithAssertions {
             @DisplayName("should not hit the corner, depth 2")
             void rightUpperCorner2() {
                 final var afterMoves = board
-                        .executeMove(NE)
-                        .executeMove(S)
-                        .executeMove(NE)
-                        .executeMove(NE)
-                        .executeMove(NW)
-                        .executeMove(NE)
-                        .executeMove(N)
-                        .executeMove(SE)
-                        .executeMove(W)
-                        .executeMove(W);
+                    .executeMove(NE)
+                    .executeMove(S)
+                    .executeMove(NE)
+                    .executeMove(NE)
+                    .executeMove(NW)
+                    .executeMove(NE)
+                    .executeMove(N)
+                    .executeMove(SE)
+                    .executeMove(W)
+                    .executeMove(W);
 
                 final var best = bruteForce.searchForTheBestMove(afterMoves);
                 final var afterAi = afterMoves.executeMove(best);

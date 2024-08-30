@@ -218,7 +218,6 @@ public final class LegalMovesFuture {
     }
 
     private boolean isItEnd(final Point ball) {
-        return ball.getAllowedDirection().size() == 7 ||
-                ball.getAllowedDirection().size() == 0;
+        return ball.getAllowedDirection().size() == 7 || ball.getAllowedDirection().size() == 0;
     }
 }

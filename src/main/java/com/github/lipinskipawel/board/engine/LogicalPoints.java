@@ -72,9 +72,9 @@ final class LogicalPoints implements Transformation {
      */
     boolean isOtherPlayerToMove() {
         return ballPosition.isOnTop() || ballPosition.isOnBottom() ||
-                ballPosition.getUnavailableDirection().size() == 1 ||
-                ballPosition.getAllowedDirection().size() == 8 ||
-                ballPosition.getAllowedDirection().isEmpty();
+            ballPosition.getUnavailableDirection().size() == 1 ||
+            ballPosition.getAllowedDirection().size() == 8 ||
+            ballPosition.getAllowedDirection().isEmpty();
     }
 
     Point getBall() {
@@ -98,22 +98,22 @@ final class LogicalPoints implements Transformation {
     @Override
     public int[] transform() {
         return points
-                .stream()
-                .sorted(comparingInt(Point::getPosition))
-                .map(Point::getAllDirections)
-                .flatMap(List::stream)
-                .mapToInt(x -> x ? 1 : 0)
-                .toArray();
+            .stream()
+            .sorted(comparingInt(Point::getPosition))
+            .map(Point::getAllDirections)
+            .flatMap(List::stream)
+            .mapToInt(x -> x ? 1 : 0)
+            .toArray();
     }
 
     @Override
     public double[] nonBinaryTransformation() {
         return points
-                .stream()
-                .sorted(comparingInt(Point::getPosition))
-                .map(LogicalPoints::nonBinary)
-                .flatMapToDouble(Arrays::stream)
-                .toArray();
+            .stream()
+            .sorted(comparingInt(Point::getPosition))
+            .map(LogicalPoints::nonBinary)
+            .flatMapToDouble(Arrays::stream)
+            .toArray();
     }
 
     /**
@@ -162,8 +162,8 @@ final class LogicalPoints implements Transformation {
     @Override
     public String toString() {
         return "LogicalPoints{" +
-                "points=" + points +
-                ", ballPosition=" + ballPosition +
-                '}';
+            "points=" + points +
+            ", ballPosition=" + ballPosition +
+            '}';
     }
 }

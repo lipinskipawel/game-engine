@@ -40,10 +40,10 @@ final class MoveHistory {
 
     List<Direction> allDirections() {
         final var directions = new ArrayList<>(this.moves)
-                .stream()
-                .map(Move::getMove)
-                .flatMap(List::stream)
-                .collect(toList());
+            .stream()
+            .map(Move::getMove)
+            .flatMap(List::stream)
+            .collect(toList());
         directions.addAll(new ArrayList<>(this.smallMove));
         LOGGER.trace("allDirections return " + directions + " directions");
         return directions;
@@ -160,8 +160,8 @@ final class MoveHistory {
     @Override
     public String toString() {
         return "MoveHistory{" +
-                "moves=" + moves +
-                ", smallMove=" + smallMove +
-                '}';
+            "moves=" + moves +
+            ", smallMove=" + smallMove +
+            '}';
     }
 }

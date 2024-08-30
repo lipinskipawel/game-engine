@@ -14,10 +14,10 @@ interface Transformation {
      * General rule is described in return statement below.
      *
      * @return Array of int which are always in the same order
-     *      General rule is keep order always the same.
-     *      For example when transforming
-     *          board parse each `point always in the same order (Comparator)
-     *          `point` pares `Direction` always in the same order (Comparator)
+     * General rule is keep order always the same.
+     * For example when transforming
+     * board parse each `point always in the same order (Comparator)
+     * `point` pares `Direction` always in the same order (Comparator)
      */
     int[] transform();
 

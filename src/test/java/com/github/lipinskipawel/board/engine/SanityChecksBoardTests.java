@@ -31,7 +31,7 @@ class SanityChecksBoardTests {
     void startingBallPosition() {
 
         assertEquals(STARTING_BALL_POSITION,
-                this.board.getBallPosition());
+            this.board.getBallPosition());
     }
 
     @Test

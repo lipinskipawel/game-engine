@@ -47,7 +47,7 @@ final class MiniMaxAlphaBeta implements MoveStrategy {
         final var pool = Executors.newSingleThreadExecutor();
         final var copy = new MiniMaxAlphaBeta(this);
         final var searchingForMove = pool.submit(
-                () -> copy.execute(board, copy.depth)
+            () -> copy.execute(board, copy.depth)
         );
         try {
             searchingForMove.get(timeout, TimeUnit.SECONDS);
@@ -87,11 +87,11 @@ final class MiniMaxAlphaBeta implements MoveStrategy {
             final var afterMove = board.executeMove(move);
 
             holder.current = minimax(
-                    afterMove,
-                    actualDepth - 1,
-                    0.0,
-                    0.0,
-                    board.getPlayer().equals(board.getPlayerProvider().first())
+                afterMove,
+                actualDepth - 1,
+                0.0,
+                0.0,
+                board.getPlayer().equals(board.getPlayerProvider().first())
             );
 
             if (isFirstPlayer(board) && holder.isCurrentGE(holder.highest)) {
@@ -131,7 +131,7 @@ final class MiniMaxAlphaBeta implements MoveStrategy {
             final var allMoves = board.allLegalMoves();
             for (final var move : allMoves) {
                 final var eval = minimax(
-                        board.executeMove(move), depth - 1, alpha, beta, true);
+                    board.executeMove(move), depth - 1, alpha, beta, true);
                 maxEval = max(maxEval, eval);
                 beta = min(beta, eval);
                 if (beta >= alpha) {
@@ -144,7 +144,7 @@ final class MiniMaxAlphaBeta implements MoveStrategy {
             final var allMoves = board.allLegalMoves();
             for (final var move : allMoves) {
                 final var eval = minimax(
-                        board.executeMove(move), depth - 1, alpha, beta, false);
+                    board.executeMove(move), depth - 1, alpha, beta, false);
                 minEval = min(minEval, eval);
                 alpha = max(alpha, eval);
                 if (beta >= alpha) {

@@ -41,7 +41,7 @@ final public class Move implements Serializable {
     @Override
     public String toString() {
         return "Move{" +
-                "directions=" + directions +
-                '}';
+            "directions=" + directions +
+            '}';
     }
 }

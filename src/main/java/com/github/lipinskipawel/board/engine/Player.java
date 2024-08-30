@@ -3,7 +3,7 @@ package com.github.lipinskipawel.board.engine;
 public enum Player {
 
 
-    FIRST{
+    FIRST {
         @Override
         public Player opposite() {
             return SECOND;

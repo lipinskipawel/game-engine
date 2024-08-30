@@ -94,8 +94,8 @@ final class ImmutableBoard<T> implements Board<T> {
     public ImmutableBoard<T> undo() {
         logger.trace("undo executes");
         final var lastDirection = this.moveLog
-                .getLastDirection()
-                .orElseThrow(() -> new RuntimeException("There is no move to undo"));
+            .getLastDirection()
+            .orElseThrow(() -> new RuntimeException("There is no move to undo"));
         final var logicalPoints = this.points.undoMove(lastDirection);
         final var moveLogg = this.moveLog.forceUndo();
         final var isFirst = moveLogg.currentPlayer();
@@ -187,14 +187,14 @@ final class ImmutableBoard<T> implements Board<T> {
         }
         if (nextPlayerToMove.equals(this.playerProvider.current())) {
             logger.debug(nextPlayerToMove + " is the same as current player to move " +
-                    this.playerProvider.current() +
-                    ". Returning THIS reference.");
+                this.playerProvider.current() +
+                ". Returning THIS reference.");
             return this;
         }
         final var newPlayer = computePlayerToMove(this.points);
         final var providedPlayer = this.playerProvider.current().equals(newPlayer)
-                ? this.playerProvider
-                : this.playerProvider.copy().swap();
+            ? this.playerProvider
+            : this.playerProvider.copy().swap();
         logger.debug("nextPlayerToMove returns board with player to move " + providedPlayer.current());
         return new ImmutableBoard<>(this.points, providedPlayer, this.moveLog, logger);
     }
@@ -235,8 +235,8 @@ final class ImmutableBoard<T> implements Board<T> {
         if (o == null || getClass() != o.getClass()) return false;
         ImmutableBoard<?> that = (ImmutableBoard<?>) o;
         return Objects.equals(points, that.points) &&
-                Objects.equals(playerProvider, that.playerProvider) &&
-                Objects.equals(moveLog, that.moveLog);
+            Objects.equals(playerProvider, that.playerProvider) &&
+            Objects.equals(moveLog, that.moveLog);
     }
 
     @Override
@@ -247,9 +247,9 @@ final class ImmutableBoard<T> implements Board<T> {
     @Override
     public String toString() {
         return "ImmutableBoard{" +
-                "points=" + points +
-                ", playerProvider=" + playerProvider +
-                ", moveLog=" + moveLog +
-                '}';
+            "points=" + points +
+            ", playerProvider=" + playerProvider +
+            ", moveLog=" + moveLog +
+            '}';
     }
 }

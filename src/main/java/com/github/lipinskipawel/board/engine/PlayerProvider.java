@@ -88,8 +88,8 @@ public final class PlayerProvider<T> {
         if (o == null || getClass() != o.getClass()) return false;
         PlayerProvider<?> that = (PlayerProvider<?>) o;
         return Objects.equals(first, that.first) &&
-                Objects.equals(second, that.second) &&
-                Objects.equals(current.get(), that.current.get());
+            Objects.equals(second, that.second) &&
+            Objects.equals(current.get(), that.current.get());
     }
 
     @Override
@@ -100,9 +100,9 @@ public final class PlayerProvider<T> {
     @Override
     public String toString() {
         return "PlayerProvider{" +
-                "first=" + first +
-                ", second=" + second +
-                ", current=" + current +
-                '}';
+            "first=" + first +
+            ", second=" + second +
+            ", current=" + current +
+            '}';
     }
 }

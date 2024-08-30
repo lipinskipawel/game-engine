@@ -2,7 +2,6 @@ package com.github.lipinskipawel.board.ai.bruteforce;
 
 import com.github.lipinskipawel.board.ai.BoardEvaluator;
 import com.github.lipinskipawel.board.engine.Board;
-import com.github.lipinskipawel.board.engine.Player;
 
 public final class SmartBoardEvaluator implements BoardEvaluator {
 

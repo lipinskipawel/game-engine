@@ -24,15 +24,15 @@ final public class Point {
     Point(Point point) {
         this.position = point.position;
         this.availableDirections = point.availableDirections.entrySet()
-                .stream()
-                .collect(toMap(Map.Entry::getKey, Map.Entry::getValue));
+            .stream()
+            .collect(toMap(Map.Entry::getKey, Map.Entry::getValue));
     }
 
     private Point(int position, Map<Direction, Boolean> availableDirections) {
         this.position = position;
         this.availableDirections = availableDirections.entrySet()
-                .stream()
-                .collect(toMap(Map.Entry::getKey, Map.Entry::getValue));
+            .stream()
+            .collect(toMap(Map.Entry::getKey, Map.Entry::getValue));
     }
 
     /**
@@ -42,12 +42,12 @@ final public class Point {
     public Direction kickBallTo(final int destinationPoint) {
         final var findThatNumber = destinationPoint - position;
         return availableDirections.entrySet()
-                .stream()
-                .filter(entry -> entry.getValue().booleanValue() == Boolean.TRUE)
-                .map(Map.Entry::getKey)
-                .filter(direction -> direction.changeToInt() == findThatNumber)
-                .findFirst()
-                .orElseThrow(() -> new RuntimeException("Can't make a move in this direction"));
+            .stream()
+            .filter(entry -> entry.getValue().booleanValue() == Boolean.TRUE)
+            .map(Map.Entry::getKey)
+            .filter(direction -> direction.changeToInt() == findThatNumber)
+            .findFirst()
+            .orElseThrow(() -> new RuntimeException("Can't make a move in this direction"));
     }
 
     boolean isOnTop() {
@@ -72,32 +72,32 @@ final public class Point {
 
     List<Direction> getAllowedDirection() {
         return this.availableDirections
-                .entrySet()
-                .stream()
-                .filter(entry -> entry.getValue().booleanValue() == Boolean.TRUE)
-                .map(Map.Entry::getKey)
-                .collect(toUnmodifiableList());
+            .entrySet()
+            .stream()
+            .filter(entry -> entry.getValue().booleanValue() == Boolean.TRUE)
+            .map(Map.Entry::getKey)
+            .collect(toUnmodifiableList());
     }
 
     List<Direction> getUnavailableDirection() {
         return this.availableDirections
-                .entrySet()
-                .stream()
-                .filter(entry -> entry.getValue().booleanValue() == Boolean.FALSE)
-                .map(Map.Entry::getKey)
-                .collect(toUnmodifiableList());
+            .entrySet()
+            .stream()
+            .filter(entry -> entry.getValue().booleanValue() == Boolean.FALSE)
+            .map(Map.Entry::getKey)
+            .collect(toUnmodifiableList());
     }
 
     List<Boolean> getAllDirections() {
         return List.of(
-                this.availableDirections.get(Direction.N),
-                this.availableDirections.get(Direction.NE),
-                this.availableDirections.get(Direction.E),
-                this.availableDirections.get(Direction.SE),
-                this.availableDirections.get(Direction.S),
-                this.availableDirections.get(Direction.SW),
-                this.availableDirections.get(Direction.W),
-                this.availableDirections.get(Direction.NW)
+            this.availableDirections.get(Direction.N),
+            this.availableDirections.get(Direction.NE),
+            this.availableDirections.get(Direction.E),
+            this.availableDirections.get(Direction.SE),
+            this.availableDirections.get(Direction.S),
+            this.availableDirections.get(Direction.SW),
+            this.availableDirections.get(Direction.W),
+            this.availableDirections.get(Direction.NW)
         );
     }
 
@@ -108,8 +108,8 @@ final public class Point {
     Point notAvailableDirection(Direction direction) {
         int position = this.position;
         Map<Direction, Boolean> collect = this.availableDirections.entrySet()
-                .stream()
-                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+            .stream()
+            .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
         collect.put(direction, Boolean.FALSE);
         return new Point(position, collect);
     }
@@ -149,8 +149,8 @@ final public class Point {
     @Override
     public String toString() {
         return "Point{" +
-                "position=" + position +
-                ", availableDirections=" + availableDirections +
-                '}';
+            "position=" + position +
+            ", availableDirections=" + availableDirections +
+            '}';
     }
 }

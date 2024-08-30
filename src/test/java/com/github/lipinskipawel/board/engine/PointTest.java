@@ -50,7 +50,7 @@ class PointTest {
             final var runtime = Assertions.catchThrowable(() -> point.kickBallTo(35));
 
             Assertions.assertThat(runtime)
-                    .isInstanceOf(RuntimeException.class);
+                .isInstanceOf(RuntimeException.class);
         }
     }
 }

@@ -27,9 +27,9 @@ class MoveHistoryTest {
         @DisplayName("one move, one direction, one undo")
         void oneMoveOneDirectionOneUndo() {
             final var afterMoves = moveLog
-                    .addMove(new Move(List.of(Direction.S)))
-                    .add(Direction.N)
-                    .undoMove();
+                .addMove(new Move(List.of(Direction.S)))
+                .add(Direction.N)
+                .undoMove();
 
             Assertions.assertThat(afterMoves).isEqualToComparingFieldByFieldRecursively(moveLog);
         }
@@ -38,17 +38,17 @@ class MoveHistoryTest {
         @DisplayName("two moves, one small, one undo, one small, one move")
         void shouldBeOverallThreMovesMade() {
             final var prepared = moveLog
-                    .addMove(new Move(List.of(Direction.SE)))
-                    .addMove(new Move(List.of(Direction.W)))
-                    .addMove(new Move(List.of(Direction.N, Direction.W)));
+                .addMove(new Move(List.of(Direction.SE)))
+                .addMove(new Move(List.of(Direction.W)))
+                .addMove(new Move(List.of(Direction.N, Direction.W)));
 
             final var afterMoves = moveLog
-                    .addMove(new Move(List.of(Direction.SE)))
-                    .addMove(new Move(List.of(Direction.W)))
-                    .add(Direction.N)
-                    .undo()
-                    .add(Direction.N)
-                    .addMove(new Move(List.of(Direction.W)));
+                .addMove(new Move(List.of(Direction.SE)))
+                .addMove(new Move(List.of(Direction.W)))
+                .add(Direction.N)
+                .undo()
+                .add(Direction.N)
+                .addMove(new Move(List.of(Direction.W)));
 
             Assertions.assertThat(afterMoves).isEqualToComparingFieldByFieldRecursively(prepared);
         }
@@ -62,8 +62,8 @@ class MoveHistoryTest {
         @DisplayName("one direction, one undo direction")
         void oneDirectionUndoOneDirection() {
             final var afterMoves = moveLog
-                    .add(Direction.N)
-                    .forceUndo();
+                .add(Direction.N)
+                .forceUndo();
 
             Assertions.assertThat(afterMoves.allDirections()).containsExactlyElementsOf(Lists.emptyList());
         }
@@ -72,9 +72,9 @@ class MoveHistoryTest {
         @DisplayName("two direction, one undo direction")
         void twoDirectionUndoOneDirection() {
             final var afterMoves = moveLog
-                    .add(Direction.N)
-                    .add(Direction.S)
-                    .forceUndo();
+                .add(Direction.N)
+                .add(Direction.S)
+                .forceUndo();
 
             Assertions.assertThat(afterMoves.allDirections()).containsExactlyElementsOf(List.of(Direction.N));
         }
@@ -83,9 +83,9 @@ class MoveHistoryTest {
         @DisplayName("two move, one undo direction")
         void twoMoveOneUndoDirection() {
             final var afterMoves = moveLog
-                    .addMove(new Move(List.of(Direction.S)))
-                    .addMove(new Move(List.of(Direction.E)))
-                    .forceUndo();
+                .addMove(new Move(List.of(Direction.S)))
+                .addMove(new Move(List.of(Direction.E)))
+                .forceUndo();
 
             Assertions.assertThat(afterMoves.allDirections()).containsExactlyElementsOf(List.of(Direction.S));
         }
@@ -94,11 +94,11 @@ class MoveHistoryTest {
         @DisplayName("two move, one undo direction - R")
         void twoMoveOneUndoDirectionRecursively() {
             final var prepared = moveLog
-                    .addMove(new Move(List.of(Direction.S)));
+                .addMove(new Move(List.of(Direction.S)));
             final var afterMoves = MoveHistoryTest.this.moveLog
-                    .addMove(new Move(List.of(Direction.S)))
-                    .addMove(new Move(List.of(Direction.E)))
-                    .forceUndo();
+                .addMove(new Move(List.of(Direction.S)))
+                .addMove(new Move(List.of(Direction.E)))
+                .forceUndo();
 
             Assertions.assertThat(afterMoves).isEqualToComparingFieldByFieldRecursively(prepared);
         }
@@ -107,14 +107,14 @@ class MoveHistoryTest {
         @DisplayName("three move, one undo direction - R")
         void threeMoveOneUndoDirectionRecursively() {
             final var prepared = moveLog
-                    .addMove(new Move(List.of(Direction.S)))
-                    .addMove(new Move(List.of(Direction.E)))
-                    .add(Direction.NW);
+                .addMove(new Move(List.of(Direction.S)))
+                .addMove(new Move(List.of(Direction.E)))
+                .add(Direction.NW);
             final var afterMoves = MoveHistoryTest.this.moveLog
-                    .addMove(new Move(List.of(Direction.S)))
-                    .addMove(new Move(List.of(Direction.E)))
-                    .addMove(new Move(List.of(Direction.NW, Direction.N)))
-                    .forceUndo();
+                .addMove(new Move(List.of(Direction.S)))
+                .addMove(new Move(List.of(Direction.E)))
+                .addMove(new Move(List.of(Direction.NW, Direction.N)))
+                .forceUndo();
 
             Assertions.assertThat(afterMoves).isEqualToComparingFieldByFieldRecursively(prepared);
         }
@@ -136,9 +136,9 @@ class MoveHistoryTest {
         @DisplayName("two direction, one undo")
         void twoDirectionsOneUndo() {
             final var afterUndo = moveLog
-                    .add(Direction.N)
-                    .add(Direction.W)
-                    .undo();
+                .add(Direction.N)
+                .add(Direction.W)
+                .undo();
 
             Assertions.assertThat(afterUndo.allDirections()).containsExactlyElementsOf(List.of(Direction.N));
         }
@@ -147,8 +147,8 @@ class MoveHistoryTest {
         @DisplayName("one move, one undo")
         void oneMoveOneUndo() {
             final var afterMoves = moveLog
-                    .addMove(new Move(List.of(Direction.S, Direction.E)))
-                    .undo();
+                .addMove(new Move(List.of(Direction.S, Direction.E)))
+                .undo();
 
             Assertions.assertThat(afterMoves.allDirections()).containsExactlyElementsOf(List.of(Direction.S, Direction.E));
         }
@@ -157,9 +157,9 @@ class MoveHistoryTest {
         @DisplayName("one move, one direction, one undo")
         void oneMoveOneDirectionOneUndo() {
             final var afterMoves = moveLog
-                    .addMove(new Move(List.of(Direction.S)))
-                    .add(Direction.W)
-                    .undo();
+                .addMove(new Move(List.of(Direction.S)))
+                .add(Direction.W)
+                .undo();
 
             Assertions.assertThat(afterMoves.allDirections()).containsExactlyElementsOf(List.of(Direction.S));
         }
@@ -168,10 +168,10 @@ class MoveHistoryTest {
         @DisplayName("one move, one direction, one move, one undo")
         void oneMoveOneDirectionOneMoveOneUndo() {
             final var afterMoves = moveLog
-                    .addMove(new Move(List.of(Direction.S)))
-                    .add(Direction.W)
-                    .addMove(new Move(List.of(Direction.S)))
-                    .undo();
+                .addMove(new Move(List.of(Direction.S)))
+                .add(Direction.W)
+                .addMove(new Move(List.of(Direction.S)))
+                .undo();
 
             Assertions.assertThat(afterMoves.allDirections()).containsExactlyElementsOf(List.of(Direction.S, Direction.W, Direction.S));
         }
@@ -185,10 +185,10 @@ class MoveHistoryTest {
         @DisplayName("two moves, one direction, one undoMove")
         void twoMovesOneDirectionOneUndoMove() {
             final var afterMoves = moveLog
-                    .addMove(new Move(List.of(Direction.S)))
-                    .addMove(new Move(List.of(Direction.W)))
-                    .add(Direction.SW)
-                    .undoMove();
+                .addMove(new Move(List.of(Direction.S)))
+                .addMove(new Move(List.of(Direction.W)))
+                .add(Direction.SW)
+                .undoMove();
 
             Assertions.assertThat(afterMoves.allDirections()).containsExactlyElementsOf(List.of(Direction.S));
         }
@@ -197,10 +197,10 @@ class MoveHistoryTest {
         @DisplayName("three moves, one undoMove")
         void threeMoves() {
             final var afterMoves = moveLog
-                    .addMove(new Move(List.of(Direction.S)))
-                    .addMove(new Move(List.of(Direction.W)))
-                    .addMove(new Move(List.of(Direction.N)))
-                    .undoMove();
+                .addMove(new Move(List.of(Direction.S)))
+                .addMove(new Move(List.of(Direction.W)))
+                .addMove(new Move(List.of(Direction.N)))
+                .undoMove();
 
             Assertions.assertThat(afterMoves.allDirections()).containsExactlyElementsOf(List.of(Direction.S, Direction.W));
         }
@@ -222,8 +222,8 @@ class MoveHistoryTest {
             final var prepared = List.of(Direction.NE, Direction.N);
 
             final var afterMoves = moveLog
-                    .addMove(new Move(List.of(Direction.NE)))
-                    .addMove(new Move(List.of(Direction.N)));
+                .addMove(new Move(List.of(Direction.NE)))
+                .addMove(new Move(List.of(Direction.N)));
 
             Assertions.assertThat(afterMoves.allDirections()).containsExactlyElementsOf(prepared);
         }
@@ -234,9 +234,9 @@ class MoveHistoryTest {
             final var prepared = List.of(Direction.N, Direction.W, Direction.SE);
 
             final var afterMoves = moveLog
-                    .addMove(new Move(List.of(Direction.N)))
-                    .addMove(new Move(List.of(Direction.W)))
-                    .add(Direction.SE);
+                .addMove(new Move(List.of(Direction.N)))
+                .addMove(new Move(List.of(Direction.W)))
+                .add(Direction.SE);
 
             Assertions.assertThat(afterMoves.allDirections()).containsExactlyElementsOf(prepared);
         }
@@ -246,8 +246,8 @@ class MoveHistoryTest {
         void twoDirectionsTheSameOrder() {
             final var prepared = List.of(Direction.N, Direction.W);
             final var afterMoves = moveLog
-                    .add(Direction.N)
-                    .add(Direction.W);
+                .add(Direction.N)
+                .add(Direction.W);
 
             Assertions.assertThat(afterMoves.allDirections()).containsExactlyElementsOf(prepared);
         }
@@ -257,9 +257,9 @@ class MoveHistoryTest {
         void twoDirectionOneMoveTheSameOrder() {
             final var prepared = List.of(Direction.W, Direction.N, Direction.S);
             final var afterMoves = moveLog
-                    .add(Direction.W)
-                    .add(Direction.N)
-                    .addMove(new Move(List.of(Direction.S)));
+                .add(Direction.W)
+                .add(Direction.N)
+                .addMove(new Move(List.of(Direction.S)));
 
             Assertions.assertThat(afterMoves.allDirections()).containsExactlyElementsOf(prepared);
         }
@@ -269,9 +269,9 @@ class MoveHistoryTest {
         void oneMoveOneDirectionOneMoveTheSameOrder() {
             final var prepared = List.of(Direction.S, Direction.W, Direction.S);
             final var afterMoves = moveLog
-                    .addMove(new Move(List.of(Direction.S)))
-                    .add(Direction.W)
-                    .addMove(new Move(List.of(Direction.S)));
+                .addMove(new Move(List.of(Direction.S)))
+                .add(Direction.W)
+                .addMove(new Move(List.of(Direction.S)));
 
             Assertions.assertThat(afterMoves.allDirections()).containsExactlyElementsOf(prepared);
         }
@@ -301,8 +301,8 @@ class MoveHistoryTest {
         @DisplayName("two moves")
         void twoMoves() {
             final var afterMoves = moveLog
-                    .addMove(new Move(List.of(Direction.NE)))
-                    .addMove(new Move(List.of(Direction.N)));
+                .addMove(new Move(List.of(Direction.NE)))
+                .addMove(new Move(List.of(Direction.N)));
 
             Assertions.assertThat(afterMoves.currentPlayer()).isTrue();
         }
@@ -311,9 +311,9 @@ class MoveHistoryTest {
         @DisplayName("two moves, one direction")
         void twoMovesOneDirection() {
             final var afterMoves = moveLog
-                    .addMove(new Move(List.of(Direction.NE)))
-                    .addMove(new Move(List.of(Direction.N)))
-                    .add(Direction.W);
+                .addMove(new Move(List.of(Direction.NE)))
+                .addMove(new Move(List.of(Direction.N)))
+                .add(Direction.W);
 
             Assertions.assertThat(afterMoves.currentPlayer()).isTrue();
         }
@@ -322,9 +322,9 @@ class MoveHistoryTest {
         @DisplayName("one moves, one direction, one move")
         void oneMoveOneDirectionOneMove() {
             final var afterMoves = moveLog
-                    .addMove(new Move(List.of(Direction.NE)))
-                    .add(Direction.W)
-                    .addMove(new Move(List.of(Direction.N)));
+                .addMove(new Move(List.of(Direction.NE)))
+                .add(Direction.W)
+                .addMove(new Move(List.of(Direction.N)));
 
             Assertions.assertThat(afterMoves.currentPlayer()).isTrue();
         }
@@ -333,9 +333,9 @@ class MoveHistoryTest {
         @DisplayName("three moves")
         void threeMoves() {
             final var afterMoves = moveLog
-                    .addMove(new Move(List.of(Direction.S)))
-                    .addMove(new Move(List.of(Direction.W)))
-                    .addMove(new Move(List.of(Direction.N)));
+                .addMove(new Move(List.of(Direction.S)))
+                .addMove(new Move(List.of(Direction.W)))
+                .addMove(new Move(List.of(Direction.N)));
 
             Assertions.assertThat(afterMoves.currentPlayer()).isFalse();
         }
@@ -344,8 +344,8 @@ class MoveHistoryTest {
         @DisplayName("one move, one undo")
         void oneMoveOneUndo() {
             final var afterMoves = moveLog
-                    .addMove(new Move(List.of(Direction.S)))
-                    .undoMove();
+                .addMove(new Move(List.of(Direction.S)))
+                .undoMove();
 
             Assertions.assertThat(afterMoves.currentPlayer()).isTrue();
         }
@@ -354,8 +354,8 @@ class MoveHistoryTest {
         @DisplayName("one direction, one undo")
         void oneDirectionOneUndo() {
             final var afterMoves = moveLog
-                    .add(Direction.N)
-                    .undoMove();
+                .add(Direction.N)
+                .undoMove();
 
             Assertions.assertThat(afterMoves.currentPlayer()).isTrue();
         }
@@ -364,9 +364,9 @@ class MoveHistoryTest {
         @DisplayName("one move, one direction, one undo")
         void oneMoveOneDirectionOneUndo() {
             final var afterMoves = moveLog
-                    .addMove(new Move(List.of(Direction.S)))
-                    .add(Direction.N)
-                    .undoMove();
+                .addMove(new Move(List.of(Direction.S)))
+                .add(Direction.N)
+                .undoMove();
 
             Assertions.assertThat(afterMoves.currentPlayer()).isTrue();
         }
@@ -375,9 +375,9 @@ class MoveHistoryTest {
         @DisplayName("two move, one undo")
         void twoMovesOneUndo() {
             final var afterMoves = moveLog
-                    .addMove(new Move(List.of(Direction.S)))
-                    .addMove(new Move(List.of(Direction.S)))
-                    .undoMove();
+                .addMove(new Move(List.of(Direction.S)))
+                .addMove(new Move(List.of(Direction.S)))
+                .undoMove();
 
             Assertions.assertThat(afterMoves.currentPlayer()).isFalse();
         }
